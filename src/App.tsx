@@ -6,7 +6,17 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { ContextProvider } from "./context/ContextProvider";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      retry: 1,
+      staleTime: 5 * (60 * 1000), // 5 minutes
+      cacheTime: 10 * (60 * 1000), // 10 minutes
+    },
+  },
+});
 
 const App: React.FC = () => {
   return (
