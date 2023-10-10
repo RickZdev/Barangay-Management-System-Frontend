@@ -183,6 +183,15 @@ export const updateResident = async ({
   }
 };
 
+export const searchResidents = async (searchText: string) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/residents/search/${searchText}`);
+    return response.data;
+  } catch (error: any) {
+    return error.response.data.error;
+  }
+}
+
 // complaints function
 export const getAllComplaints = async (): Promise<ComplaintsPropType[]> => {
   try {

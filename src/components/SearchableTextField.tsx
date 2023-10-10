@@ -1,8 +1,9 @@
 import { useState } from "react";
 import type { ResidentPropType } from "../utils/types";
-import useGetResidents from "../queries/resident/useGetResidents";
 import { getResidentFullName } from "../helper/getResidentFullName";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import useDebounce from "../hooks/useDebounce";
+import useSearchResidents from "../queries/resident/useSearchResidents";
 
 type TextFieldPropType = {
   label: string;
@@ -13,34 +14,18 @@ type TextFieldPropType = {
 const SearchableTextField: React.FC<
   TextFieldPropType & React.InputHTMLAttributes<HTMLInputElement>
 > = ({ label, isEdit, handleChange, ...props }) => {
-  const { data: residentData } = useGetResidents();
-
-  const [searchText, setSearchText] = useState<string | undefined>("");
-  const [newResidentDb, setNewResidentDb] = useState<
-    ResidentPropType[] | undefined
-  >([]);
 
   const [isInputFocused, setIsInputFocused] = useState(false);
 
-  const searchFilter = (text: string) => {
-    if (text) {
-      const newData = residentData?.filter((resident) => {
-        const fullName = getResidentFullName({
-          lastName: resident?.lastName,
-          firstName: resident?.firstName,
-          middleName: resident?.middleName,
-          suffix: resident?.suffix,
-        });
-        const itemData = fullName.toLowerCase().includes(text.toLowerCase());
-        return itemData;
-      });
+  const [searchText, setSearchText] = useState<string>('');
+  const debouncedSearch = useDebounce(searchText ?? '')
+  const { data: residentData } = useSearchResidents(debouncedSearch ?? '');
 
-      setNewResidentDb(newData);
-    } else {
-      setNewResidentDb(residentData);
+  const setSearchFilter = (text: string) => {
+    if(text) {
+      setSearchText(text)
     }
-    setSearchText(text);
-  };
+  }
 
   return (
     <div className="flex flex-col relative z-50">
@@ -55,7 +40,7 @@ const SearchableTextField: React.FC<
             borderColor: isEdit ? "white" : "#232537",
           }}
           value={searchText}
-          onChange={(event) => searchFilter(event.target.value)}
+          onChange={(event) => setSearchText(event.target.value)}
           onFocus={() => setIsInputFocused(true)}
           onBlur={() => setIsInputFocused(false)}
           {...props}
@@ -63,9 +48,9 @@ const SearchableTextField: React.FC<
         <PersonSearchIcon className="absolute right-2 text-white" />
       </div>
 
-      {searchText !== "" && isInputFocused === true && (
+      {debouncedSearch !== "" && isInputFocused === true && (
         <ul className="search-textbox bg-white w-2/3 self-end absolute z-50 top-10 max-h-[200px] overflow-y-auto  rounded-b-lg">
-          {newResidentDb?.map((resident) => {
+          {residentData?.map((resident: any) => {
             const fullName = getResidentFullName({
               lastName: resident?.lastName,
               firstName: resident?.firstName,
@@ -81,7 +66,7 @@ const SearchableTextField: React.FC<
                   e.preventDefault();
                   handleChange(resident);
                   setSearchText(fullName);
-                  setIsInputFocused(false);
+                  setIsInputFocused(true);
                 }}
               >
                 <p className="text-black">{fullName}</p>

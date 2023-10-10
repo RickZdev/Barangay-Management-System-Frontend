@@ -12,6 +12,7 @@ const useGetResidentById = (residentId: string | undefined | null) => {
       onError: (error) => {
         console.log(error, "asdas");
       },
+      enabled: residentId !== ''
     }
   );
 
