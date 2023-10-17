@@ -6,25 +6,57 @@ import CustomButton from "../../../components/CustomButton";
 import useGetOfficialByPosition from "../../../queries/official/useGetOfficialByPosition";
 import { OfficialPropType } from "../../../utils/types";
 import { getResidentFullName } from "../../../helper/getResidentFullName";
+import LoaderModal from "../../../components/modals/loader/LoaderModal";
+import useAuthContext from "../../../queries/auth/useAuthContext";
 
 const BarangayOfficial: React.FC = () => {
   const navigation = useNavigate();
 
-  const { data: captainData } = useGetOfficialByPosition("captain");
-  const { data: treasurerData } = useGetOfficialByPosition("treasurer");
-  const { data: adminData } = useGetOfficialByPosition("admin");
-  const { data: secretaryData } = useGetOfficialByPosition("secretary");
-  const { data: skChairmanData } = useGetOfficialByPosition("skChairman");
-  const { data: kagawad1Data } = useGetOfficialByPosition("kagawad1");
-  const { data: kagawad2Data } = useGetOfficialByPosition("kagawad2");
-  const { data: kagawad3Data } = useGetOfficialByPosition("kagawad3");
-  const { data: kagawad4Data } = useGetOfficialByPosition("kagawad4");
-  const { data: kagawad5Data } = useGetOfficialByPosition("kagawad5");
-  const { data: kagawad6Data } = useGetOfficialByPosition("kagawad6");
-  const { data: kagawad7Data } = useGetOfficialByPosition("kagawad7");
+  const auth = useAuthContext();
+
+  const { data: captainData, isLoading: captainIsLoading } =
+    useGetOfficialByPosition("captain");
+  const { data: treasurerData, isLoading: treasurerIsLoading } =
+    useGetOfficialByPosition("treasurer");
+  const { data: adminData, isLoading: adminIsLoading } =
+    useGetOfficialByPosition("admin");
+  const { data: secretaryData, isLoading: secretaryIsLoading } =
+    useGetOfficialByPosition("secretary");
+  const { data: skChairmanData, isLoading: skChairmanIsLoading } =
+    useGetOfficialByPosition("skChairman");
+  const { data: kagawad1Data, isLoading: kagawad1IsLoading } =
+    useGetOfficialByPosition("kagawad1");
+  const { data: kagawad2Data, isLoading: kagawad2IsLoading } =
+    useGetOfficialByPosition("kagawad2");
+  const { data: kagawad3Data, isLoading: kagawad3IsLoading } =
+    useGetOfficialByPosition("kagawad3");
+  const { data: kagawad4Data, isLoading: kagawad4IsLoading } =
+    useGetOfficialByPosition("kagawad4");
+  const { data: kagawad5Data, isLoading: kagawad5IsLoading } =
+    useGetOfficialByPosition("kagawad5");
+  const { data: kagawad6Data, isLoading: kagawad6IsLoading } =
+    useGetOfficialByPosition("kagawad6");
+  const { data: kagawad7Data, isLoading: kagawad7IsLoading } =
+    useGetOfficialByPosition("kagawad7");
+
+  const isLoading =
+    captainIsLoading ||
+    treasurerIsLoading ||
+    adminIsLoading ||
+    secretaryIsLoading ||
+    skChairmanIsLoading ||
+    kagawad1IsLoading ||
+    kagawad2IsLoading ||
+    kagawad3IsLoading ||
+    kagawad4IsLoading ||
+    kagawad5IsLoading ||
+    kagawad6IsLoading ||
+    kagawad7IsLoading;
 
   return (
     <>
+      <LoaderModal isLoading={isLoading} />
+
       <div className="bg-white py-10 rounded-xl">
         <Tree
           label={
@@ -159,13 +191,15 @@ const BarangayOfficial: React.FC = () => {
           )}
         </Tree>
       </div>
-      <div className="flex justify-end my-5">
-        <CustomButton
-          label="Edit Officials"
-          Icon={Add}
-          onClick={() => navigation("edit")}
-        />
-      </div>
+      {auth.userRole === "Captain" && (
+        <div className="flex justify-end my-5">
+          <CustomButton
+            label="Edit Officials"
+            Icon={Add}
+            onClick={() => navigation("edit")}
+          />
+        </div>
+      )}
     </>
   );
 };
@@ -177,15 +211,15 @@ const OfficialCard: React.FC<OfficialPropType> = ({
   return (
     <div className="flex flex-col items-center">
       {/* image */}
-      <div className="w-8 h-8 md:w-14 md:h-14 relative z-10 border-white bg-black border-4 rounded-full overflow-hidden">
-        {/* <img
-          src={officialDetails?.image}
+      <div className="w-8 h-8 md:w-14 md:h-14 relative z-10 p-0.5 border-white rounded-full overflow-hidden">
+        <img
+          src={officialDetails?.profilePhoto}
           className="rounded-full w-full h-full object-cover object-center overflow-hidden bg-white"
-        /> */}
+        />
       </div>
       {/* details */}
       <div
-        className="bg-white px-4 py-7 relative -top-4 rounded-md cursor-pointer"
+        className="bg-white px-4 py-7 relative -top-4 rounded-md"
         style={{
           boxShadow:
             "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",

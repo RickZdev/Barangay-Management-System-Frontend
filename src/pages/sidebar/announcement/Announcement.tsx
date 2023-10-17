@@ -6,10 +6,16 @@ import { AnnouncementPropType } from "../../../utils/types";
 import useGetAnnouncements from "../../../queries/announcement/useGetAnnouncements";
 import Loading from "../../errors/Loading";
 import useDeleteAnnouncement from "../../../queries/announcement/useDeleteAnnouncement";
+import LoaderModal from "../../../components/modals/loader/LoaderModal";
 
 const Announcement: React.FC = React.memo(() => {
-  const { data, isLoading, refetch } = useGetAnnouncements();
-  const { mutate } = useDeleteAnnouncement();
+  const {
+    data,
+    isLoading: isAnnouncementsLoading,
+    refetch,
+  } = useGetAnnouncements();
+  const { mutate, isLoading: isDeleteLoading } = useDeleteAnnouncement();
+
   const columns = useMemo<MRT_ColumnDef<AnnouncementPropType>[]>(
     () => [
       {
@@ -31,51 +37,58 @@ const Announcement: React.FC = React.memo(() => {
     []
   );
 
+  const isLoading = isAnnouncementsLoading || isDeleteLoading;
+
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <Table
-          data={data ?? []}
-          columns={columns}
-          isError={false}
-          enableRowNumbers={false}
-          showBackButton={false}
-          showViewButton={false}
-          muiTableDetailPanelProps={{
-            sx: { color: "white" },
-          }}
-          initialState={{
-            sorting: [
-              {
-                id: "datePosted",
-                desc: true,
-              },
-            ],
-          }}
-          renderDetailPanel={({ row }) => (
+      <LoaderModal isLoading={isLoading} />
+
+      <Table
+        data={data ?? []}
+        columns={columns}
+        isError={false}
+        enableRowNumbers={false}
+        showBackButton={false}
+        showViewButton={false}
+        muiTableDetailPanelProps={{
+          sx: { color: "white" },
+        }}
+        initialState={{
+          sorting: [
+            {
+              id: "datePosted",
+              desc: true,
+            },
+          ],
+        }}
+        renderDetailPanel={({ row }) => {
+          const messageWithLineBreaks =
+            row.original.announcementMessage.replace(/\n/g, "<br>");
+
+          return (
             <div className="flex flex-col px-5 pb-4">
               <h1 className="text-lg">Message: </h1>
-              <p>{row.original.announcementMessage}</p>
+              <p
+                className="text-justify"
+                dangerouslySetInnerHTML={{ __html: messageWithLineBreaks }}
+              />
 
-              <div className="w-1/3 h-[300px] bg-[#1e1e2f] rounded-md items-center flex justify-center mt-5">
+              <div className="w-1/3 h-1/3 bg-[#1e1e2f] rounded-md items-center flex justify-center mt-5">
                 <img
-                  src={"../../src/assets/images/upload-image-icon.webp"}
-                  width={"20%"}
+                  src={row.original.announcementImage}
                   style={{ objectFit: "cover" }}
                 />
               </div>
             </div>
-          )}
-          refreshButton={refetch}
-          deleteButton={mutate}
-        >
-          <div className="flex justify-end pt-4 px-2">
-            <TableButton path={"/announcement/add"} label="Add Announcement" />
-          </div>
-        </Table>
-      )}
+          );
+        }}
+        refreshButton={refetch}
+        deleteButton={mutate}
+      >
+        <div className="flex justify-end pt-4 px-2">
+          <TableButton path={"/announcement/add"} label="Add Announcement" />
+        </div>
+      </Table>
     </>
   );
 });

@@ -4,25 +4,32 @@ export type LoginPropType = {
   _id?: string;
   username: string;
   token: string;
-  userRole: string;
+  userRole: "Resident" | "Captain" | "Administrator" | "Moderator";
+};
+
+export type SignupPropType = {
+  _id?: string;
+  username: string;
+  password: string;
 };
 
 export type ResidentPropType = {
   _id?: string;
+  fullName: string;
   lastName?: string;
   firstName?: string;
   middleName?: string;
-  suffix?: "N/A" | "Jr." | "Sr." | "III" | "IV" | "V" | "VI";
+  suffix?: "Jr." | "Sr." | "III" | "IV" | "V" | "VI";
   birthDate?: string;
   age?: number;
   sex?: "Male" | "Female";
   emailAddress: string;
-  contactNumber: number;
-  educationalAttainment?: "N/A" | "Elementary" | "High School" | "College";
+  contactNumber: string;
+  educationalAttainment?: "Elementary" | "High School" | "College";
   occupation?: string;
   civilStatus?: "Single" | "Married" | "Divorced" | "Separated" | "Widowed";
   citizenship?: string;
-  category: "N/A" | "PWD" | "Single Parent";
+  category: "PWD" | "Single Parent";
   houseNumber: number;
   streetAddress: string;
   purokNumber: number;
@@ -162,3 +169,5 @@ export type IndigentBenefitsPropType = {
   relation?: string;
   monthAndYear?: string;
 };
+
+export type StorageFolderPropType = "announcements" | "profile";

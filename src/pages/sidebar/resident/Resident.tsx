@@ -8,10 +8,16 @@ import { getResidentAge } from "../../../helper/getResidentAge";
 import useDeleteResident from "../../../queries/resident/useDeleteResident";
 import useGetResidents from "../../../queries/resident/useGetResidents";
 import Loading from "../../errors/Loading";
+import LoaderModal from "../../../components/modals/loader/LoaderModal";
 
 const Resident: React.FC = () => {
-  const { data, isError, isLoading, refetch } = useGetResidents();
-  const { mutate } = useDeleteResident();
+  const {
+    data,
+    isError,
+    isLoading: isResidentsLoading,
+    refetch,
+  } = useGetResidents();
+  const { mutate, isLoading: isDeleteLoading } = useDeleteResident();
 
   const columns = useMemo<MRT_ColumnDef<ResidentPropType>[]>(
     () => [
@@ -37,7 +43,7 @@ const Resident: React.FC = () => {
         size: 100,
         Cell(props) {
           const suffix = props.row.original.suffix;
-          return <div>{suffix !== "N/A" ? suffix : ""}</div>;
+          return <div>{suffix ?? ""}</div>;
         },
       },
       {
@@ -115,11 +121,6 @@ const Resident: React.FC = () => {
         size: 200,
       },
       {
-        accessorKey: "citizenship",
-        header: "Citizenship",
-        size: 200,
-      },
-      {
         header: "Age",
         size: 200,
         Cell(props) {
@@ -140,6 +141,7 @@ const Resident: React.FC = () => {
             Cell(props) {
               const birthDate = props?.row?.original?.birthDate;
               const age = getResidentAge(birthDate);
+
               const ageBracket = getAgeBracket(age);
 
               return <div>{ageBracket === "0-5" ? "✓" : ""}</div>;
@@ -209,7 +211,7 @@ const Resident: React.FC = () => {
             Cell(props) {
               const value = props?.row?.original?.educationalAttainment;
 
-              const education = getEducatinalAttainmentBracket(value);
+              const education = getEducationalAttainmentBracket(value);
 
               return <div>{education === "Elementary" ? "✓" : ""}</div>;
             },
@@ -221,7 +223,7 @@ const Resident: React.FC = () => {
             Cell(props) {
               const value = props.row.original.educationalAttainment;
 
-              const education = getEducatinalAttainmentBracket(value);
+              const education = getEducationalAttainmentBracket(value);
 
               return <div>{education === "High School" ? "✓" : ""}</div>;
             },
@@ -233,7 +235,7 @@ const Resident: React.FC = () => {
             Cell(props) {
               const value = props.row.original.educationalAttainment;
 
-              const education = getEducatinalAttainmentBracket(value);
+              const education = getEducationalAttainmentBracket(value);
 
               return <div>{education === "College" ? "✓" : ""}</div>;
             },
@@ -311,10 +313,13 @@ const Resident: React.FC = () => {
   };
 
   const getAgeBracket = (age: number | undefined): string | void => {
-    let ageBracket: string;
-    if (age) {
+    if (age === 0) {
+      return "0-5";
+    } else if (age) {
+      let ageBracket: string;
+
       switch (true) {
-        case age >= 0 && age <= 5:
+        case age >= 1 && age <= 5:
           ageBracket = "0-5";
           break;
         case age >= 6 && age <= 9:
@@ -335,7 +340,7 @@ const Resident: React.FC = () => {
     }
   };
 
-  const getEducatinalAttainmentBracket = (
+  const getEducationalAttainmentBracket = (
     education: string | undefined
   ): string => {
     let educationBracket;
@@ -359,25 +364,22 @@ const Resident: React.FC = () => {
 
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <Table
-          data={data ?? []}
-          columns={columns}
-          isError={isError}
-          enableGlobalFilter={true}
-          enableFilters
-          showBackButton={false}
-          showEditButton={false}
-          refreshButton={refetch}
-          deleteButton={mutate}
-        >
-          <div className="flex justify-end pt-4 px-2">
-            <TableButton path={"/resident/add"} label="Add Resident" />
-          </div>
-        </Table>
-      )}
+      <LoaderModal isLoading={isResidentsLoading || isDeleteLoading} />
+      <Table
+        data={data ?? []}
+        columns={columns}
+        isError={isError}
+        enableGlobalFilter={true}
+        enableFilters
+        showBackButton={false}
+        showEditButton={false}
+        refreshButton={refetch}
+        deleteButton={mutate}
+      >
+        <div className="flex justify-end pt-4 px-2">
+          <TableButton path={"/resident/add"} label="Add Resident" />
+        </div>
+      </Table>
     </>
   );
 };

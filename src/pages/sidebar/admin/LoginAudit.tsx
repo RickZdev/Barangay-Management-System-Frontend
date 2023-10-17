@@ -6,7 +6,7 @@ import useGetLoginAudits from "../../../queries/loginAudit/useGetLoginAudits";
 import Loading from "../../errors/Loading";
 
 const LoginAudit: React.FC = React.memo(() => {
-  const { data, isLoading } = useGetLoginAudits();
+  const { data, isLoading, refetch } = useGetLoginAudits();
 
   const columns = useMemo<MRT_ColumnDef<LoginAuditPropType>[]>(
     () => [
@@ -40,6 +40,7 @@ const LoginAudit: React.FC = React.memo(() => {
           isError={false}
           enableRowNumbers={true}
           enableRowActions={false}
+          refreshButton={refetch}
         />
       )}
     </>

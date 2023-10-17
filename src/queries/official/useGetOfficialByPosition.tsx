@@ -8,12 +8,10 @@ const useGetOfficialByPosition = (position: string | undefined) => {
     ["official", position],
     () => getOfficialByPosition(position),
     {
-      onSuccess: (data) => {
-        console.log("FETCHED OFFICIAL: ", data);
-      },
       onError: (error) => {
         console.log(error, "asdas");
       },
+      refetchOnWindowFocus: true,
     }
   );
 

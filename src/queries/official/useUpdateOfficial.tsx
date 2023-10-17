@@ -7,6 +7,7 @@ const useUpdateOfficial = () => {
     mutationFn: updateOfficial,
     onSuccess: (data) => {
       console.log("success!", data);
+      queryClient.invalidateQueries(["allOfficials"]);
       queryClient.invalidateQueries(["official"]);
     },
     onError: (err) => {

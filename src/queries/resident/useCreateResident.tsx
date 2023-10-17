@@ -4,11 +4,11 @@ import { createResident } from "../../services/apiHelper";
 const useCreateResident = () => {
   const resident = useMutation({
     mutationFn: createResident,
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
       console.log(data);
     },
     onError: (err) => {
-      console.log(err);
+      return err;
     },
   });
 

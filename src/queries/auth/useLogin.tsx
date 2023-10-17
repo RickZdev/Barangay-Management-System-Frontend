@@ -16,6 +16,8 @@ const useLogin = () => {
       authContext.setUserId(data._id);
       authContext.setUserRole(data.userRole);
       authContext.setAccessToken(data.token);
+
+      console.log(data);
     },
   });
 

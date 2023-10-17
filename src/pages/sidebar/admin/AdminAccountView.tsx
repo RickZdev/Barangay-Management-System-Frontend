@@ -51,7 +51,7 @@ const AdminAccountView: React.FC = () => {
           <BackButton />
           <div className="grid md:grid-cols-2 gap-6 my-5">
             <Card>
-              <CardHeader title="Admin Profile" isRequired />
+              <CardHeader title="Admin Profile" />
               <div className="space-y-3">
                 <TextField
                   label={"Admin Username"}
@@ -64,7 +64,7 @@ const AdminAccountView: React.FC = () => {
             <Card>
               <div className="space-y-6">
                 <div className="flex flex-col justify-center items-center space-y-5">
-                  <CardPhoto />
+                  <CardPhoto showTooltip={false} />
 
                   <div className="flex flex-col items-center">
                     <p className="flex-1 text-white text-lg font-bold">

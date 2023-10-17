@@ -1,9 +1,6 @@
 export default {
   suffixSelection: [
     {
-      value: "N/A",
-    },
-    {
       value: "Jr.",
     },
     {
@@ -31,9 +28,6 @@ export default {
     },
   ],
   educationalAttainmentSelection: [
-    {
-      value: "N/A",
-    },
     {
       value: "Elementary",
     },
@@ -65,9 +59,6 @@ export default {
     },
   ],
   categorySelection: [
-    {
-      value: "N/A",
-    },
     {
       value: "PWD",
     },
@@ -121,9 +112,6 @@ export default {
     },
   ],
   adminRoleTypeSelection: [
-    {
-      value: "Captain",
-    },
     {
       value: "Moderator",
     },

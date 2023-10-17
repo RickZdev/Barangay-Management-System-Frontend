@@ -24,9 +24,13 @@ import useGetBorrowedRecords from "../../../queries/borrowedRecords/useGetBorrow
 import useGetBlotters from "../../../queries/blotter/useGetBlotters";
 import useGetSulatReklamo from "../../../queries/sulatReklamo/useGetSulatReklamo";
 import useAuthContext from "../../../queries/auth/useAuthContext";
+import LoaderModal from "../../../components/modals/loader/LoaderModal";
+import useGetUserById from "../../../queries/user/useGetUserById";
 
 const Dashboard: React.FC = () => {
   const navigation = useNavigate();
+
+  const auth = useAuthContext();
 
   const { data: residentData, isLoading: residentIsLoading } =
     useGetResidents();
@@ -36,45 +40,46 @@ const Dashboard: React.FC = () => {
     useGetTransactions();
   const { data: borrowedRecordsData, isLoading: borrowedRecordsIsLoading } =
     useGetBorrowedRecords();
-  const { data: blotterData, isLoading: blotterIsLoading } = useGetBlotters();
   const { data: sulatReklamoData, isLoading: sulatReklamoIsLoading } =
     useGetSulatReklamo();
+  const { data: blotterData, isLoading: blotterIsLoading } = useGetBlotters();
 
-  const residentsCount = residentData?.reduce((count, { _id }) => {
-    return _id ? count + 1 : count;
-  }, 0);
-  const femaleCount = residentData?.reduce((count, { sex }) => {
-    return sex === "Female" ? count + 1 : count;
-  }, 0);
-  const maleCount = residentData?.reduce((count, { sex }) => {
-    return sex === "Male" ? count + 1 : count;
-  }, 0);
+  const isLoading =
+    residentIsLoading ||
+    complaintsIsLoading ||
+    transactionsIsLoading ||
+    borrowedRecordsIsLoading ||
+    blotterIsLoading ||
+    sulatReklamoIsLoading;
+
+  const residentsCount = residentData?.length;
+
+  const femaleCount = residentData?.filter(
+    (resident) => resident.sex === "Female"
+  ).length;
+
+  const maleCount = residentData?.filter(
+    (resident) => resident.sex === "Male"
+  ).length;
+
   const seniorsCount = residentData?.reduce((count, { birthDate }) => {
     const age = getResidentAge(birthDate);
     return age >= 60 ? count + 1 : count;
   }, 0);
-  const pwdsCount = residentData?.reduce((count, { category }) => {
-    return category === "PWD" ? count + 1 : count;
-  }, 0);
-  const singleParentsCount = residentData?.reduce((count, { category }) => {
-    return category === "Single Parent" ? count + 1 : count;
-  }, 0);
 
-  const complaintsCount = complaintsData?.reduce((count, { _id }) => {
-    return _id ? count + 1 : count;
-  }, 0);
-  const transactionsCount = transactionsData?.reduce((count, { _id }) => {
-    return _id ? count + 1 : count;
-  }, 0);
-  const borrowedRecordsCount = borrowedRecordsData?.reduce((count, { _id }) => {
-    return _id ? count + 1 : count;
-  }, 0);
-  const blottersCount = blotterData?.reduce((count, { _id }) => {
-    return _id ? count + 1 : count;
-  }, 0);
-  const sulatReklamoCount = sulatReklamoData?.reduce((count, { _id }) => {
-    return _id ? count + 1 : count;
-  }, 0);
+  const pwdsCount = residentData?.filter(
+    (resident) => resident?.category === "PWD"
+  ).length;
+
+  const singleParentsCount = residentData?.filter(
+    (resident) => resident?.category === "Single Parent"
+  ).length;
+
+  const complaintsCount = complaintsData?.length;
+  const transactionsCount = transactionsData?.length;
+  const borrowedRecordsCount = borrowedRecordsData?.length;
+  const blottersCount = blotterData?.length;
+  const sulatReklamoCount = sulatReklamoData?.length;
 
   const data: DashboardPropType[] = [
     {
@@ -139,7 +144,7 @@ const Dashboard: React.FC = () => {
       total: femaleCount,
       Icon: <FemaleIcon />,
       backgroundColor: "pink",
-      navigationPath: "/resident",
+      navigationPath: "",
     },
     {
       _id: "9",
@@ -147,7 +152,7 @@ const Dashboard: React.FC = () => {
       total: maleCount,
       Icon: <MaleIcon />,
       backgroundColor: "skyblue",
-      navigationPath: "/resident",
+      navigationPath: "",
     },
 
     {
@@ -156,7 +161,7 @@ const Dashboard: React.FC = () => {
       total: seniorsCount,
       Icon: <ElderlyWomanIcon />,
       backgroundColor: "lightgreen",
-      navigationPath: "/resident",
+      navigationPath: "",
     },
     {
       _id: "11",
@@ -164,7 +169,7 @@ const Dashboard: React.FC = () => {
       total: pwdsCount,
       Icon: <AccessibleIcon />,
       backgroundColor: "#98BF64",
-      navigationPath: "/resident",
+      navigationPath: "",
     },
     {
       _id: "12",
@@ -172,11 +177,11 @@ const Dashboard: React.FC = () => {
       total: singleParentsCount,
       Icon: <PregnantWomanIcon />,
       backgroundColor: "#0492c2",
-      navigationPath: "/resident",
+      navigationPath: "",
     },
   ];
 
-  const auth = useAuthContext();
+  const { data: sampleData } = useGetUserById(auth.userId ?? "");
 
   useEffect(() => {
     const userId = localStorage?.getItem("userId")
@@ -196,20 +201,24 @@ const Dashboard: React.FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (auth?.userRole === "Administrator") {
+      console.log("nice");
+      console.log(residentData?.length);
+    }
+  }, [auth]);
+
   return (
-    <div className="flex flex-col space-y-10 pb-7">
-      {residentIsLoading &&
-      complaintsIsLoading &&
-      transactionsIsLoading &&
-      borrowedRecordsIsLoading &&
-      blotterIsLoading &&
-      sulatReklamoIsLoading ? (
-        <Loading />
-      ) : (
+    <>
+      <LoaderModal isLoading={isLoading} />
+
+      <div className="flex flex-col space-y-10 pb-7">
         <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 gap-x-8 gap-y-4">
           {data.map((summary) => (
             <Card
-              className="space-y-12 flex flex-col justify-between bg-[#29283d] rounded-md p-6 cursor-pointer"
+              className={`${
+                summary.navigationPath && "cursor-pointer"
+              } space-y-12 flex flex-col justify-between bg-[#29283d] rounded-md p-6`}
               key={summary._id}
               onClick={() => navigation(summary.navigationPath)}
             >
@@ -231,15 +240,16 @@ const Dashboard: React.FC = () => {
               <div className="space-y-4">
                 <div className="w-full h-[1px] bg-[#2f3453] items-center" />
                 <div className="flex items-center justify-start space-x-2">
-                  <ExpandMoreIcon className="text-white" />
-                  <p className="text-sm text-[#999]">More info</p>
+                  {summary.navigationPath && (
+                    <p className="text-sm text-[#999]">More info</p>
+                  )}
                 </div>
               </div>
             </Card>
           ))}
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 

@@ -39,10 +39,7 @@ export const AuthLayout: React.FC = () => {
 
   return (
     <>
-      {auth &&
-      (auth?.userRole === "Captain" ||
-        auth?.userRole === "Administrator" ||
-        auth?.userRole === "Moderator") ? (
+      {auth && auth?.accessToken && auth?.userId ? (
         <Navigate to="/dashboard" />
       ) : (
         <Outlet />

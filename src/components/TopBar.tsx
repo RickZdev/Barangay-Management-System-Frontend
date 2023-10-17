@@ -8,6 +8,7 @@ import useAuthContext from "../queries/auth/useAuthContext";
 import useGetResidentById from "../queries/resident/useGetResidentById";
 import { getResidentFullName } from "../helper/getResidentFullName";
 import useLogout from "../queries/auth/useLogout";
+import IMAGES from "../constants/IMAGES";
 
 const TopBar: React.FC = () => {
   const auth = useAuthContext();
@@ -21,17 +22,18 @@ const TopBar: React.FC = () => {
 
   const location = useLocation();
   const [firstPath, setFirstPath] = useState<string | undefined>();
+  const currentPath = location.pathname.split("/")[1];
 
-  useEffect(() => {
-    const currentPath = location.pathname.split("/")[1];
-    setFirstPath(currentPath);
-  }, [location]);
+  // useEffect(() => {
+  //   const currentPath = location.pathname.split("/")[1];
+  //   setFirstPath(currentPath);
+  // }, [location]);
 
   return (
     <div className="flex justify-between flex-row items-center">
       {/* title page */}
       <h1 className="text-white text-3xl pl-8 uppercase font-extrabold">
-        {firstPath}
+        {currentPath}
       </h1>
 
       {/* top bar details */}
@@ -51,7 +53,10 @@ const TopBar: React.FC = () => {
             <div className="w-3 h-3 rounded-full bg-green-500 absolute top-0.5 border-[2px] border-[#fff]" />
           </div>
         </div>
-        <Avatar alt="Natashia" src="/src/assets/images/fred.jpg" />
+        <Avatar
+          alt="Natashia"
+          src={resident?.profilePhoto ?? IMAGES.DefaultUserAvatar}
+        />
         <div className="px-6">
           {resident && (
             <>
@@ -62,12 +67,7 @@ const TopBar: React.FC = () => {
                 fontWeight="bold"
                 color={"white"}
               >
-                {getResidentFullName({
-                  lastName: resident?.lastName,
-                  firstName: resident?.firstName,
-                  middleName: resident?.middleName,
-                  suffix: resident?.suffix,
-                })}
+                {resident?.fullName}
               </Typography>
               <Typography variant="h6" fontSize={14} color={"white"}>
                 {auth?.userRole}

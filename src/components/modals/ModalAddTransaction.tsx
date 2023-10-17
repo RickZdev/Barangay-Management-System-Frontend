@@ -88,7 +88,7 @@ const ModalAddTransaction: React.FC<ModalAddTransactionPropType> = ({
               <Close color="error" />
             </IconButton>
           </Tooltip>
-          <CardHeader title="Make Transaction" isRequired />
+          <CardHeader title="Make Transaction" />
           <SearchableTextField
             label="Resident Name"
             isEdit
@@ -99,15 +99,13 @@ const ModalAddTransaction: React.FC<ModalAddTransactionPropType> = ({
             label="Transaction Type"
             isEdit
             selections={SELECTION.transactionTypeSelection}
-            register={register}
-            name="transactionType"
+            register={register("transactionType")}
           />
 
           <NumberField
             label="Payment Amount"
             isEdit
-            register={register}
-            name="amount"
+            register={register("amount")}
           />
 
           <div className="flex justify-end">

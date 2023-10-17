@@ -1,61 +1,74 @@
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
-import { FieldValues, UseFormRegister } from "react-hook-form";
+import { UseFormRegisterReturn } from "react-hook-form";
 
 type RadioButtonPropType = {
   label: string;
   initialValue?: string;
   isEdit?: boolean;
+  isOptional?: boolean;
   selections: Array<{
     value: string;
   }>;
-  name?: string | undefined;
-  register?: UseFormRegister<FieldValues>;
+  register?: UseFormRegisterReturn<string>;
+  error?: string;
 };
 
 const RadioButton: React.FC<RadioButtonPropType> = ({
   label,
   isEdit,
+  isOptional,
   initialValue,
   selections,
   register,
-  name,
+  error,
+  ...props
 }) => {
   return (
-    <div className="flex flex-row items-center">
-      <p className="text-[hsla(0,0%,100%,.6)] text-xs flex-1">{label}</p>
+    <>
+      <div className="flex flex-row items-center">
+        <p className="flex-1 text-[hsla(0,0%,100%,.6)] text-xs">
+          {label}
+          {!isOptional && <span className="text-red-800"> * </span>}
+        </p>
+        <RadioGroup
+          className="flex w-2/3"
+          sx={{ flexDirection: "row" }}
+          defaultValue={initialValue}
+        >
+          {selections.map((selection, index) => (
+            <FormControlLabel
+              key={index}
+              label={selection.value}
+              sx={{
+                color: isEdit ? "white" : "red",
+                fontSize: 14,
+              }}
+              control={
+                <Radio
+                  disabled={!isEdit}
+                  defaultChecked={initialValue === selection.value}
+                  value={selection.value}
+                  sx={{
+                    color: error ? "red" : "white",
+                    "&.Mui-checked": {
+                      color: "#50D5B7",
+                    },
+                  }}
+                  {...register}
+                  {...props}
+                />
+              }
+            />
+          ))}
+        </RadioGroup>
+      </div>
 
-      <RadioGroup
-        className="flex w-2/3"
-        sx={{ flexDirection: "row" }}
-        defaultValue={initialValue}
-        {...(register && register(name ?? ""))}
-      >
-        {selections.map((selection, index) => (
-          <FormControlLabel
-            key={index}
-            label={selection.value}
-            sx={{
-              color: isEdit ? "white" : "red",
-              fontSize: 14,
-            }}
-            control={
-              <Radio
-                {...(register && register(name ?? ""))}
-                disabled={!isEdit}
-                defaultChecked={initialValue === selection.value}
-                value={selection.value}
-                sx={{
-                  color: "white",
-                  "&.Mui-checked": {
-                    color: "#50D5B7",
-                  },
-                }}
-              />
-            }
-          />
-        ))}
-      </RadioGroup>
-    </div>
+      {error && (
+        <div className="flex flex-1 w-full justify-end">
+          <p className="text-red-400 text-xs">{error}</p>
+        </div>
+      )}
+    </>
   );
 };
 

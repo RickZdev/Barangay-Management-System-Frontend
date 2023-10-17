@@ -9,6 +9,7 @@ const useGetAdmins = () => {
     onError: (error) => {
       console.log(error, "asdas");
     },
+    refetchOnMount: "always",
   });
 
   return admins;

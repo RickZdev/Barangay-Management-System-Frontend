@@ -1,10 +1,51 @@
+import { Tooltip } from "@mui/material";
 import React from "react";
 
-const CardPhoto: React.FC = () => {
+type CardPhotoPropType = {
+  image: string;
+  size?: number;
+  showTooltip?: boolean;
+  tooltip?: string;
+};
+
+const CardPhoto: React.FC<CardPhotoPropType> = ({
+  image,
+  size,
+  tooltip,
+  showTooltip = true,
+}) => {
   return (
-    <div className="flex flex-col items-center">
-      <div className="w-36 h-36 rounded-full bg-white border-[#999] border-2" />
-    </div>
+    <>
+      {showTooltip ? (
+        <Tooltip arrow title={tooltip ?? "Upload Picture"} color="error">
+          <div className="flex flex-col items-center">
+            <div
+              className="rounded-full"
+              style={{ width: size ?? 160, height: size ?? 160 }}
+            >
+              <img
+                src={image}
+                alt="User"
+                className="w-full h-full rounded-full object-cover"
+              />
+            </div>
+          </div>
+        </Tooltip>
+      ) : (
+        <div className="flex flex-col items-center">
+          <div
+            className="rounded-full"
+            style={{ width: size ?? 160, height: size ?? 160 }}
+          >
+            <img
+              src={image}
+              alt="User"
+              className="w-full h-full rounded-full object-cover"
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

@@ -9,8 +9,11 @@ import useGetAdmins from "../../../queries/admin/useGetAdmins";
 import { AdminAccountPropType } from "../../../utils/types";
 import Loading from "../../errors/Loading";
 import useDeleteAdmin from "../../../queries/admin/useDeleteAdmin";
+import useAuthContext from "../../../queries/auth/useAuthContext";
 
 const AdminAccount: React.FC = React.memo(() => {
+  const auth = useAuthContext();
+
   const { data, isLoading, refetch } = useGetAdmins();
   const { mutate } = useDeleteAdmin();
   const columns = useMemo<MRT_ColumnDef<AdminAccountPropType>[]>(
@@ -65,7 +68,7 @@ const AdminAccount: React.FC = React.memo(() => {
           enableRowNumbers={true}
           showEditButton={false}
           showBackButton={false}
-          showDeleteButton={true}
+          showDeleteButton={auth?.userRole === "Captain"}
           refreshButton={refetch}
           deleteButton={mutate}
         >
@@ -76,11 +79,13 @@ const AdminAccount: React.FC = React.memo(() => {
               Icon={VisibilityIcon}
             />
 
-            <TableButton
-              label="Add Admin Account"
-              Icon={AddCircleOutlineIcon}
-              onClick={handleClickOpen}
-            />
+            {auth?.userRole === "Captain" && (
+              <TableButton
+                label="Add Admin Account"
+                Icon={AddCircleOutlineIcon}
+                onClick={handleClickOpen}
+              />
+            )}
           </div>
 
           <ModalAddAdminAccount open={open} handleClose={handleClose} />

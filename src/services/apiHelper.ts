@@ -11,12 +11,12 @@ import type {
   LoginAuditPropType,
   LoginPropType,
   ResidentPropType,
+  SignupPropType,
   SulatReklamoPropType,
   TransactionPropType,
   UserPropType,
 } from "../utils/types";
 import { getResidentAge } from "../helper/getResidentAge";
-import dayjs from "dayjs";
 
 const BASE_URL = "http://localhost:4000";
 
@@ -40,6 +40,90 @@ export const loginUser = async ({
   }
 };
 
+export const signupUser = async ({
+  username,
+  password,
+}: {
+  username: string;
+  password: string;
+}) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/api/auth/signup`, {
+      username: username,
+      password: password,
+    });
+    return { message: "success", data: response.data, error: "" };
+  } catch (error: any) {
+    return { message: "error", data: "", error: error.response.data.error };
+  }
+};
+
+export const deleteAuthUser = async ({ userId }: { userId: string }) => {
+  try {
+    const response = await axios.delete(`${BASE_URL}/api/auth/${userId}`);
+    return { message: "success", data: response.data, error: "" };
+  } catch (error: any) {
+    return { message: "error", data: "", error: error.response.data.error };
+  }
+};
+
+// users function
+export const createUser = async ({
+  userId,
+  username,
+  residentName,
+}: {
+  userId: string;
+  username: string;
+  residentName: string;
+}) => {
+  const data = {
+    _id: userId,
+    username,
+    residentName,
+  };
+
+  try {
+    const response = await axios.post(`${BASE_URL}/api/users/`, data);
+    return { message: "success", data: response.data, error: "" };
+  } catch (error: any) {
+    return { message: "error", data: "", error: error.response.data.error };
+  }
+};
+
+export const getUserById = async (
+  id: string | undefined
+): Promise<UserPropType> => {
+  try {
+    const response = await axios.get<UserPropType>(
+      `${BASE_URL}/api/users/${id}`
+    );
+
+    return response.data;
+  } catch (error: any) {
+    return error.response.data.error;
+  }
+};
+
+export const updateUser = async ({
+  userId,
+  updatedData,
+}: {
+  userId: string | undefined;
+  updatedData: any;
+}): Promise<string> => {
+  try {
+    const response = await axios.patch(
+      `${BASE_URL}/api/users/${userId}`,
+      updatedData
+    );
+    return response.data;
+  } catch (error: any) {
+    console.log(error.response.data.error);
+    return error.response.data.error;
+  }
+};
+
 // resident functions
 export const getAllResidents = async (): Promise<ResidentPropType[]> => {
   try {
@@ -50,10 +134,9 @@ export const getAllResidents = async (): Promise<ResidentPropType[]> => {
   }
 };
 
-export const createResident = async (
-  residentData: ResidentPropType
-): Promise<ResidentPropType | null | undefined> => {
+export const createResident = async (residentData: ResidentPropType) => {
   const {
+    _id,
     lastName,
     firstName,
     middleName,
@@ -71,54 +154,35 @@ export const createResident = async (
     streetAddress,
     purokNumber,
     profileNotes,
+    profilePhoto,
   } = residentData;
+
   try {
-    let residentSuffix;
-    let residentCategory;
-    let residentEducationalAttainment;
-
-    if (suffix !== "N/A") {
-      residentSuffix = suffix;
-    } else {
-      residentSuffix = "";
-    }
-
-    if (category !== "N/A") {
-      residentCategory = category;
-    } else {
-      residentCategory = "";
-    }
-
-    if (residentEducationalAttainment !== "N/A") {
-      residentEducationalAttainment = educationalAttainment;
-    } else {
-      residentEducationalAttainment = "";
-    }
-
     const response = await axios.post(`${BASE_URL}/api/residents`, {
+      _id,
       lastName,
       firstName,
       middleName,
-      suffix: residentSuffix,
+      suffix,
       sex,
       emailAddress,
       contactNumber,
       birthDate,
-      educationalAttainment: residentEducationalAttainment,
+      educationalAttainment,
       occupation,
       civilStatus,
       citizenship,
-      category: residentCategory,
+      category,
       houseNumber,
       streetAddress,
       purokNumber,
-      profileNotes,
-      profilePhoto: "",
+      profileNotes: profileNotes ?? "",
+      profilePhoto: profilePhoto ?? "",
     });
-    return response.data;
+
+    return { message: "success", data: response.data, error: "" };
   } catch (error: any) {
-    console.log(error.response.data.error);
-    return error.response.data.error;
+    return { message: "error", data: "", error: error.response.data.error };
   }
 };
 
@@ -134,7 +198,7 @@ export const getResidentById = async (
     let { ...residentDetails } = response.data;
 
     const computedAge = getResidentAge(birthDate);
-    return { age: computedAge, ...residentDetails };
+    return { age: computedAge, ...response.data };
   } catch (error: any) {
     return error.response.data.error;
   }
@@ -170,7 +234,7 @@ export const updateResident = async ({
 }: {
   residentId: string | undefined;
   updatedData: any;
-}): Promise<string> => {
+}) => {
   try {
     const response = await axios.patch(
       `${BASE_URL}/api/residents/${residentId}`,
@@ -178,19 +242,20 @@ export const updateResident = async ({
     );
     return response.data;
   } catch (error: any) {
-    console.log(error.response.data.error);
-    return error.response.data.error;
+    return error.response;
   }
 };
 
 export const searchResidents = async (searchText: string) => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/residents/search/${searchText}`);
+    const response = await axios.get(
+      `${BASE_URL}/api/residents/search/${searchText}`
+    );
     return response.data;
   } catch (error: any) {
     return error.response.data.error;
   }
-}
+};
 
 // complaints function
 export const getAllComplaints = async (): Promise<ComplaintsPropType[]> => {
@@ -343,7 +408,7 @@ export const deleteAnnouncement = async (
     );
     return response.data;
   } catch (error: any) {
-    console.log(error.response.data.error);
+    console.log(error);
     return error.response.data.error;
   }
 };
@@ -428,40 +493,6 @@ export const deleteTransaction = async (
   try {
     const response = await axios.delete(
       `${BASE_URL}/api/transactions/${transactionId}`
-    );
-    return response.data;
-  } catch (error: any) {
-    console.log(error.response.data.error);
-    return error.response.data.error;
-  }
-};
-
-// users function
-export const getUserById = async (
-  id: string | undefined
-): Promise<UserPropType> => {
-  try {
-    const response = await axios.get<UserPropType>(
-      `${BASE_URL}/api/users/${id}`
-    );
-
-    return response.data;
-  } catch (error: any) {
-    return error.response.data.error;
-  }
-};
-
-export const updateUser = async ({
-  userId,
-  updatedData,
-}: {
-  userId: string | undefined;
-  updatedData: any;
-}): Promise<string> => {
-  try {
-    const response = await axios.patch(
-      `${BASE_URL}/api/users/${userId}`,
-      updatedData
     );
     return response.data;
   } catch (error: any) {
@@ -693,17 +724,14 @@ export const getAllOfficials = async (): Promise<ResidentPropType[]> => {
   }
 };
 
-export const getOfficialByPosition = async (
-  position: string | undefined
-): Promise<AllOfficialsPropType> => {
+export const getOfficialByPosition = async (position: string | undefined) => {
   try {
     const response = await axios.get<AllOfficialsPropType>(
       `${BASE_URL}/api/officials/${position}`
     );
-
     return response.data;
   } catch (error: any) {
-    return error.response.data.error;
+    return { message: "error", data: "", error: error.response.data.error };
   }
 };
 
@@ -725,16 +753,15 @@ export const updateOfficial = async ({
 }: {
   position: string | undefined;
   updatedData: any;
-}): Promise<string> => {
+}) => {
   try {
     const response = await axios.patch(
       `${BASE_URL}/api/officials/${position}`,
       updatedData
     );
-    return response.data;
+    return { message: "success", data: response.data, error: "" };
   } catch (error: any) {
-    console.log(error.response.data.error);
-    return error.response.data.error;
+    return { message: "error", data: "", error: error.response?.data };
   }
 };
 

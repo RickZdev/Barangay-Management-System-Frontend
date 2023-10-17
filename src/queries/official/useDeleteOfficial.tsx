@@ -5,7 +5,7 @@ const useDeleteOfficial = () => {
   const queryClient = useQueryClient();
   const official = useMutation({
     mutationFn: deleteOfficial,
-    onSuccess: () => queryClient.invalidateQueries(["allOfficials1"]),
+    onSuccess: () => queryClient.invalidateQueries(["allOfficials"]),
     onError: (err) => {
       console.log(err);
     },

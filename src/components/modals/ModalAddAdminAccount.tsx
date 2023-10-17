@@ -59,7 +59,7 @@ const ModalAddAdminAccount: React.FC<ModalAddAdminAccountPropType> = ({
                 <Close color="error" />
               </IconButton>
             </Tooltip>
-            <CardHeader title="Add Admin Account" isRequired />
+            <CardHeader title="Add Admin Account" />
             <OfficialSearchableTextField
               label="Admin User"
               handleChange={handleChange}
@@ -69,8 +69,7 @@ const ModalAddAdminAccount: React.FC<ModalAddAdminAccountPropType> = ({
               label="Admin Role"
               selections={SELECTION.adminRoleTypeSelection}
               isEdit
-              register={register}
-              name="adminRole"
+              register={register("adminRole")}
             />
 
             <div className="flex justify-end">

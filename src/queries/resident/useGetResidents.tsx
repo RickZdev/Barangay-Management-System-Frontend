@@ -9,6 +9,7 @@ const useGetResidents = () => {
     onError: (error) => {
       console.log(error, "asdas");
     },
+    refetchOnMount: "always",
   });
 
   return residents;

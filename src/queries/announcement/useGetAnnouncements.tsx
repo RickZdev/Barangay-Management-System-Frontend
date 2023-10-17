@@ -9,6 +9,7 @@ const useGetAnnouncements = () => {
     onError: (error) => {
       console.log(error, "asdas");
     },
+    refetchOnMount: "always",
   });
 
   return announcements;

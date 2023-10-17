@@ -9,6 +9,7 @@ const useGetLoginAudits = () => {
     onError: (error) => {
       console.log(error, "asdas");
     },
+    refetchOnMount: "always",
   });
 
   return loginAudits;
