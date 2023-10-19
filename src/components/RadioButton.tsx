@@ -1,4 +1,5 @@
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import { useEffect, useState } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 
 type RadioButtonPropType = {
@@ -23,6 +24,12 @@ const RadioButton: React.FC<RadioButtonPropType> = ({
   error,
   ...props
 }) => {
+  const [selectedValue, setSelectedValue] = useState(initialValue || "");
+
+  useEffect(() => {
+    setSelectedValue(initialValue || "");
+  }, [initialValue]);
+
   return (
     <>
       <div className="flex flex-row items-center">
@@ -33,7 +40,8 @@ const RadioButton: React.FC<RadioButtonPropType> = ({
         <RadioGroup
           className="flex w-2/3"
           sx={{ flexDirection: "row" }}
-          defaultValue={initialValue}
+          value={selectedValue}
+          onChange={(event) => setSelectedValue(event.target.value)}
         >
           {selections.map((selection, index) => (
             <FormControlLabel
@@ -46,7 +54,6 @@ const RadioButton: React.FC<RadioButtonPropType> = ({
               control={
                 <Radio
                   disabled={!isEdit}
-                  defaultChecked={initialValue === selection.value}
                   value={selection.value}
                   sx={{
                     color: error ? "red" : "white",

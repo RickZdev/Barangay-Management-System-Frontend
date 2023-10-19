@@ -1,13 +1,14 @@
 import { FormControl, MenuItem, Select } from "@mui/material";
+import { useEffect, useState } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 
 type SelectFieldPropType = {
   label: string;
-  initialValue?: string | number;
+  initialValue?: string;
   isEdit?: boolean;
   isOptional?: boolean;
   selections: {
-    value: string | number;
+    value: string;
   }[];
   register?: UseFormRegisterReturn<string>;
   error?: string;
@@ -23,6 +24,13 @@ const SelectField: React.FC<SelectFieldPropType> = ({
   error,
   ...props
 }) => {
+  const [selectedValue, setSelectedValue] = useState(initialValue ?? "");
+
+  useEffect(() => {
+    // Set the initial value when it changes
+    setSelectedValue(initialValue ?? "");
+  }, [initialValue]);
+
   return (
     <>
       <FormControl
@@ -62,7 +70,8 @@ const SelectField: React.FC<SelectFieldPropType> = ({
             },
           }}
           disabled={!isEdit}
-          defaultValue={initialValue ?? ""}
+          value={selectedValue} // Use value prop to make it controlled
+          onChange={(e) => setSelectedValue(e.target.value)}
           MenuProps={{
             PaperProps: {
               style: {
@@ -79,7 +88,11 @@ const SelectField: React.FC<SelectFieldPropType> = ({
           </MenuItem>
 
           {selections.map((selection, index) => (
-            <MenuItem value={selection.value ?? ""} key={index.toString()}>
+            <MenuItem
+              value={selection?.value ?? ""}
+              key={index.toString()}
+              onClick={(e) => setSelectedValue(selection.value)}
+            >
               {selection.value}
             </MenuItem>
           ))}

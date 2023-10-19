@@ -1,16 +1,17 @@
 import { DatePicker, StaticDatePickerProps } from "@mui/x-date-pickers";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 type DatePickerFieldPropType = {
   label: string;
   isEdit?: boolean;
   isOptional?: boolean;
+  isMinDate?: boolean;
   error?: string;
 };
 
 const DatePickerField: React.FC<
   DatePickerFieldPropType & StaticDatePickerProps<Dayjs>
-> = ({ label, isEdit, isOptional, error, ...props }) => {
+> = ({ label, isEdit, isOptional, isMinDate = true, error, ...props }) => {
   return (
     <>
       <div className="flex flex-row items-center relative ">
@@ -49,6 +50,7 @@ const DatePickerField: React.FC<
               color: "white",
             },
           }}
+          minDate={isMinDate ? dayjs("1900-01-01T00:00:00.000") : undefined}
           {...props}
         />
       </div>

@@ -9,6 +9,7 @@ const useGetBlotters = () => {
     onError: (error) => {
       console.log(error, "asdas");
     },
+    refetchOnMount: "always",
   });
 
   return blotters;

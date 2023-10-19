@@ -42,7 +42,9 @@ export const residentFormValidation = Yup.object().shape({
     .required("This is a required field.")
     .length(11, "Invalid contact number."),
   birthDate: Yup.string().required("This is a required field."),
-  age: Yup.number().min(0, "Age cannot be negative."),
+  age: Yup.number()
+    .min(0, "Age cannot be negative.")
+    .max(130, "There might be a problem in your age. Please try again."),
   educationalAttainment: Yup.string(),
   occupation: Yup.string()
     .required("This is a required field")
@@ -97,7 +99,9 @@ export const residentWithUserFormValidation = Yup.object().shape({
     .length(11, "Contact number must be 11 digit long.")
     .matches(/^09\d{9}$/, "Invalid contact number."),
   birthDate: Yup.string().required("This is a required field."),
-  age: Yup.number().min(0, "Age cannot be negative."),
+  age: Yup.number()
+    .min(0, "Age cannot be negative.")
+    .max(130, "There might be a problem in your age. Please try again."),
   educationalAttainment: Yup.string(),
   occupation: Yup.string()
     .required("This is a required field")
@@ -117,4 +121,15 @@ export const announcementFormValidation = Yup.object().shape({
   announcementTitle: Yup.string().required("This is a required field."),
   announcementMessage: Yup.string().required("This is a required field."),
   announcementImage: Yup.string().required("Please upload an image."),
+});
+
+export const blotterFormValidation = Yup.object().shape({
+  complainantName: Yup.string().required("This is a required field."),
+  complainantAddress: Yup.string().required("This is a required field."),
+  incidentTimeAndDate: Yup.string().required("Invalid date."),
+  incidentReported: Yup.string().required("Invalid date."),
+  incidentType: Yup.string().required("This is a required field."),
+  incidentLocation: Yup.string().required("This is a required field."),
+  respondentName: Yup.string().required("This is a required field."),
+  narrativeReport: Yup.string().required("This is a required field."),
 });

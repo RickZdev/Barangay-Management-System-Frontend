@@ -6,7 +6,7 @@ import SelectField from "../../../components/SelectField";
 import RadioButton from "../../../components/RadioButton";
 import { useMemo, useState } from "react";
 import DatePickerField from "../../../components/DatePickerField";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import NumberField from "../../../components/NumberField";
 import BackButton from "../../../components/BackButton";
 import { useForm } from "react-hook-form";
@@ -251,12 +251,19 @@ const ResidentAdd: React.FC = () => {
                 isEdit
                 onChange={handleOnChangeDate}
                 error={errors?.birthDate?.message}
+                disableFuture
               />
 
               <TextField
                 label="Age"
                 value={age === "NaN" ? "" : age}
-                error={parseInt(age ?? "") < 0 ? "Age cannot be negative." : ""}
+                error={
+                  parseInt(age ?? "") < 0
+                    ? "Age cannot be negative."
+                    : parseInt(age ?? "") > 122
+                    ? "There might be a problem in your age. Please try again."
+                    : ""
+                }
               />
 
               <SelectField
@@ -318,7 +325,6 @@ const ResidentAdd: React.FC = () => {
                   </div>
                 </div>
 
-                {/* <CustomButton label="Upload Photo" /> */}
                 <TextField
                   register={register("username")}
                   label={"Account Username"}

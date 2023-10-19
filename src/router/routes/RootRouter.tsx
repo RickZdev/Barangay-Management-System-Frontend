@@ -52,6 +52,7 @@ import ComplaintsView from "../../pages/sidebar/complaints/ComplaintsView";
 import SulatReklamoEdit from "../../pages/sidebar/sulat-reklamo/SulatReklamoEdit";
 import Login from "../../pages/auth/Login";
 import useAuthContext from "../../queries/auth/useAuthContext";
+import BlotterAddNonResident from "../../pages/sidebar/blotter/BlotterAddNonResident";
 
 export const rootRouter = createBrowserRouter(
   createRoutesFromElements(
@@ -86,7 +87,11 @@ export const rootRouter = createBrowserRouter(
 
         <Route element={<BlotterLayout />}>
           <Route path="blotter" element={<Blotter />} />
-          <Route path="blotter/add" element={<BlotterAdd />} />
+          <Route path="blotter/add/resident" element={<BlotterAdd />} />
+          <Route
+            path="blotter/add/non-resident"
+            element={<BlotterAddNonResident />}
+          />
           <Route path="blotter/edit/:_id" element={<BlotterEdit />} />
         </Route>
 

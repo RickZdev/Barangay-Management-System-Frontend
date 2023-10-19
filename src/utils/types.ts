@@ -135,8 +135,10 @@ export type AllOfficialsPropType = {
 
 export type BlotterPropType = {
   _id: string;
-  complainantId: string;
+  complainantId?: string;
   complainantName: string;
+  complainantType: "Resident" | "Non-Resident";
+  complainantAddress: string;
   incidentType: string;
   incidentLocation: string;
   respondentId: string;

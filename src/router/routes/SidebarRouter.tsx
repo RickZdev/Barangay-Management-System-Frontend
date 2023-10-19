@@ -123,14 +123,21 @@ const SidebarRouter: React.FC = () => {
             <SubMenu
               icon={<SummarizeIcon />}
               style={iconStyle}
+              rootStyles={menuItemStyle}
               component={<NavLink to="/blotter" />}
               label="Blotter"
             >
               <CustomMenuItem
                 Icon={Add}
-                onClick={() => navigate("/blotter/add")}
+                onClick={() => navigate("/blotter/add/resident")}
               >
-                Create Blotter
+                Create Resident Blotter
+              </CustomMenuItem>
+              <CustomMenuItem
+                Icon={Add}
+                onClick={() => navigate("/blotter/add/non-resident")}
+              >
+                Create Non-Resident Blotter
               </CustomMenuItem>
             </SubMenu>
             <SubMenu

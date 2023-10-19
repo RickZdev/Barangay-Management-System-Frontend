@@ -22,7 +22,7 @@ import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import ModalSuccess from "../../../components/modals/alert/ModalSuccess";
 import { getResidentFullAddress } from "../../../helper/getResidentFullAddres";
 
-const BlotterAdd: React.FC = () => {
+const BlotterAddNonResident: React.FC = () => {
   const { mutateAsync } = useCreateBlotter();
 
   const {
@@ -35,12 +35,9 @@ const BlotterAdd: React.FC = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(blotterFormValidation),
-    // mode: "onChange",
   });
 
-  const [residentText, setResidentText] = useState<boolean>(true);
   const [officialText, setOfficialText] = useState<boolean>(true);
-  const [resident, setResident] = useState<ResidentPropType | undefined>();
   const [official, setOfficial] = useState<ResidentPropType>();
 
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -87,19 +84,7 @@ const BlotterAdd: React.FC = () => {
     setIsProcessing(true);
 
     await mutateAsync({
-      complainantId: resident?._id,
-      complainantName: getResidentFullName({
-        lastName: resident?.lastName,
-        firstName: resident?.firstName,
-        middleName: resident?.middleName,
-        suffix: resident?.suffix,
-      }),
-      complainantType: "Resident",
-      complainantAddress: getResidentFullAddress({
-        houseNumber: resident?.houseNumber,
-        streetAddress: resident?.streetAddress,
-        purokNumber: resident?.purokNumber,
-      }),
+      complainantType: "Non-Resident",
       incidentTimeAndDate: data?.incidentTimeAndDate,
       incidentReported: data?.incidentReported,
       incidentRecorded: dayjs().format("MM/DD/YYYY - hh:mm A"),
@@ -120,34 +105,6 @@ const BlotterAdd: React.FC = () => {
 
   // searchable field errors
   useEffect(() => {
-    if (residentText) {
-      setValue(
-        "complainantName",
-        getResidentFullName({
-          lastName: resident?.lastName,
-          firstName: resident?.firstName,
-          middleName: resident?.middleName,
-          suffix: resident?.suffix,
-        })
-      );
-
-      setValue(
-        "complainantAddress",
-        getResidentFullAddress({
-          houseNumber: resident?.houseNumber,
-          streetAddress: resident?.streetAddress,
-          purokNumber: resident?.purokNumber,
-        })
-      );
-
-      clearErrors("complainantName");
-    } else {
-      setValue("complainantName", "");
-      setError("complainantName", { message: "This is a required field." });
-    }
-  }, [residentText]);
-
-  useEffect(() => {
     if (officialText) {
       setValue(
         "respondentName",
@@ -167,7 +124,6 @@ const BlotterAdd: React.FC = () => {
   }, [officialText]);
 
   useEffect(() => {
-    setValue("complainantName", "");
     setValue("respondentName", "");
   }, []);
 
@@ -206,25 +162,18 @@ const BlotterAdd: React.FC = () => {
           <Card>
             <CardHeader title="Create Resident Blotter" />
             <div className="space-y-3">
-              <SearchableTextField
+              <TextField
                 label={"Complainant Name"}
                 isEdit
-                handleChange={setResident}
-                dataOut={setResidentText}
+                register={register("complainantName")}
                 error={errors?.complainantName?.message}
               />
 
               <TextField
                 label={"Complainant Address"}
-                value={
-                  resident?._id
-                    ? getResidentFullAddress({
-                        houseNumber: resident?.houseNumber,
-                        streetAddress: resident?.streetAddress,
-                        purokNumber: resident?.purokNumber,
-                      })
-                    : ""
-                }
+                isEdit
+                register={register("complainantAddress")}
+                error={errors?.complainantAddress?.message}
               />
 
               <TextField
@@ -296,4 +245,4 @@ const BlotterAdd: React.FC = () => {
   );
 };
 
-export default BlotterAdd;
+export default BlotterAddNonResident;
