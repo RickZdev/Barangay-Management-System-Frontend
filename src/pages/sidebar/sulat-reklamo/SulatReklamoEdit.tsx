@@ -22,98 +22,119 @@ import SelectField from "../../../components/SelectField";
 import SELECTION from "../../../constants/SELECTION";
 import Loading from "../../errors/Loading";
 import useGetResidentById from "../../../queries/resident/useGetResidentById";
+import LoaderModal from "../../../components/modals/loader/LoaderModal";
+import ModalSuccess from "../../../components/modals/alert/ModalSuccess";
 
 const SulatReklamoEdit: React.FC = () => {
   const { _id } = useParams();
-  const { data: sulatReklamo, isLoading } = useGetSulatReklamoById(_id);
-  const { data: resident } = useGetResidentById(sulatReklamo?.residentId);
-  const { mutate } = useUpdateSulatReklamo(_id);
   const { register, handleSubmit } = useForm();
 
-  const onSubmit = (values: any) => {
-    mutate({
+  const { data: sulatReklamo, isLoading: isGetSulatReklamoLoading } =
+    useGetSulatReklamoById(_id);
+  const { data: resident, isLoading: isResidentLoading } = useGetResidentById(
+    sulatReklamo?.residentId ?? ""
+  );
+  const { mutateAsync } = useUpdateSulatReklamo(_id);
+
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+
+  const isLoading =
+    isGetSulatReklamoLoading || isResidentLoading || isProcessing;
+
+  const handleSuccess = () => {
+    setShowSuccessModal(false);
+  };
+
+  const onSubmit = async (data: any) => {
+    setIsProcessing(true);
+
+    await mutateAsync({
       sulatReklamoId: sulatReklamo?._id,
-      status: values,
+      status: data,
     });
+
+    setIsProcessing(false);
+    setShowSuccessModal(true);
   };
 
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <>
-          <BackButton />
-          <form
-            className="grid md:grid-cols-2 gap-6 mt-5 pb-5"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            {/* 1st column */}
-            <div className="flex flex-col space-y-6">
-              <Card>
-                <CardHeader title="Resident's Information" isRequired />
-                <div className="flex space-y-5 flex-col">
-                  <TextField
-                    label="Resident Name"
-                    value={sulatReklamo?.residentName}
-                  />
-                  <TextField
-                    label="Age"
-                    value={
-                      getResidentAge(resident?.birthDate).toString() === "NaN"
-                        ? ""
-                        : getResidentAge(resident?.birthDate).toString()
-                    }
-                  />
+      <LoaderModal isLoading={isLoading} />
 
-                  <TextField
-                    label="Address"
-                    value={
-                      resident?._id
-                        ? getResidentFullAddress({
-                            houseNumber: resident?.houseNumber,
-                            streetAddress: resident?.streetAddress,
-                            purokNumber: resident?.purokNumber,
-                          })
-                        : ""
-                    }
-                  />
-                  <SelectField
-                    label="Status"
-                    isEdit
-                    initialValue={sulatReklamo?.status}
-                    selections={SELECTION.statusSelection}
-                    register={register}
-                    name="status"
-                  />
-                </div>
-                <div className="flex justify-end mt-6">
-                  <SubmitButton label="Submit" />
-                </div>
-              </Card>
+      <BackButton />
+      <form
+        className="grid md:grid-cols-2 gap-6 mt-5 pb-5"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        {/* 1st column */}
+        <div className="flex flex-col space-y-6">
+          <Card>
+            <CardHeader title="Resident's Information" />
+            <div className="flex space-y-5 flex-col">
+              <TextField
+                label="Resident's Name"
+                value={sulatReklamo?.residentName}
+              />
+              <TextField
+                label="Resident's Contact Number"
+                value={resident?.contactNumber}
+              />
+
+              <TextField
+                label="Resident's Address"
+                value={
+                  resident?._id
+                    ? getResidentFullAddress({
+                        houseNumber: resident?.houseNumber,
+                        streetAddress: resident?.streetAddress,
+                        purokNumber: resident?.purokNumber,
+                      })
+                    : ""
+                }
+              />
+
+              <SelectField
+                label="Status"
+                isEdit
+                initialValue={sulatReklamo?.status ?? ""}
+                selections={SELECTION.statusSelection}
+                register={register("status")}
+              />
             </div>
-            {/* 2nd column */}
-            <div className="flex flex-col space-y-6">
-              <Card>
-                <CardHeader title="Sulat-Reklamo Details" isRequired />
-                <div className="flex space-y-5 flex-col">
-                  <DateTimePickerField
-                    label="Date And Time Recorded"
-                    value={dayjs(
-                      sulatReklamo?.dateAndTimeRecorded.replace(" - ", " ")
-                    )}
-                  />
-                  <TextAreaField
-                    label="Narrative Report"
-                    rows={8}
-                    defaultValue={sulatReklamo?.narrativeReport}
-                  />
-                </div>
-              </Card>
+            <div className="flex justify-end mt-6">
+              <SubmitButton label="Submit" />
             </div>
-          </form>
-        </>
-      )}
+          </Card>
+        </div>
+        {/* 2nd column */}
+        <div className="flex flex-col space-y-6">
+          <Card>
+            <CardHeader title="Sulat-Reklamo Details" />
+            <div className="flex space-y-5 flex-col">
+              <DateTimePickerField
+                label="Date And Time Recorded"
+                value={dayjs(
+                  sulatReklamo?.dateAndTimeRecorded.replace(" - ", " ")
+                )}
+              />
+              <TextAreaField
+                label="Narrative Report"
+                rows={8}
+                value={sulatReklamo?.narrativeReport}
+              />
+            </div>
+          </Card>
+        </div>
+      </form>
+
+      <ModalSuccess
+        open={showSuccessModal}
+        title="Sulat Reklamo Report Update"
+        description="Your status update has been saved."
+        buttonLabel="Back to Screen"
+        handleButtonPress={handleSuccess}
+      />
     </>
   );
 };

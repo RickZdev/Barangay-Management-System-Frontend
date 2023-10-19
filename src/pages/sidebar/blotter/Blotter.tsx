@@ -9,9 +9,15 @@ import useDeleteBlotter from "../../../queries/blotter/useDeleteBlotter";
 import Loading from "../../errors/Loading";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import _ from "lodash";
+import ViewMessagePanel from "../../../components/ViewMessagePanel";
 
 const Blotter: React.FC = React.memo(() => {
-  const { data, isLoading: isGetBlotterLoading, refetch } = useGetBlotters();
+  const {
+    data,
+    isLoading: isGetBlotterLoading,
+    isRefetching,
+    refetch,
+  } = useGetBlotters();
 
   const { mutate, isLoading: isDeleteBlotter } = useDeleteBlotter();
 
@@ -98,7 +104,8 @@ const Blotter: React.FC = React.memo(() => {
 
   return (
     <>
-      <LoaderModal isLoading={isLoading} />
+      <LoaderModal isLoading={isLoading || isRefetching} />
+
       <div className="space-y-10 pb-10">
         <Table
           data={blotterResidents ?? []}
@@ -107,22 +114,9 @@ const Blotter: React.FC = React.memo(() => {
           muiTableDetailPanelProps={{
             sx: { color: "white" },
           }}
-          renderDetailPanel={({ row }) => {
-            const messageWithLineBreaks = row.original.narrativeReport.replace(
-              /\n/g,
-              "<br>"
-            );
-
-            return (
-              <div className="flex flex-col px-5 pb-4">
-                <h1 className="text-lg">Narrative Report: </h1>
-                <p
-                  className="text-justify"
-                  dangerouslySetInnerHTML={{ __html: messageWithLineBreaks }}
-                />
-              </div>
-            );
-          }}
+          renderDetailPanel={({ row }) => (
+            <ViewMessagePanel messageRow={row.original.narrativeReport} />
+          )}
           enableRowNumbers={true}
           showBackButton={false}
           showViewButton={false}
@@ -148,22 +142,9 @@ const Blotter: React.FC = React.memo(() => {
           muiTableDetailPanelProps={{
             sx: { color: "white" },
           }}
-          renderDetailPanel={({ row }) => {
-            const messageWithLineBreaks = row.original.narrativeReport.replace(
-              /\n/g,
-              "<br>"
-            );
-
-            return (
-              <div className="flex flex-col px-5 pb-4">
-                <h1 className="text-lg">Narrative Report: </h1>
-                <p
-                  className="text-justify"
-                  dangerouslySetInnerHTML={{ __html: messageWithLineBreaks }}
-                />
-              </div>
-            );
-          }}
+          renderDetailPanel={({ row }) => (
+            <ViewMessagePanel messageRow={row.original.narrativeReport} />
+          )}
           enableRowNumbers={true}
           showBackButton={false}
           showViewButton={false}

@@ -38,8 +38,8 @@ const BlotterAdd: React.FC = () => {
     // mode: "onChange",
   });
 
-  const [residentText, setResidentText] = useState<boolean>(true);
-  const [officialText, setOfficialText] = useState<boolean>(true);
+  const [isResidentTextEmpty, setIsResidentTextEmpty] = useState<boolean>(true);
+  const [isOfficialTextEmpty, setisOfficialTextEmpty] = useState<boolean>(true);
   const [resident, setResident] = useState<ResidentPropType | undefined>();
   const [official, setOfficial] = useState<ResidentPropType>();
 
@@ -120,7 +120,7 @@ const BlotterAdd: React.FC = () => {
 
   // searchable field errors
   useEffect(() => {
-    if (residentText) {
+    if (isResidentTextEmpty) {
       setValue(
         "complainantName",
         getResidentFullName({
@@ -145,10 +145,10 @@ const BlotterAdd: React.FC = () => {
       setValue("complainantName", "");
       setError("complainantName", { message: "This is a required field." });
     }
-  }, [residentText]);
+  }, [isResidentTextEmpty]);
 
   useEffect(() => {
-    if (officialText) {
+    if (isOfficialTextEmpty) {
       setValue(
         "respondentName",
         getResidentFullName({
@@ -164,7 +164,7 @@ const BlotterAdd: React.FC = () => {
       setValue("respondentName", "");
       setError("respondentName", { message: "This is a required field." });
     }
-  }, [officialText]);
+  }, [isOfficialTextEmpty]);
 
   useEffect(() => {
     setValue("complainantName", "");
@@ -207,15 +207,15 @@ const BlotterAdd: React.FC = () => {
             <CardHeader title="Create Resident Blotter" />
             <div className="space-y-3">
               <SearchableTextField
-                label={"Complainant Name"}
+                label={"Complainant's Name"}
                 isEdit
                 handleChange={setResident}
-                dataOut={setResidentText}
+                handleIsEmptyText={setIsResidentTextEmpty}
                 error={errors?.complainantName?.message}
               />
 
               <TextField
-                label={"Complainant Address"}
+                label={"Complainant's Address"}
                 value={
                   resident?._id
                     ? getResidentFullAddress({
@@ -268,10 +268,10 @@ const BlotterAdd: React.FC = () => {
             <div className="space-y-5">
               <CardHeader title="Narrative Report" />
               <OfficialSearchableTextField
-                label={"Respondent Name"}
+                label={"Respondent's Name"}
                 isEdit
                 handleChange={setOfficial}
-                dataOut={setOfficialText}
+                handleIsEmptyText={setisOfficialTextEmpty}
                 error={errors?.respondentName?.message}
               />
               <TextAreaField

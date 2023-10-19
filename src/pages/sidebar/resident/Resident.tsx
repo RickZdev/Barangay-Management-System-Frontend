@@ -15,6 +15,7 @@ const Resident: React.FC = () => {
     data,
     isError,
     isLoading: isResidentsLoading,
+    isRefetching,
     refetch,
   } = useGetResidents();
   const { mutate, isLoading: isDeleteLoading } = useDeleteResident();
@@ -364,7 +365,10 @@ const Resident: React.FC = () => {
 
   return (
     <>
-      <LoaderModal isLoading={isResidentsLoading || isDeleteLoading} />
+      <LoaderModal
+        isLoading={isResidentsLoading || isDeleteLoading || isRefetching}
+      />
+
       <Table
         data={data ?? []}
         columns={columns}

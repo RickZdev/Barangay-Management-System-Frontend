@@ -5,6 +5,10 @@ type GetResidentFullNamePropType = {
   suffix?: string | undefined;
 };
 
+// const getCapitalizeWords = (str: string) => {
+//   return str.replace(/\b\w/g, (char) => char.toUpperCase());
+// };
+
 export const getResidentFullName = ({
   lastName,
   firstName,
@@ -24,3 +28,23 @@ export const getResidentFullName = ({
 
   return fullName;
 };
+
+// export const getResidentFullName = ({
+//   lastName,
+//   firstName,
+//   middleName,
+//   suffix,
+// }: GetResidentFullNamePropType) => {
+//   let fullName;
+//   if (middleName && suffix) {
+//     fullName = `${firstName} ${middleName} ${lastName} ${suffix}`;
+//   } else if (!middleName && suffix) {
+//     fullName = `${firstName} ${lastName} ${suffix}`;
+//   } else if (middleName && !suffix) {
+//     fullName = `${firstName} ${middleName} ${lastName}`;
+//   } else {
+//     fullName = `${firstName} ${lastName}`;
+//   }
+
+//   return getCapitalizeWords(fullName);
+// };

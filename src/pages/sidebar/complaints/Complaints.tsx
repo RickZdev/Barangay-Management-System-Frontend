@@ -4,13 +4,14 @@ import { MRT_ColumnDef } from "material-react-table";
 import TableButton from "../../../components/TableButton";
 import type { ComplaintsPropType } from "../../../utils/types";
 import useGetComplaints from "../../../queries/complaints/useGetComplaints";
-import Loading from "../../errors/Loading";
 import useDeleteComplaint from "../../../queries/complaints/useDeleteComplaint";
 import ViewDetails from "../../../components/ViewDetails";
+import ViewMessagePanel from "../../../components/ViewMessagePanel";
+import LoaderModal from "../../../components/modals/loader/LoaderModal";
 
 const Complaints: React.FC = React.memo(() => {
-  const { data, isLoading, refetch } = useGetComplaints();
-  const { mutate } = useDeleteComplaint();
+  const { data, isLoading, refetch, isRefetching } = useGetComplaints();
+  const { mutate, isLoading: isDeleteBlotter } = useDeleteComplaint();
 
   const columns = useMemo<MRT_ColumnDef<ComplaintsPropType>[]>(
     () => [
@@ -62,24 +63,30 @@ const Complaints: React.FC = React.memo(() => {
 
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <Table
-          data={data ?? []}
-          columns={columns}
-          isError={false}
-          enableRowNumbers={true}
-          showEditButton={false}
-          showBackButton={false}
-          refreshButton={refetch}
-          deleteButton={mutate}
-        >
-          <div className="flex justify-end pt-4 px-2">
-            <TableButton path={"/complaints/add"} label="Create Complaint" />
-          </div>
-        </Table>
-      )}
+      <LoaderModal isLoading={isLoading || isRefetching || isDeleteBlotter} />
+      <Table
+        data={data ?? []}
+        columns={columns}
+        isError={false}
+        muiTableDetailPanelProps={{
+          sx: { color: "white" },
+        }}
+        renderDetailPanel={({ row }) => (
+          <ViewMessagePanel
+            messageRow={row.original.complainantsStatement}
+            title={`Complainant's Statement`}
+          />
+        )}
+        enableRowNumbers={true}
+        showBackButton={false}
+        showViewButton={false}
+        refreshButton={refetch}
+        deleteButton={mutate}
+      >
+        <div className="flex justify-end pt-4 px-2">
+          <TableButton path={"/complaints/add"} label="Create Complaint" />
+        </div>
+      </Table>
     </>
   );
 });

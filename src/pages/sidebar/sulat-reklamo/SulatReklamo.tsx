@@ -7,10 +7,18 @@ import Loading from "../../errors/Loading";
 import { SulatReklamoPropType } from "../../../utils/types";
 import ViewDetails from "../../../components/ViewDetails";
 import useDeleteSulatReklamo from "../../../queries/sulatReklamo/useDeleteSulatReklamo";
+import LoaderModal from "../../../components/modals/loader/LoaderModal";
+import ViewMessagePanel from "../../../components/ViewMessagePanel";
 
 const SulatReklamo: React.FC = React.memo(() => {
-  const { data, isLoading, isError, refetch } = useGetSulatReklamo();
-  const { mutate } = useDeleteSulatReklamo();
+  const {
+    data,
+    isLoading: isGetSulatReklamoLoading,
+    isError,
+    isRefetching,
+    refetch,
+  } = useGetSulatReklamo();
+  const { mutate, isLoading: isDeleteLoading } = useDeleteSulatReklamo();
 
   const columns = useMemo<MRT_ColumnDef<SulatReklamoPropType>[]>(
     () => [
@@ -39,38 +47,35 @@ const SulatReklamo: React.FC = React.memo(() => {
     []
   );
 
+  const isLoading = isGetSulatReklamoLoading || isDeleteLoading || isRefetching;
+
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <Table
-          data={data ?? []}
-          columns={columns}
-          isError={isError}
-          enableRowNumbers={false}
-          muiTableDetailPanelProps={{
-            sx: { color: "white" },
-          }}
-          renderDetailPanel={({ row }) => (
-            <div className="flex flex-col px-5 pb-4">
-              <h1 className="text-lg">Narrative Report: </h1>
-              <p>{row.original.narrativeReport}</p>
-            </div>
-          )}
-          showEditButton={true}
-          showBackButton={false}
-          refreshButton={refetch}
-          deleteButton={mutate}
-        >
-          <div className="flex justify-end pt-4 px-2">
-            <TableButton
-              path={"/sulat-reklamo/add"}
-              label="Create Sulat-Reklamo"
-            />
-          </div>
-        </Table>
-      )}
+      <LoaderModal isLoading={isLoading} />
+
+      <Table
+        data={data ?? []}
+        columns={columns}
+        isError={isError}
+        enableRowNumbers={false}
+        muiTableDetailPanelProps={{
+          sx: { color: "white" },
+        }}
+        renderDetailPanel={({ row }) => (
+          <ViewMessagePanel messageRow={row.original.narrativeReport} />
+        )}
+        showViewButton={false}
+        showBackButton={false}
+        refreshButton={refetch}
+        deleteButton={mutate}
+      >
+        <div className="flex justify-end pt-4 px-2">
+          <TableButton
+            path={"/sulat-reklamo/add"}
+            label="Create Sulat-Reklamo"
+          />
+        </div>
+      </Table>
     </>
   );
 });

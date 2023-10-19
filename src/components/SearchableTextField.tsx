@@ -5,13 +5,14 @@ import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import useDebounce from "../hooks/useDebounce";
 import useSearchResidents from "../queries/resident/useSearchResidents";
 import { UseFormRegisterReturn } from "react-hook-form";
+import { Rings, ThreeDots } from "react-loader-spinner";
 
 type TextFieldPropType = {
   label: string;
   isEdit?: boolean;
   isOptional?: boolean;
   register?: UseFormRegisterReturn<string>;
-  dataOut?: (isEmptyText: boolean) => void;
+  handleIsEmptyText?: (isEmptyText: boolean) => void;
   handleChange: (resident: ResidentPropType | undefined) => void;
   error?: string;
 };
@@ -24,7 +25,7 @@ const SearchableTextField: React.FC<
   isOptional,
   error,
   register,
-  dataOut,
+  handleIsEmptyText,
   handleChange,
   ...props
 }) => {
@@ -32,7 +33,9 @@ const SearchableTextField: React.FC<
 
   const [searchText, setSearchText] = useState<string>("");
   const debouncedSearch = useDebounce(searchText ?? "");
-  const { data: residentData } = useSearchResidents(debouncedSearch ?? "");
+  const { data: residentData, isFetching } = useSearchResidents(
+    debouncedSearch ?? ""
+  );
 
   return (
     <>
@@ -55,8 +58,8 @@ const SearchableTextField: React.FC<
             onChange={(event) => {
               setSearchText(event.target.value);
 
-              if (dataOut) {
-                dataOut(false);
+              if (handleIsEmptyText) {
+                handleIsEmptyText(false);
               }
             }}
             onFocus={() => setIsInputFocused(true)}
@@ -64,7 +67,23 @@ const SearchableTextField: React.FC<
             {...register}
             {...props}
           />
-          <PersonSearchIcon className="absolute right-2 text-white" />
+
+          {isFetching ? (
+            <div className="absolute right-2 text-white">
+              <ThreeDots
+                height="30"
+                width="20"
+                color="white"
+                radius="6"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={isFetching}
+                ariaLabel="rings-loading"
+              />
+            </div>
+          ) : (
+            <PersonSearchIcon className="absolute right-2 text-white" />
+          )}
         </div>
 
         {debouncedSearch !== "" && isInputFocused === true && (
@@ -87,8 +106,8 @@ const SearchableTextField: React.FC<
                     setSearchText(fullName);
                     setIsInputFocused(true);
 
-                    if (dataOut) {
-                      dataOut(true);
+                    if (handleIsEmptyText) {
+                      handleIsEmptyText(true);
                     }
                   }}
                 >

@@ -133,3 +133,16 @@ export const blotterFormValidation = Yup.object().shape({
   respondentName: Yup.string().required("This is a required field."),
   narrativeReport: Yup.string().required("This is a required field."),
 });
+
+export const complaintFormValidation = Yup.object().shape({
+  complainantName: Yup.string().required("This is a required field."),
+  complaintType: Yup.string().required("This is a required field."),
+  incidentTimeAndDate: Yup.string().required("Invalid date."),
+  respondentName: Yup.string().required("This is a required field."),
+  narrativeReport: Yup.string().required("This is a required field."),
+});
+
+export const sulatReklamoFormValidation = Yup.object().shape({
+  residentName: Yup.string().required("This is a required field."),
+  narrativeReport: Yup.string().required("This is a required field."),
+});

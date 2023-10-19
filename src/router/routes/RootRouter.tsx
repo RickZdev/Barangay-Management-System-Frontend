@@ -48,7 +48,7 @@ import SulatReklamoAdd from "../../pages/sidebar/sulat-reklamo/SulatReklamoAdd";
 import BarangayOfficialEdit from "../../pages/sidebar/officials/BarangayOfficialEdit";
 import Complaints from "../../pages/sidebar/complaints/Complaints";
 import ComplaintsAdd from "../../pages/sidebar/complaints/ComplaintsAdd";
-import ComplaintsView from "../../pages/sidebar/complaints/ComplaintsView";
+import ComplaintsEdit from "../../pages/sidebar/complaints/ComplaintsEdit";
 import SulatReklamoEdit from "../../pages/sidebar/sulat-reklamo/SulatReklamoEdit";
 import Login from "../../pages/auth/Login";
 import useAuthContext from "../../queries/auth/useAuthContext";
@@ -98,7 +98,7 @@ export const rootRouter = createBrowserRouter(
         <Route element={<ComplaintsLayout />}>
           <Route path="complaints" element={<Complaints />} />
           <Route path="complaints/add" element={<ComplaintsAdd />} />
-          <Route path="complaints/view/:_id" element={<ComplaintsView />} />
+          <Route path="complaints/edit/:_id" element={<ComplaintsEdit />} />
         </Route>
 
         <Route element={<SulatReklamoLayout />}>

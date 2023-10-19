@@ -15,7 +15,7 @@ type TextFieldPropType = {
   isOptional?: boolean;
   error?: string;
   register?: UseFormRegisterReturn<string>;
-  dataOut?: (isEmptyText: boolean) => void;
+  handleIsEmptyText?: (isEmptyText: boolean) => void;
   handleChange: (resident: ResidentPropType | undefined) => void;
 };
 
@@ -27,7 +27,7 @@ const OfficialSearchableTextField: React.FC<
   isOptional,
   error,
   register,
-  dataOut,
+  handleIsEmptyText,
   handleChange,
   ...props
 }) => {
@@ -60,8 +60,8 @@ const OfficialSearchableTextField: React.FC<
 
     setSearchText(text);
 
-    if (dataOut) {
-      dataOut(false);
+    if (handleIsEmptyText) {
+      handleIsEmptyText(false);
     }
   };
 
@@ -112,8 +112,8 @@ const OfficialSearchableTextField: React.FC<
                     setSearchText(fullName);
                     setIsInputFocused(false);
 
-                    if (dataOut) {
-                      dataOut(true);
+                    if (handleIsEmptyText) {
+                      handleIsEmptyText(true);
                     }
                   }}
                 >

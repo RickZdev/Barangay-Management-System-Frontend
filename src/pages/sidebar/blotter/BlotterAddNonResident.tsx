@@ -37,7 +37,7 @@ const BlotterAddNonResident: React.FC = () => {
     resolver: yupResolver(blotterFormValidation),
   });
 
-  const [officialText, setOfficialText] = useState<boolean>(true);
+  const [isOfficialTextEmpty, setisOfficialTextEmpty] = useState<boolean>(true);
   const [official, setOfficial] = useState<ResidentPropType>();
 
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -105,7 +105,7 @@ const BlotterAddNonResident: React.FC = () => {
 
   // searchable field errors
   useEffect(() => {
-    if (officialText) {
+    if (isOfficialTextEmpty) {
       setValue(
         "respondentName",
         getResidentFullName({
@@ -121,7 +121,7 @@ const BlotterAddNonResident: React.FC = () => {
       setValue("respondentName", "");
       setError("respondentName", { message: "This is a required field." });
     }
-  }, [officialText]);
+  }, [isOfficialTextEmpty]);
 
   useEffect(() => {
     setValue("respondentName", "");
@@ -163,14 +163,14 @@ const BlotterAddNonResident: React.FC = () => {
             <CardHeader title="Create Non-Resident Blotter" />
             <div className="space-y-3">
               <TextField
-                label={"Complainant Name"}
+                label={"Complainant's Name"}
                 isEdit
                 register={register("complainantName")}
                 error={errors?.complainantName?.message}
               />
 
               <TextField
-                label={"Complainant Address"}
+                label={"Complainant's Address"}
                 isEdit
                 register={register("complainantAddress")}
                 error={errors?.complainantAddress?.message}
@@ -217,10 +217,10 @@ const BlotterAddNonResident: React.FC = () => {
             <div className="space-y-5">
               <CardHeader title="Narrative Report" />
               <OfficialSearchableTextField
-                label={"Respondent Name"}
+                label={"Respondent's Name"}
                 isEdit
                 handleChange={setOfficial}
-                dataOut={setOfficialText}
+                handleIsEmptyText={setisOfficialTextEmpty}
                 error={errors?.respondentName?.message}
               />
               <TextAreaField

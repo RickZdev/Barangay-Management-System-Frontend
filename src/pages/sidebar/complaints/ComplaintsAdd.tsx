@@ -16,73 +16,157 @@ import useCreateComplaint from "../../../queries/complaints/useCreateComplaint";
 import { getResidentFullName } from "../../../helper/getResidentFullName";
 import { getResidentFullAddress } from "../../../helper/getResidentFullAddres";
 import OfficialSearchableTextField from "../../../components/OfficialsSearchableTextField";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { complaintFormValidation } from "../../../utils/validation";
+import { DateTimeValidationError } from "@mui/x-date-pickers";
+import ModalSuccess from "../../../components/modals/alert/ModalSuccess";
+import LoaderModal from "../../../components/modals/loader/LoaderModal";
 
 const ComplaintsAdd: React.FC = () => {
-  const { mutate } = useCreateComplaint();
-  const { register, handleSubmit } = useForm();
+  const { mutateAsync } = useCreateComplaint();
 
-  const [residentDetails, setResidentDetails] = useState<
-    ResidentPropType | undefined
-  >();
-  const [officialDetails, setOfficialDetails] = useState<
-    ResidentPropType | undefined
-  >();
-  const [dateValue, setDateValue] = useState<Dayjs | null | undefined>(null);
-  const [fullAddress, setFullAddress] = useState<string | undefined>();
-
-  const handleChange = (resident: ResidentPropType | undefined) => {
-    setResidentDetails(resident);
-  };
-
-  const handleOnChangeDate = (date: Dayjs | null) => {
-    setDateValue(date);
-  };
-
-  const complainantsFullAddress = getResidentFullAddress({
-    houseNumber: residentDetails?.houseNumber,
-    streetAddress: residentDetails?.streetAddress,
-    purokNumber: residentDetails?.purokNumber,
+  const {
+    register,
+    getValues,
+    setValue,
+    setError,
+    clearErrors,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(complaintFormValidation),
   });
 
-  useEffect(() => {
-    if (residentDetails) {
-      const complainantsFullAddress = getResidentFullAddress({
-        houseNumber: residentDetails?.houseNumber,
-        streetAddress: residentDetails?.streetAddress,
-        purokNumber: residentDetails?.purokNumber,
-      });
+  const [isResidentTextEmpty, setIsResidentTextEmpty] = useState<boolean>(true);
+  const [isOfficialTextEmpty, setisOfficialTextEmpty] = useState<boolean>(true);
+  const [resident, setResident] = useState<ResidentPropType | undefined>();
+  const [official, setOfficial] = useState<ResidentPropType>();
 
-      setFullAddress(complainantsFullAddress);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+
+  const [incidentTimeAndDate, setIncidentTimeAndDate] =
+    useState<Dayjs | null>();
+  const [timeAndDateError, setTimeAndDateError] =
+    useState<DateTimeValidationError | null>();
+
+  const handleOnChangeTimeAndDate = (date: Dayjs | null) => {
+    setIncidentTimeAndDate(date);
+    let timeAndDate = date?.format("MM/DD/YYYY - hh:mm A");
+
+    setValue("incidentTimeAndDate", timeAndDate ?? "");
+
+    if (getValues().incidentTimeAndDate) {
+      clearErrors("incidentTimeAndDate");
     }
-  }, [residentDetails]);
+  };
 
-  const onSubmit = (event: any) => {
+  const handleSuccess = () => {
+    setShowSuccessModal(false);
+
+    window.location.reload();
+  };
+
+  const onSubmit = async (data: any) => {
+    setIsProcessing(true);
+
     const complainantsFullName = getResidentFullName({
-      lastName: residentDetails?.lastName,
-      firstName: residentDetails?.firstName,
-      middleName: residentDetails?.middleName,
-      suffix: residentDetails?.suffix,
+      lastName: resident?.lastName,
+      firstName: resident?.firstName,
+      middleName: resident?.middleName,
+      suffix: resident?.suffix,
     });
 
-    mutate({
-      ...event,
-      complainantsId: residentDetails?._id,
+    const complainantsFullAddress = getResidentFullAddress({
+      houseNumber: resident?.houseNumber,
+      streetAddress: resident?.streetAddress,
+      purokNumber: resident?.purokNumber,
+    });
+
+    const respondentsFullName = getResidentFullName({
+      lastName: official?.lastName,
+      firstName: official?.firstName,
+      middleName: official?.middleName,
+      suffix: official?.suffix,
+    });
+
+    await mutateAsync({
+      complainantsId: resident?._id,
       complainantsName: complainantsFullName,
       complainantsAddress: complainantsFullAddress,
-      complainantsContactNumber: residentDetails?.contactNumber,
-      respondentsId: officialDetails?._id,
-      respondentsName: getResidentFullName({
-        lastName: officialDetails?.lastName,
-        firstName: officialDetails?.firstName,
-        middleName: officialDetails?.middleName,
-        suffix: officialDetails?.suffix,
-      }),
-      incidentDateAndTime: dateValue?.format("MM/DD/YYYY - HH:mm A"),
+      complainantsContactNumber: resident?.contactNumber,
+      respondentsId: official?._id,
+      respondentsName: respondentsFullName,
+      incidentDateAndTime: data?.incidentTimeAndDate,
+      complainantsStatement: data?.narrativeReport,
+      ...data,
     });
+
+    setIsProcessing(false);
+    setShowSuccessModal(true);
   };
+
+  // searchable field errors
+  useEffect(() => {
+    if (isResidentTextEmpty) {
+      setValue(
+        "complainantName",
+        getResidentFullName({
+          lastName: resident?.lastName,
+          firstName: resident?.firstName,
+          middleName: resident?.middleName,
+          suffix: resident?.suffix,
+        })
+      );
+
+      clearErrors("complainantName");
+    } else {
+      setValue("complainantName", "");
+      setError("complainantName", { message: "This is a required field." });
+    }
+  }, [isResidentTextEmpty]);
+
+  useEffect(() => {
+    if (isOfficialTextEmpty) {
+      setValue(
+        "respondentName",
+        getResidentFullName({
+          lastName: official?.lastName,
+          firstName: official?.firstName,
+          middleName: official?.middleName,
+          suffix: official?.suffix,
+        })
+      );
+
+      clearErrors("respondentName");
+    } else {
+      setValue("respondentName", "");
+      setError("respondentName", { message: "This is a required field." });
+    }
+  }, [isOfficialTextEmpty]);
+
+  useEffect(() => {
+    setValue("complainantName", "");
+    setValue("respondentName", "");
+  }, []);
+
+  // time and date validations
+  useEffect(() => {
+    if (timeAndDateError) {
+      setValue("incidentTimeAndDate", "");
+      setError("incidentTimeAndDate", { message: "Invalid date." });
+    } else {
+      setValue(
+        "incidentTimeAndDate",
+        incidentTimeAndDate?.format("MM/DD/YYYY - hh:mm A") ?? ""
+      );
+    }
+  }, [timeAndDateError]);
 
   return (
     <>
+      <LoaderModal isLoading={isProcessing} />
+
       <BackButton />
       <form
         className="grid md:grid-cols-2 gap-6 mt-5 pb-5"
@@ -90,45 +174,54 @@ const ComplaintsAdd: React.FC = () => {
       >
         <div className="flex flex-col space-y-6">
           <Card>
-            <CardHeader title="Complainant's Information" isRequired />
+            <CardHeader title="Complainant's Information" />
             <div className="flex space-y-5 flex-col">
               <SearchableTextField
                 label="Complainant's Name"
                 isEdit
-                defaultValue={
-                  residentDetails?.firstName + " " + residentDetails?.lastName
-                }
-                handleChange={handleChange}
+                handleChange={setResident}
+                handleIsEmptyText={setIsResidentTextEmpty}
+                error={errors?.complainantName?.message}
+                autoFocus
               />
+
               <TextField
                 label="Complainant's Contact Number"
-                register={register}
-                name="complainantsContactNumber"
-                defaultValue={residentDetails?.contactNumber}
+                value={resident?.contactNumber}
               />
+
               <TextField
-                label="Complainant's Address"
-                register={register}
-                name="complainantsAddress"
-                defaultValue={fullAddress}
+                label={"Complainant's Address"}
+                value={
+                  resident?._id
+                    ? getResidentFullAddress({
+                        houseNumber: resident?.houseNumber,
+                        streetAddress: resident?.streetAddress,
+                        purokNumber: resident?.purokNumber,
+                      })
+                    : ""
+                }
               />
             </div>
           </Card>
           <Card>
-            <CardHeader title="Complaint Details" isRequired />
+            <CardHeader title="Complaint Details" />
             <div className="flex space-y-5 flex-col">
               <DateTimePickerField
-                label="Incident Date and Time"
+                label={"Incident Time and Date"}
                 isEdit
-                onChange={handleOnChangeDate}
-                value={dateValue}
+                onChange={handleOnChangeTimeAndDate}
+                value={incidentTimeAndDate}
+                error={errors?.incidentTimeAndDate?.message}
+                onError={(error) => setTimeAndDateError(error)}
+                disableFuture
               />
 
               <TextField
                 label="Complaint Type"
                 isEdit
-                register={register}
-                name="complaintType"
+                register={register("complaintType")}
+                error={errors?.complaintType?.message}
               />
             </div>
           </Card>
@@ -139,26 +232,36 @@ const ComplaintsAdd: React.FC = () => {
         {/* 2nd column */}
         <div className="flex flex-col space-y-6">
           <Card>
-            <CardHeader title="Respondent's Information" isRequired />
+            <CardHeader title="Respondent's Information" />
             <div className="flex space-y-5 flex-col">
               <OfficialSearchableTextField
                 label="Respondent's Name"
                 isEdit
-                handleChange={setOfficialDetails}
+                handleChange={setOfficial}
+                handleIsEmptyText={setisOfficialTextEmpty}
+                error={errors?.respondentName?.message}
               />
             </div>
           </Card>
           <Card>
-            <CardHeader title="Complainant's Statement" isRequired />
+            <CardHeader title="Complainant's Statement" />
             <TextAreaField
               rows={8}
               isEdit
-              register={register}
-              name="complainantsStatement"
+              register={register("narrativeReport")}
+              error={errors?.narrativeReport?.message}
             />
           </Card>
         </div>
       </form>
+
+      <ModalSuccess
+        open={showSuccessModal}
+        title="Complaint Report Complete"
+        description="Your report has been saved."
+        buttonLabel="Back to Screen"
+        handleButtonPress={handleSuccess}
+      />
     </>
   );
 };

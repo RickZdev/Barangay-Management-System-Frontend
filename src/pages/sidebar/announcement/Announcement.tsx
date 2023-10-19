@@ -12,6 +12,7 @@ const Announcement: React.FC = React.memo(() => {
   const {
     data,
     isLoading: isAnnouncementsLoading,
+    isRefetching,
     refetch,
   } = useGetAnnouncements();
   const { mutate, isLoading: isDeleteLoading } = useDeleteAnnouncement();
@@ -37,7 +38,7 @@ const Announcement: React.FC = React.memo(() => {
     []
   );
 
-  const isLoading = isAnnouncementsLoading || isDeleteLoading;
+  const isLoading = isAnnouncementsLoading || isDeleteLoading || isRefetching;
 
   return (
     <>

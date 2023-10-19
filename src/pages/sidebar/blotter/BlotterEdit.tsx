@@ -29,6 +29,7 @@ const BlotterEdit: React.FC = () => {
     useGetBlotterById(_id);
 
   const { mutateAsync } = useUpdateBlotter(_id);
+
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
 
@@ -66,12 +67,12 @@ const BlotterEdit: React.FC = () => {
           <CardHeader title="Edit Blotter" />
           <div className="space-y-3">
             <TextField
-              label={"Complainant Name"}
+              label={"Complainant's Name"}
               value={blotter?.complainantName}
             />
 
             <TextField
-              label={"Complainant Address"}
+              label={"Complainant's Address"}
               value={blotter?.complainantAddress}
             />
 
@@ -109,7 +110,7 @@ const BlotterEdit: React.FC = () => {
           <div className="space-y-5">
             <CardHeader title="Narrative Report" />
             <TextField
-              label={"Respondent Name"}
+              label={"Respondent's Name"}
               value={blotter?.respondentName}
             />
             <TextAreaField rows={8} value={blotter?.narrativeReport} />

@@ -13,6 +13,7 @@ import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { Link, useLocation } from "react-router-dom";
 import BackButton from "./BackButton";
 import { UseMutateFunction } from "@tanstack/react-query";
+import ModalWarning from "./modals/alert/ModalWarning";
 
 type TableTypeProps<T extends Record<string, any>> = {
   data: T[];
@@ -43,6 +44,18 @@ const Table = <T extends Record<string, any>>({
   const location = useLocation();
   const [isDefaultPath, setDefaultPath] = useState<boolean | undefined>();
 
+  const [rowId, setRowId] = useState<string>();
+
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+
+  const handleDelete = () => {
+    if (deleteButton && rowId) {
+      deleteButton(rowId);
+    }
+
+    setShowDeleteModal(false);
+  };
+
   useEffect(() => {
     setDefaultPath(location.pathname === "/");
   }, []);
@@ -54,6 +67,7 @@ const Table = <T extends Record<string, any>>({
           <BackButton />
         </div>
       )}
+
       {children && <div className="bg-[#29283d]">{children}</div>}
       <MaterialReactTable
         data={data ?? []}
@@ -89,10 +103,8 @@ const Table = <T extends Record<string, any>>({
                 arrow
                 title="Delete"
                 onClick={() => {
-                  if (deleteButton) {
-                    deleteButton(row.original._id);
-                  }
-                  return;
+                  setShowDeleteModal(true);
+                  setRowId(row.original._id);
                 }}
               >
                 <IconButton>
@@ -225,6 +237,16 @@ const Table = <T extends Record<string, any>>({
           </div>
         )}
         {...props}
+      />
+
+      <ModalWarning
+        open={showDeleteModal}
+        title="ARE YOU SURE YOU WANT TO DELETE DATA"
+        description="This action is irreversible upon confirmation. Confirm to continue."
+        primaryButtonLabel="Confirm"
+        secondaryButtonLabel="Cancel"
+        handlePrimaryButton={handleDelete}
+        handleSecondaryButton={() => setShowDeleteModal(false)}
       />
     </div>
   );
