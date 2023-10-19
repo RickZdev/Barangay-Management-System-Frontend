@@ -160,7 +160,7 @@ const BlotterAddNonResident: React.FC = () => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <Card>
-            <CardHeader title="Create Resident Blotter" />
+            <CardHeader title="Create Non-Resident Blotter" />
             <div className="space-y-3">
               <TextField
                 label={"Complainant Name"}
