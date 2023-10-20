@@ -1,0 +1,974 @@
+{
+  "citizenship": [
+    {
+      "id": 1,
+      "value": "Afghan",
+      "description": ""
+    },
+    {
+      "id": 2,
+      "value": "Albanian",
+      "description": ""
+    },
+    {
+      "id": 3,
+      "value": "Algerian",
+      "description": ""
+    },
+    {
+      "id": 4,
+      "value": "American",
+      "description": ""
+    },
+    {
+      "id": 5,
+      "value": "Andorran",
+      "description": ""
+    },
+    {
+      "id": 6,
+      "value": "Angolan",
+      "description": ""
+    },
+    {
+      "id": 7,
+      "value": "Antiguans",
+      "description": ""
+    },
+    {
+      "id": 8,
+      "value": "Argentinean",
+      "description": ""
+    },
+    {
+      "id": 9,
+      "value": "Armenian",
+      "description": ""
+    },
+    {
+      "id": 10,
+      "value": "Australian",
+      "description": ""
+    },
+    {
+      "id": 11,
+      "value": "Austrian",
+      "description": ""
+    },
+    {
+      "id": 12,
+      "value": "Azerbaijani",
+      "description": ""
+    },
+    {
+      "id": 13,
+      "value": "Bahamian",
+      "description": ""
+    },
+    {
+      "id": 14,
+      "value": "Bahraini",
+      "description": ""
+    },
+    {
+      "id": 15,
+      "value": "Bangladeshi",
+      "description": ""
+    },
+    {
+      "id": 16,
+      "value": "Barbadian",
+      "description": ""
+    },
+    {
+      "id": 17,
+      "value": "Barbudans",
+      "description": ""
+    },
+    {
+      "id": 18,
+      "value": "Batswana",
+      "description": ""
+    },
+    {
+      "id": 19,
+      "value": "Belarusian",
+      "description": ""
+    },
+    {
+      "id": 20,
+      "value": "Belgian",
+      "description": ""
+    },
+    {
+      "id": 21,
+      "value": "Belizean",
+      "description": ""
+    },
+    {
+      "id": 22,
+      "value": "Beninese",
+      "description": ""
+    },
+    {
+      "id": 23,
+      "value": "Bhutanese",
+      "description": ""
+    },
+    {
+      "id": 24,
+      "value": "Bolivian",
+      "description": ""
+    },
+    {
+      "id": 25,
+      "value": "Bosnian",
+      "description": ""
+    },
+    {
+      "id": 26,
+      "value": "Brazilian",
+      "description": ""
+    },
+    {
+      "id": 27,
+      "value": "British",
+      "description": ""
+    },
+    {
+      "id": 28,
+      "value": "Bruneian",
+      "description": ""
+    },
+    {
+      "id": 29,
+      "value": "Bulgarian",
+      "description": ""
+    },
+    {
+      "id": 30,
+      "value": "Burkinabe",
+      "description": ""
+    },
+    {
+      "id": 31,
+      "value": "Burmese",
+      "description": ""
+    },
+    {
+      "id": 32,
+      "value": "Burundian",
+      "description": ""
+    },
+    {
+      "id": 33,
+      "value": "Cambodian",
+      "description": ""
+    },
+    {
+      "id": 34,
+      "value": "Cameroonian",
+      "description": ""
+    },
+    {
+      "id": 35,
+      "value": "Canadian",
+      "description": ""
+    },
+    {
+      "id": 36,
+      "value": "Cape Verdean",
+      "description": ""
+    },
+    {
+      "id": 37,
+      "value": "Central African",
+      "description": ""
+    },
+    {
+      "id": 38,
+      "value": "Chadian",
+      "description": ""
+    },
+    {
+      "id": 39,
+      "value": "Chilean",
+      "description": ""
+    },
+    {
+      "id": 40,
+      "value": "Chinese",
+      "description": ""
+    },
+    {
+      "id": 41,
+      "value": "Colombian",
+      "description": ""
+    },
+    {
+      "id": 42,
+      "value": "Comoran",
+      "description": ""
+    },
+    {
+      "id": 43,
+      "value": "Congolese",
+      "description": ""
+    },
+    {
+      "id": 44,
+      "value": "Costa Rican",
+      "description": ""
+    },
+    {
+      "id": 45,
+      "value": "Croatian",
+      "description": ""
+    },
+    {
+      "id": 46,
+      "value": "Cuban",
+      "description": ""
+    },
+    {
+      "id": 47,
+      "value": "Cypriot",
+      "description": ""
+    },
+    {
+      "id": 48,
+      "value": "Czech",
+      "description": ""
+    },
+    {
+      "id": 49,
+      "value": "Danish",
+      "description": ""
+    },
+    {
+      "id": 50,
+      "value": "Djibouti",
+      "description": ""
+    },
+    {
+      "id": 51,
+      "value": "Dominican",
+      "description": ""
+    },
+    {
+      "id": 52,
+      "value": "Dutch",
+      "description": ""
+    },
+    {
+      "id": 53,
+      "value": "East Timorese",
+      "description": ""
+    },
+    {
+      "id": 54,
+      "value": "Ecuadorean",
+      "description": ""
+    },
+    {
+      "id": 55,
+      "value": "Egyptian",
+      "description": ""
+    },
+    {
+      "id": 56,
+      "value": "Emirian",
+      "description": ""
+    },
+    {
+      "id": 57,
+      "value": "Equatorial Guinean",
+      "description": ""
+    },
+    {
+      "id": 58,
+      "value": "Eritrean",
+      "description": ""
+    },
+    {
+      "id": 59,
+      "value": "Estonian",
+      "description": ""
+    },
+    {
+      "id": 60,
+      "value": "Ethiopian",
+      "description": ""
+    },
+    {
+      "id": 61,
+      "value": "Fijian",
+      "description": ""
+    },
+    {
+      "id": 62,
+      "value": "Filipino",
+      "description": ""
+    },
+    {
+      "id": 63,
+      "value": "Finnish",
+      "description": ""
+    },
+    {
+      "id": 64,
+      "value": "French",
+      "description": ""
+    },
+    {
+      "id": 65,
+      "value": "Gabonese",
+      "description": ""
+    },
+    {
+      "id": 66,
+      "value": "Gambian",
+      "description": ""
+    },
+    {
+      "id": 67,
+      "value": "Georgian",
+      "description": ""
+    },
+    {
+      "id": 68,
+      "value": "German",
+      "description": ""
+    },
+    {
+      "id": 69,
+      "value": "Ghanaian",
+      "description": ""
+    },
+    {
+      "id": 70,
+      "value": "Greek",
+      "description": ""
+    },
+    {
+      "id": 71,
+      "value": "Grenadian",
+      "description": ""
+    },
+    {
+      "id": 72,
+      "value": "Guatemalan",
+      "description": ""
+    },
+    {
+      "id": 73,
+      "value": "Guinea-Bissauan",
+      "description": ""
+    },
+    {
+      "id": 74,
+      "value": "Guinean",
+      "description": ""
+    },
+    {
+      "id": 75,
+      "value": "Guyanese",
+      "description": ""
+    },
+    {
+      "id": 76,
+      "value": "Haitian",
+      "description": ""
+    },
+    {
+      "id": 77,
+      "value": "Herzegovinian",
+      "description": ""
+    },
+    {
+      "id": 78,
+      "value": "Honduran",
+      "description": ""
+    },
+    {
+      "id": 79,
+      "value": "Hungarian",
+      "description": ""
+    },
+    {
+      "id": 80,
+      "value": "I-Kiribati",
+      "description": ""
+    },
+    {
+      "id": 81,
+      "value": "Icelander",
+      "description": ""
+    },
+    {
+      "id": 82,
+      "value": "Indian",
+      "description": ""
+    },
+    {
+      "id": 83,
+      "value": "Indonesian",
+      "description": ""
+    },
+    {
+      "id": 84,
+      "value": "Iranian",
+      "description": ""
+    },
+    {
+      "id": 85,
+      "value": "Iraqi",
+      "description": ""
+    },
+    {
+      "id": 86,
+      "value": "Irish",
+      "description": ""
+    },
+    {
+      "id": 87,
+      "value": "Israeli",
+      "description": ""
+    },
+    {
+      "id": 88,
+      "value": "Italian",
+      "description": ""
+    },
+    {
+      "id": 89,
+      "value": "Ivorian",
+      "description": ""
+    },
+    {
+      "id": 90,
+      "value": "Jamaican",
+      "description": ""
+    },
+    {
+      "id": 91,
+      "value": "Japanese",
+      "description": ""
+    },
+    {
+      "id": 92,
+      "value": "Jordanian",
+      "description": ""
+    },
+    {
+      "id": 93,
+      "value": "Kazakhstani",
+      "description": ""
+    },
+    {
+      "id": 94,
+      "value": "Kenyan",
+      "description": ""
+    },
+    {
+      "id": 95,
+      "value": "Kittian and Nevisian",
+      "description": ""
+    },
+    {
+      "id": 96,
+      "value": "Kuwaiti",
+      "description": ""
+    },
+    {
+      "id": 97,
+      "value": "Kyrgyz",
+      "description": ""
+    },
+    {
+      "id": 98,
+      "value": "Laotian",
+      "description": ""
+    },
+    {
+      "id": 99,
+      "value": "Latvian",
+      "description": ""
+    },
+    {
+      "id": 100,
+      "value": "Lebanese",
+      "description": ""
+    },
+    {
+      "id": 101,
+      "value": "Liberian",
+      "description": ""
+    },
+    {
+      "id": 102,
+      "value": "Libyan",
+      "description": ""
+    },
+    {
+      "id": 103,
+      "value": "Liechtensteiner",
+      "description": ""
+    },
+    {
+      "id": 104,
+      "value": "Lithuanian",
+      "description": ""
+    },
+    {
+      "id": 105,
+      "value": "Luxembourger",
+      "description": ""
+    },
+    {
+      "id": 106,
+      "value": "Macedonian",
+      "description": ""
+    },
+    {
+      "id": 107,
+      "value": "Malagasy",
+      "description": ""
+    },
+    {
+      "id": 108,
+      "value": "Malawian",
+      "description": ""
+    },
+    {
+      "id": 109,
+      "value": "Malaysian",
+      "description": ""
+    },
+    {
+      "id": 110,
+      "value": "Maldivian",
+      "description": ""
+    },
+    {
+      "id": 111,
+      "value": "Malian",
+      "description": ""
+    },
+    {
+      "id": 112,
+      "value": "Maltese",
+      "description": ""
+    },
+    {
+      "id": 113,
+      "value": "Marshallese",
+      "description": ""
+    },
+    {
+      "id": 114,
+      "value": "Mauritanian",
+      "description": ""
+    },
+    {
+      "id": 115,
+      "value": "Mauritian",
+      "description": ""
+    },
+    {
+      "id": 116,
+      "value": "Mexican",
+      "description": ""
+    },
+    {
+      "id": 117,
+      "value": "Micronesian",
+      "description": ""
+    },
+    {
+      "id": 118,
+      "value": "Moldovan",
+      "description": ""
+    },
+    {
+      "id": 119,
+      "value": "Monacan",
+      "description": ""
+    },
+    {
+      "id": 120,
+      "value": "Mongolian",
+      "description": ""
+    },
+    {
+      "id": 121,
+      "value": "Moroccan",
+      "description": ""
+    },
+    {
+      "id": 122,
+      "value": "Mosotho",
+      "description": ""
+    },
+    {
+      "id": 123,
+      "value": "Motswana",
+      "description": ""
+    },
+    {
+      "id": 124,
+      "value": "Mozambican",
+      "description": ""
+    },
+    {
+      "id": 125,
+      "value": "Namibian",
+      "description": ""
+    },
+    {
+      "id": 126,
+      "value": "Nauruan",
+      "description": ""
+    },
+    {
+      "id": 127,
+      "value": "Nepalese",
+      "description": ""
+    },
+    {
+      "id": 128,
+      "value": "New Zealander",
+      "description": ""
+    },
+    {
+      "id": 129,
+      "value": "Ni-Vanuatu",
+      "description": ""
+    },
+    {
+      "id": 130,
+      "value": "Nicaraguan",
+      "description": ""
+    },
+    {
+      "id": 131,
+      "value": "Nigerian",
+      "description": ""
+    },
+    {
+      "id": 132,
+      "value": "Nigerien",
+      "description": ""
+    },
+    {
+      "id": 133,
+      "value": "North Korean",
+      "description": ""
+    },
+    {
+      "id": 134,
+      "value": "Northern Irish",
+      "description": ""
+    },
+    {
+      "id": 135,
+      "value": "Norwegian",
+      "description": ""
+    },
+    {
+      "id": 136,
+      "value": "Omani",
+      "description": ""
+    },
+    {
+      "id": 137,
+      "value": "Pakistani",
+      "description": ""
+    },
+    {
+      "id": 138,
+      "value": "Palauan",
+      "description": ""
+    },
+    {
+      "id": 139,
+      "value": "Panamanian",
+      "description": ""
+    },
+    {
+      "id": 140,
+      "value": "Papua New Guinean",
+      "description": ""
+    },
+    {
+      "id": 141,
+      "value": "Paraguayan",
+      "description": ""
+    },
+    {
+      "id": 142,
+      "value": "Peruvian",
+      "description": ""
+    },
+    {
+      "id": 143,
+      "value": "Polish",
+      "description": ""
+    },
+    {
+      "id": 144,
+      "value": "Portuguese",
+      "description": ""
+    },
+    {
+      "id": 145,
+      "value": "Qatari",
+      "description": ""
+    },
+    {
+      "id": 146,
+      "value": "Romanian",
+      "description": ""
+    },
+    {
+      "id": 147,
+      "value": "Russian",
+      "description": ""
+    },
+    {
+      "id": 148,
+      "value": "Rwandan",
+      "description": ""
+    },
+    {
+      "id": 149,
+      "value": "Saint Lucian",
+      "description": ""
+    },
+    {
+      "id": 150,
+      "value": "Salvadoran",
+      "description": ""
+    },
+    {
+      "id": 151,
+      "value": "Samoan",
+      "description": ""
+    },
+    {
+      "id": 152,
+      "value": "San Marinese",
+      "description": ""
+    },
+    {
+      "id": 153,
+      "value": "Sao Tomean",
+      "description": ""
+    },
+    {
+      "id": 154,
+      "value": "Saudi",
+      "description": ""
+    },
+    {
+      "id": 155,
+      "value": "Scottish",
+      "description": ""
+    },
+    {
+      "id": 156,
+      "value": "Senegalese",
+      "description": ""
+    },
+    {
+      "id": 157,
+      "value": "Serbian",
+      "description": ""
+    },
+    {
+      "id": 158,
+      "value": "Seychellois",
+      "description": ""
+    },
+    {
+      "id": 159,
+      "value": "Sierra Leonean",
+      "description": ""
+    },
+    {
+      "id": 160,
+      "value": "Singaporean",
+      "description": ""
+    },
+    {
+      "id": 161,
+      "value": "Slovakian",
+      "description": ""
+    },
+    {
+      "id": 162,
+      "value": "Slovenian",
+      "description": ""
+    },
+    {
+      "id": 163,
+      "value": "Solomon Islander",
+      "description": ""
+    },
+    {
+      "id": 164,
+      "value": "Somali",
+      "description": ""
+    },
+    {
+      "id": 165,
+      "value": "South African",
+      "description": ""
+    },
+    {
+      "id": 166,
+      "value": "South Korean",
+      "description": ""
+    },
+    {
+      "id": 167,
+      "value": "Spanish",
+      "description": ""
+    },
+    {
+      "id": 168,
+      "value": "Sri Lankan",
+      "description": ""
+    },
+    {
+      "id": 169,
+      "value": "Sudanese",
+      "description": ""
+    },
+    {
+      "id": 170,
+      "value": "Surinamer",
+      "description": ""
+    },
+    {
+      "id": 171,
+      "value": "Swazi",
+      "description": ""
+    },
+    {
+      "id": 172,
+      "value": "Swedish",
+      "description": ""
+    },
+    {
+      "id": 173,
+      "value": "Swiss",
+      "description": ""
+    },
+    {
+      "id": 174,
+      "value": "Syrian",
+      "description": ""
+    },
+    {
+      "id": 175,
+      "value": "Taiwanese",
+      "description": ""
+    },
+    {
+      "id": 176,
+      "value": "Tajik",
+      "description": ""
+    },
+    {
+      "id": 177,
+      "value": "Tanzanian",
+      "description": ""
+    },
+    {
+      "id": 178,
+      "value": "Thai",
+      "description": ""
+    },
+    {
+      "id": 179,
+      "value": "Togolese",
+      "description": ""
+    },
+    {
+      "id": 180,
+      "value": "Tongan",
+      "description": ""
+    },
+    {
+      "id": 181,
+      "value": "Trinidadian or Tobagonian",
+      "description": ""
+    },
+    {
+      "id": 182,
+      "value": "Tunisian",
+      "description": ""
+    },
+    {
+      "id": 183,
+      "value": "Turkish",
+      "description": ""
+    },
+    {
+      "id": 184,
+      "value": "Tuvaluan",
+      "description": ""
+    },
+    {
+      "id": 185,
+      "value": "Ugandan",
+      "description": ""
+    },
+    {
+      "id": 186,
+      "value": "Ukrainian",
+      "description": ""
+    },
+    {
+      "id": 187,
+      "value": "Uruguayan",
+      "description": ""
+    },
+    {
+      "id": 188,
+      "value": "Uzbekistani",
+      "description": ""
+    },
+    {
+      "id": 189,
+      "value": "Venezuelan",
+      "description": ""
+    },
+    {
+      "id": 190,
+      "value": "Vietnamese",
+      "description": ""
+    },
+    {
+      "id": 191,
+      "value": "Welsh",
+      "description": ""
+    },
+    {
+      "id": 192,
+      "value": "Yemenite",
+      "description": ""
+    },
+    {
+      "id": 193,
+      "value": "Zambian",
+      "description": ""
+    },
+    {
+      "id": 194,
+      "value": "Zimbabwean",
+      "description": ""
+    }
+  ]
+}

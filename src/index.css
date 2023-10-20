@@ -1,0 +1,220 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --font-family: "Poppins", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--dark-color);
+  background-color: var(--light-color);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 1rem 0;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+button {
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: var(--primary-color);
+  color: var(--light-color);
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0069d9;
+}
+
+input,
+textarea {
+  border: 1px solid var(--secondary-color);
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  color: var(--dark-color);
+  background-color: var(--light-color);
+  transition: border-color 0.3s ease;
+}
+
+/* remove the buttons up and down to the input number */
+input:focus,
+textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Responsive breakpoints */
+/* @media (min-width: 576px) {
+  body {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 768px) {
+  body {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 992px) {
+  body {
+    font-size: 22px;
+  }
+}
+
+@media (min-width: 1200px) {
+  body {
+    font-size: 24px;
+  }
+} */
+
+::-webkit-scrollbar {
+  width: 6px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsla(0, 0%, 100%, 0.5);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
+/* Sidebar own styles */
+/* scrollbar */
+.ps-sidebar-container::-webkit-scrollbar {
+  width: 6px;
+  background-color: transparent;
+}
+
+.ps-sidebar-container:hover::-webkit-scrollbar-thumb {
+  display: block;
+  background: hsla(0, 0%, 100%, 0.5);
+  border-radius: 5px;
+}
+
+.ps-sidebar-container::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+.ps-sidebar-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* top toolbar icons */
+.MuiTablePagination-actions .MuiSvgIcon-root {
+  color: #067d68;
+}
+
+/* bottom toolbar icons */
+.css-di3982 .css-i4bv87-MuiSvgIcon-root {
+  color: rgb(110, 117, 124);
+}
+
+/* detail panel select all icon */
+.MuiTableRow-root .css-1vp8cnp-MuiButtonBase-root-MuiIconButton-root {
+  color: white;
+}
+
+/* detail panel expanded icons  */
+.css-bi0p6q-MuiTableRow-root .css-i4bv87-MuiSvgIcon-root {
+  color: white;
+}
+
+.css-cezaxz-MuiTableRow-root:hover {
+  background: transparent;
+}
+
+.css-929hxt-MuiInputBase-input-MuiInput-input {
+  color: white;
+}
+
+/* select mui, set color white when disabled */
+.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+  -webkit-text-fill-color: white;
+}
+
+.css-1ueirg0-MuiFormControlLabel-root.Mui-disabled {
+  color: white;
+}
+
+/* style for radio button label */
+.css-1jpb5jr-MuiFormControlLabel-root .MuiFormControlLabel-label {
+  font-size: 14px;
+  font-family: "poppins";
+}
+
+/* style for radio button label when disabled */
+.css-1bvqc98-MuiFormControlLabel-root .MuiFormControlLabel-label.Mui-disabled {
+  font-size: 14px;
+  font-family: "poppins";
+  -webkit-text-fill-color: white;
+}
+
+.MuiFormControl-root
+  .MuiTextField-root
+  .css-qwyp20-MuiFormControl-root-MuiTextField-root {
+  color: white;
+  background: white;
+}
+
+/* searchable dropdown component scrollbar */
+.search-textbox::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+.search-textbox::-webkit-scrollbar-thumb {
+  background-color: #aaa;
+  border-radius: 5px;
+}
+
+/* no display records text style*/
+.css-18iv8yc-MuiTypography-root {
+  -webkit-text-fill-color: white;
+}
