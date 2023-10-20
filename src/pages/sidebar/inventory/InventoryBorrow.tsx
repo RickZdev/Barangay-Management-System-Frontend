@@ -14,11 +14,19 @@ import useCreateBorrowedRecord from "../../../queries/borrowedRecords/useCreateB
 import useGetBorrowedInventoryById from "../../../queries/borrowedInventory/useGetBorrowedInventoryById";
 import dayjs from "dayjs";
 import ViewDetails from "../../../components/ViewDetails";
+import LoaderModal from "../../../components/modals/loader/LoaderModal";
 
 const InventoryBorrow: React.FC = React.memo(() => {
-  const { data, isLoading } = useGetBorrowedInventory();
+  const {
+    data,
+    isLoading: isBorrowedLoading,
+    isRefetching,
+    refetch,
+  } = useGetBorrowedInventory();
+
   const { mutate: deleteItem } = useDeleteBorrowedInventory();
   const { mutate: returnItem } = useCreateBorrowedRecord();
+
   const columns = useMemo<MRT_ColumnDef<BorrowedInventoryPropType>[]>(
     () => [
       {
@@ -61,11 +69,15 @@ const InventoryBorrow: React.FC = React.memo(() => {
     []
   );
 
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
   const [showAction, setShowAction] = useState<boolean>(false);
   const [rows, setRows] = useState<Array<string>>([]);
 
+  const isLoading = isBorrowedLoading || isRefetching || isProcessing;
+
   const handleReturnItem = () => {
+    setIsProcessing(true);
     rows.map((rowId) => {
       deleteItem(rowId);
       returnItem({
@@ -75,6 +87,8 @@ const InventoryBorrow: React.FC = React.memo(() => {
     });
 
     setRowSelection({});
+
+    setIsProcessing(false);
   };
 
   useEffect(() => {
@@ -89,71 +103,72 @@ const InventoryBorrow: React.FC = React.memo(() => {
 
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <Table
-          data={data ?? []}
-          columns={columns}
-          isError={false}
-          enableRowNumbers={false}
-          enableRowActions={false}
-          enableRowSelection
-          getRowId={(row) => row._id}
-          onRowSelectionChange={setRowSelection}
-          state={{ rowSelection }}
-          positionToolbarAlertBanner="top"
-          muiTableDetailPanelProps={{
-            sx: { color: "white" },
-          }}
-          renderDetailPanel={({ row }) => (
-            <div className="flex flex-col">
-              <p className="font-bold uppercase text-lg py-2 text-center">
-                Borrowed Items
-              </p>
-              <div className="grid grid-cols-2">
-                <div className="border-[1px] border-[#50D5B7] p-3 bg-[#067D68]">
-                  <Typography align="center" fontWeight={"bold"}>
-                    ITEMS
-                  </Typography>
-                </div>
-                <div className="border-[1px] border-[#50D5B7] p-3 bg-[#067D68]">
-                  <Typography align="center" fontWeight={"bold"}>
-                    QUANTITY
-                  </Typography>
-                </div>
-
-                {row.original.borrowedItems.map((item, index) => (
-                  <>
-                    <div className="border-[1px] border-[#50D5B7] px-5 py-3">
-                      <Typography align="center">{item?.itemName}</Typography>
-                    </div>
-                    <div className="border-[1px] border-[#50D5B7] px-5 py-3">
-                      <Typography align="center">{item.quantity}</Typography>
-                    </div>
-                  </>
-                ))}
+      <LoaderModal isLoading={isLoading} />
+      <Table
+        data={data ?? []}
+        columns={columns}
+        enableRowNumbers={false}
+        enableRowActions={true}
+        enableRowSelection
+        getRowId={(row) => row._id}
+        onRowSelectionChange={setRowSelection}
+        state={{ rowSelection }}
+        positionToolbarAlertBanner="top"
+        muiTableDetailPanelProps={{
+          sx: { color: "white" },
+        }}
+        renderDetailPanel={({ row }) => (
+          <div className="flex flex-col">
+            <p className="font-bold uppercase text-lg py-2 text-center">
+              Borrowed Items
+            </p>
+            <div className="grid grid-cols-2">
+              <div className="border-[1px] border-[#50D5B7] p-3 bg-[#067D68]">
+                <Typography align="center" fontWeight={"bold"}>
+                  ITEMS
+                </Typography>
               </div>
+              <div className="border-[1px] border-[#50D5B7] p-3 bg-[#067D68]">
+                <Typography align="center" fontWeight={"bold"}>
+                  QUANTITY
+                </Typography>
+              </div>
+
+              {row.original.borrowedItems.map((item, index) => (
+                <>
+                  <div className="border-[1px] border-[#50D5B7] px-5 py-3">
+                    <Typography align="center">{item?.itemName}</Typography>
+                  </div>
+                  <div className="border-[1px] border-[#50D5B7] px-5 py-3">
+                    <Typography align="center">{item.quantity}</Typography>
+                  </div>
+                </>
+              ))}
+            </div>
+          </div>
+        )}
+        isError={false}
+        showEditButton={false}
+        showViewButton={false}
+        refreshButton={refetch}
+        deleteButton={deleteItem}
+      >
+        <>
+          {showAction && (
+            <div className="flex flex-col space-y-2 px-4 py-8 justify-end md:flex-row md:space-y-0 md:space-x-4">
+              <CustomButton
+                label="Cancel"
+                backgroundColor="rgb(239, 68, 68)"
+                onClick={() => setRowSelection({})}
+              />
+              <CustomButton
+                label="Return Item"
+                onClick={() => handleReturnItem()}
+              />
             </div>
           )}
-        >
-          <>
-            {showAction && (
-              <div className="flex flex-col space-y-2 px-4 py-8 justify-end md:flex-row md:space-y-0 md:space-x-4">
-                <CustomButton
-                  label="Cancel"
-                  backgroundColor="rgb(239, 68, 68)"
-                  onClick={() => setRowSelection({})}
-                />
-                <CustomButton
-                  label="Return Item"
-                  onClick={() => handleReturnItem()}
-                />
-              </div>
-            )}
-          </>
-        </Table>
-      )}
+        </>
+      </Table>
     </>
   );
 });

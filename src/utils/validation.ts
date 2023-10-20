@@ -146,3 +146,16 @@ export const sulatReklamoFormValidation = Yup.object().shape({
   residentName: Yup.string().required("This is a required field."),
   narrativeReport: Yup.string().required("This is a required field."),
 });
+
+export const inventoryFormValidation = Yup.object().shape({
+  borroweeName: Yup.string().required("This is a required field."),
+  purposeOfBorrowing: Yup.string().required("This is a required field."),
+  eventLocation: Yup.string().required("This is a required field."),
+});
+
+export const transactionFormValidation = Yup.object().shape({
+  residentName: Yup.string().required("This is a required field."),
+  transactionType: Yup.string().required("This is a required field."),
+  paymentAmount: Yup.string().required("This is a required field."),
+  contactNumber: Yup.string(),
+});

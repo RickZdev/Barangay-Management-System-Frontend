@@ -102,10 +102,13 @@ export default {
       value: "Barangay ID",
     },
     {
-      value: "Business Permit",
+      value: "Barangay Business Permit",
     },
     {
       value: "Barangay Clearance",
+    },
+    {
+      value: "Barangay Indigency",
     },
     {
       value: "Certificate",

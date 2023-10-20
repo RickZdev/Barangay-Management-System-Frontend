@@ -18,6 +18,11 @@ import dayjs from "dayjs";
 import SubmitButton from "../../../components/SubmitButton";
 import useCreateBorrowedInventory from "../../../queries/borrowedInventory/useCreateBorrowedInventory";
 import useAuthContext from "../../../queries/auth/useAuthContext";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { inventoryFormValidation } from "../../../utils/validation";
+import LoaderModal from "../../../components/modals/loader/LoaderModal";
+import ModalSuccess from "../../../components/modals/alert/ModalSuccess";
+import ModalFailed from "../../../components/modals/alert/ModalFailed";
 
 type ItemPropType = {
   itemName: string;
@@ -25,21 +30,33 @@ type ItemPropType = {
 };
 
 const InventoryRequest: React.FC = () => {
-  const { register, handleSubmit } = useForm();
-  const { mutate } = useCreateBorrowedInventory();
+  const {
+    register,
+    getValues,
+    setValue,
+    setError,
+    clearErrors,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(inventoryFormValidation),
+  });
+
+  const { mutateAsync } = useCreateBorrowedInventory();
   const auth = useAuthContext();
 
-  const [residentDetails, setResidentDetails] = useState<
-    ResidentPropType | undefined
-  >();
+  const [isResidentTextEmpty, setIsResidentTextEmpty] = useState<boolean>(true);
+  const [resident, setResident] = useState<ResidentPropType | undefined>();
 
-  const [itemName, setItemName] = useState("");
+  const [itemName, setItemName] = useState<string>();
   const [quantity, setQuantity] = useState(1);
   const [listOfItems, setListOfItems] = useState<ItemPropType[]>([]);
 
-  const handleChange = (resident: ResidentPropType | undefined) => {
-    setResidentDetails(resident);
-  };
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+  const [showListErrorModal, setShowListErrorModal] = useState<boolean>(false);
+
+  const isLoading = isProcessing;
 
   const handleAddItem = () => {
     if (itemName) {
@@ -56,46 +73,73 @@ const InventoryRequest: React.FC = () => {
 
   const handleDeleteItem = (index: number) => {
     const tempArr = listOfItems.filter(
-      (item, itemIndex) => itemIndex !== index
+      (_item, itemIndex) => itemIndex !== index
     );
 
     setListOfItems(tempArr);
   };
 
-  const onSubmit = (event: any) => {
-    console.log({
-      borroweeId: residentDetails?._id,
-      borroweeName: getResidentFullName({
-        lastName: residentDetails?.lastName,
-        firstName: residentDetails?.firstName,
-        middleName: residentDetails?.middleName,
-        suffix: residentDetails?.suffix,
-      }),
-      borroweeContactNumber: residentDetails?.contactNumber,
-      borrowedDateAndTime: dayjs().format("MM/DD/YYYY - hh:mm A"),
-      officialInCharge: "Captain",
-      borrowedItems: listOfItems,
-      ...event,
-    });
+  const handleSuccess = () => {
+    setShowSuccessModal(false);
 
-    mutate({
-      borroweeId: residentDetails?._id,
-      borroweeName: getResidentFullName({
-        lastName: residentDetails?.lastName,
-        firstName: residentDetails?.firstName,
-        middleName: residentDetails?.middleName,
-        suffix: residentDetails?.suffix,
-      }),
-      borroweeContactNumber: residentDetails?.contactNumber,
-      borrowedDateAndTime: dayjs().format("MM/DD/YYYY - hh:mm A"),
-      officialInCharge: auth?.userRole,
-      borrowedItems: listOfItems,
-      ...event,
-    });
+    window.location.reload();
   };
+
+  const onSubmit = async (data: any) => {
+    setIsProcessing(true);
+
+    if (listOfItems.length !== 0) {
+      await mutateAsync({
+        borroweeId: resident?._id,
+        borroweeName: getResidentFullName({
+          lastName: resident?.lastName,
+          firstName: resident?.firstName,
+          middleName: resident?.middleName,
+          suffix: resident?.suffix,
+        }),
+        borroweeContactNumber: resident?.contactNumber,
+        borrowedDateAndTime: dayjs().format("MM/DD/YYYY - hh:mm A"),
+        officialInCharge: auth?.userRole,
+        borrowedItems: listOfItems,
+        ...data,
+      });
+
+      setIsProcessing(false);
+      setShowSuccessModal(true);
+    } else {
+      setShowListErrorModal(true);
+      setIsProcessing(false);
+    }
+  };
+
+  // searchable field errors
+  useEffect(() => {
+    if (isResidentTextEmpty) {
+      setValue(
+        "borroweeName",
+        getResidentFullName({
+          lastName: resident?.lastName,
+          firstName: resident?.firstName,
+          middleName: resident?.middleName,
+          suffix: resident?.suffix,
+        })
+      );
+
+      clearErrors("borroweeName");
+    } else {
+      setValue("borroweeName", "");
+      setError("borroweeName", { message: "This is a required field." });
+    }
+  }, [isResidentTextEmpty]);
+
+  useEffect(() => {
+    setValue("borroweeName", "");
+  }, []);
 
   return (
     <div className="pb-10">
+      <LoaderModal isLoading={isLoading} />
+
       <BackButton />
       <form
         className="grid md:grid-cols-2 gap-6 mt-5"
@@ -107,49 +151,54 @@ const InventoryRequest: React.FC = () => {
             <SearchableTextField
               label="Borrowee Name"
               isEdit
-              handleChange={handleChange}
+              handleChange={setResident}
+              handleIsEmptyText={setIsResidentTextEmpty}
+              error={errors?.borroweeName?.message}
             />
           </Card>
-          {residentDetails && (
+          {resident && (
             <Card className="space-y-4 mb-6">
-              <CardPhoto />
+              <CardPhoto
+                showTooltip={false}
+                image={resident?.profilePhoto ?? ""}
+              />
               <div className="flex flex-col items-center space-y-2">
                 <p className="flex-1 text-white text-lg font-bold">
                   {getResidentFullName({
-                    lastName: residentDetails?.lastName,
-                    firstName: residentDetails?.firstName,
-                    middleName: residentDetails?.middleName,
-                    suffix: residentDetails?.suffix,
+                    lastName: resident?.lastName,
+                    firstName: resident?.firstName,
+                    middleName: resident?.middleName,
+                    suffix: resident?.suffix,
                   })}
                 </p>
                 <p className="text-[hsla(0,0%,100%,.6)] text-sm font-bold">
                   {getResidentFullAddress({
-                    houseNumber: residentDetails?.houseNumber,
-                    streetAddress: residentDetails?.streetAddress,
-                    purokNumber: residentDetails?.purokNumber,
+                    houseNumber: resident?.houseNumber,
+                    streetAddress: resident?.streetAddress,
+                    purokNumber: resident?.purokNumber,
                   })}
                 </p>
                 <p className="text-[hsla(0,0%,100%,.6)] text-sm font-bold">
-                  {residentDetails?.contactNumber}
+                  {resident?.contactNumber}
                 </p>
               </div>
             </Card>
           )}
           <Card>
-            <CardHeader title="Borrowed Details" isRequired />
+            <CardHeader title="Borrowed Details" />
 
             <div className="space-y-4">
               <TextField
                 label="Purpose of Borrowing"
                 isEdit
-                register={register}
-                name="purposeOfBorrowing"
+                register={register("purposeOfBorrowing")}
+                error={errors?.purposeOfBorrowing?.message}
               />
               <TextField
                 label="Location of Event"
                 isEdit
-                register={register}
-                name="eventLocation"
+                register={register("eventLocation")}
+                error={errors?.eventLocation?.message}
               />
               <DateTimePickerField label="Date and Time" value={dayjs()} />
             </div>
@@ -165,6 +214,7 @@ const InventoryRequest: React.FC = () => {
               value={itemName}
               onChange={(event) => setItemName(event?.target?.value)}
             />
+
             <QuantityField quantity={quantity} setQuantity={setQuantity} />
             <div className="flex justify-end">
               <CustomButton label="Add Item" onClick={handleAddItem} />
@@ -172,7 +222,7 @@ const InventoryRequest: React.FC = () => {
           </Card>
           <div className="overflow-x-auto">
             <Card className="min-w-[500px] md:w-full">
-              <CardHeader title="List of Items" isRequired />
+              <CardHeader title="List of Items" />
               <div className="flex flex-row justify-between text-white px-6">
                 <h1 className="text-[#50D5B7]">ITEM</h1>
                 <h1 className="text-[#50D5B7]">QUANTITY</h1>
@@ -218,6 +268,22 @@ const InventoryRequest: React.FC = () => {
           </div>
         </div>
       </form>
+
+      <ModalSuccess
+        open={showSuccessModal}
+        title="Borrowed Complete"
+        description="Your inventory has been saved."
+        buttonLabel="Back to Screen"
+        handleButtonPress={handleSuccess}
+      />
+
+      <ModalFailed
+        open={showListErrorModal}
+        title="Inventory Failed"
+        description="Please add minimum one item per request."
+        buttonLabel="Try Again"
+        handleButtonPress={() => setShowListErrorModal(false)}
+      />
     </div>
   );
 };

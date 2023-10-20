@@ -377,6 +377,7 @@ const Resident: React.FC = () => {
         enableFilters
         showBackButton={false}
         showEditButton={false}
+        showExportButton
         refreshButton={refetch}
         deleteButton={mutate}
       >

@@ -8,9 +8,15 @@ import useGetTransactions from "../../../queries/transaction/useGetTransactions"
 import Loading from "../../errors/Loading";
 import useDeleteTransaction from "../../../queries/transaction/useDeleteTransaction";
 import ViewDetails from "../../../components/ViewDetails";
+import LoaderModal from "../../../components/modals/loader/LoaderModal";
 
 const Transaction: React.FC = React.memo(() => {
-  const { data, isLoading, refetch } = useGetTransactions();
+  const {
+    data,
+    isLoading: isTransactionsLoading,
+    isRefetching,
+    refetch,
+  } = useGetTransactions();
   const { mutate } = useDeleteTransaction();
 
   const columns = useMemo<MRT_ColumnDef<TransactionPropType>[]>(
@@ -65,29 +71,29 @@ const Transaction: React.FC = React.memo(() => {
     setOpen(true);
   };
 
+  const isLoading = isTransactionsLoading || isRefetching;
+
   return (
-    <>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <Table
-          data={data ?? []}
-          columns={columns}
-          isError={false}
-          enableRowNumbers={true}
-          showEditButton={false}
-          showViewButton={false}
-          showBackButton={false}
-          refreshButton={refetch}
-          deleteButton={mutate}
-        >
-          <div className="flex justify-end pt-4 px-2">
-            <TableButton label="Add Transaction" onClick={handleClickOpen} />
-            <ModalAddTransaction open={open} handleClose={handleClose} />
-          </div>
-        </Table>
-      )}
-    </>
+    <div className="pb-10">
+      <LoaderModal isLoading={isLoading} />
+
+      <Table
+        data={data ?? []}
+        columns={columns}
+        isError={false}
+        enableRowNumbers={true}
+        showEditButton={false}
+        showViewButton={false}
+        showBackButton={false}
+        refreshButton={refetch}
+        deleteButton={mutate}
+      >
+        <div className="flex justify-end pt-4 px-2">
+          <TableButton label="Add Transaction" onClick={handleClickOpen} />
+          <ModalAddTransaction open={open} handleClose={handleClose} />
+        </div>
+      </Table>
+    </div>
   );
 });
 

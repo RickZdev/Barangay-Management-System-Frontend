@@ -7,6 +7,8 @@ import { Box, IconButton, Tooltip } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Edit from "@mui/icons-material/Edit";
 
+import { mkConfig, generateCsv, download } from "export-to-csv"; //or use your library of choice here
+
 import Delete from "@mui/icons-material/Delete";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
@@ -14,6 +16,9 @@ import { Link, useLocation } from "react-router-dom";
 import BackButton from "./BackButton";
 import { UseMutateFunction } from "@tanstack/react-query";
 import ModalWarning from "./modals/alert/ModalWarning";
+import dayjs from "dayjs";
+import ModalExportData from "./modals/ModalExportData";
+import { string } from "yup";
 
 type TableTypeProps<T extends Record<string, any>> = {
   data: T[];
@@ -23,6 +28,7 @@ type TableTypeProps<T extends Record<string, any>> = {
   showViewButton?: boolean;
   showEditButton?: boolean;
   showDeleteButton?: boolean;
+  showExportButton?: boolean;
   refreshButton?: () => void;
   deleteButton?: UseMutateFunction<string, unknown, string, unknown>;
   children?: React.ReactNode;
@@ -36,6 +42,7 @@ const Table = <T extends Record<string, any>>({
   showViewButton = true,
   showEditButton = true,
   showDeleteButton = true,
+  showExportButton,
   refreshButton,
   deleteButton,
   children,
@@ -44,8 +51,12 @@ const Table = <T extends Record<string, any>>({
   const location = useLocation();
   const [isDefaultPath, setDefaultPath] = useState<boolean | undefined>();
 
+  const [fileName, setFileName] = useState<string>();
+
   const [rowId, setRowId] = useState<string>();
 
+  const [showExportDataModal, setShowExportDataModal] =
+    useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
   const handleDelete = () => {
@@ -59,6 +70,27 @@ const Table = <T extends Record<string, any>>({
   useEffect(() => {
     setDefaultPath(location.pathname === "/");
   }, []);
+
+  const csvConfig = mkConfig({
+    fieldSeparator: ",",
+    decimalSeparator: ".",
+    useKeysAsHeaders: true,
+    useBom: true,
+    replaceUndefinedWith: "null",
+    showColumnHeaders: true,
+    filename: fileName,
+  });
+
+  const handleExportData = () => {
+    const csv = generateCsv(csvConfig)(data);
+    download(csvConfig)(csv);
+
+    setShowExportDataModal(false);
+  };
+
+  const handleSetFileName = (text: string) => {
+    setFileName(text);
+  };
 
   return (
     <div>
@@ -143,6 +175,9 @@ const Table = <T extends Record<string, any>>({
               backgroundColor: "#29283d",
               textAlign: "center",
             },
+            "& .mrt-empty-state-message": {
+              color: "red", // change this to your desired text color
+            },
           },
         }}
         muiTableBodyCellProps={{
@@ -224,16 +259,16 @@ const Table = <T extends Record<string, any>>({
               </IconButton>
             </Tooltip>
 
-            <Tooltip arrow title="Export Data">
-              <IconButton
-                onClick={() => {
-                  console.log("EXPORT DATA");
-                }}
-                sx={{ color: "rgb(214, 214, 218)" }}
-              >
-                <FileDownloadOutlinedIcon />
-              </IconButton>
-            </Tooltip>
+            {showExportButton && (
+              <Tooltip arrow title="Export Data">
+                <IconButton
+                  onClick={() => setShowExportDataModal(true)}
+                  sx={{ color: "rgb(214, 214, 218)" }}
+                >
+                  <FileDownloadOutlinedIcon />
+                </IconButton>
+              </Tooltip>
+            )}
           </div>
         )}
         {...props}
@@ -247,6 +282,14 @@ const Table = <T extends Record<string, any>>({
         secondaryButtonLabel="Cancel"
         handlePrimaryButton={handleDelete}
         handleSecondaryButton={() => setShowDeleteModal(false)}
+      />
+
+      <ModalExportData
+        open={showExportDataModal}
+        fileName={fileName ?? ""}
+        handleSetFileName={handleSetFileName}
+        handleSubmit={handleExportData}
+        handleClose={() => setShowExportDataModal(false)}
       />
     </div>
   );

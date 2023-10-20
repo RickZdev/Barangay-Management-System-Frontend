@@ -77,6 +77,7 @@ export type TransactionPropType = {
     | "Barangay ID"
     | "Business Permit"
     | "Barangay Clearance"
+    | "Barangay Indigency"
     | "Certificate";
   transactionDateAndTime: string;
   transactionReceiptNumber: string;
@@ -109,7 +110,7 @@ export type BorrowedInventoryPropType = {
   _id: string;
   borroweeId: string;
   borroweeName: string;
-  borroweeContactNumber: number;
+  borroweeContactNumber: string;
   borrowedItems: { itemName: string; quantity: number }[];
   borrowedDateAndTime: string;
   purposeOfBorrowing: string;

@@ -18,7 +18,8 @@ import type {
 } from "../utils/types";
 import { getResidentAge } from "../helper/getResidentAge";
 
-const BASE_URL = "http://localhost:4000";
+const BASE_URL = import.meta.env.VITE_LOCAL_SERVER_URL;
+// const BASE_URL = import.meta.env.VITE_API_SERVER_URL;
 
 // auth functions
 export const loginUser = async ({
@@ -692,6 +693,22 @@ export const createBorrowedRecord = async ({
       eventLocation,
       officialInCharge,
     });
+    return response.data;
+  } catch (error: any) {
+    console.log(error.response.data.error);
+    return error.response.data.error;
+  }
+};
+
+export const deleteBorrowedRecord = async (
+  borrowedRecordId: string
+): Promise<string> => {
+  try {
+    const response = await axios.delete(
+      `${BASE_URL}/api/borrowedrecords/${borrowedRecordId}`
+    );
+
+    console.log(response.data);
     return response.data;
   } catch (error: any) {
     console.log(error.response.data.error);
