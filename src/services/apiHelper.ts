@@ -18,8 +18,8 @@ import type {
 } from "../utils/types";
 import { getResidentAge } from "../helper/getResidentAge";
 
-const BASE_URL = import.meta.env.VITE_LOCAL_SERVER_URL;
-// const BASE_URL = import.meta.env.VITE_API_SERVER_URL;
+// const BASE_URL = import.meta.env.VITE_LOCAL_SERVER_URL;
+const BASE_URL = import.meta.env.VITE_API_SERVER_URL;
 
 // auth functions
 export const loginUser = async ({
