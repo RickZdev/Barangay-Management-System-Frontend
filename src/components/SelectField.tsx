@@ -84,7 +84,7 @@ const SelectField: React.FC<SelectFieldPropType> = ({
         >
           {/* Placeholder MenuItem */}
           <MenuItem value="" onClick={(e) => setSelectedValue("")}>
-            <em className="text-white font-poppins">Select an option</em>
+            <em>Select an option</em>
           </MenuItem>
 
           {selections.map((selection, index) => (
@@ -93,7 +93,7 @@ const SelectField: React.FC<SelectFieldPropType> = ({
               key={index.toString()}
               onClick={(e) => setSelectedValue(selection.value)}
             >
-              <p className="text-white font-poppins">{selection.value}</p>
+              {selection.value}
             </MenuItem>
           ))}
         </Select>
