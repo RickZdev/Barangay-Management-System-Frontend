@@ -4,9 +4,10 @@ import { MRT_ColumnDef } from "material-react-table";
 import { LoginAuditPropType } from "../../../utils/types";
 import useGetLoginAudits from "../../../queries/loginAudit/useGetLoginAudits";
 import Loading from "../../errors/Loading";
+import LoaderModal from "../../../components/modals/loader/LoaderModal";
 
 const LoginAudit: React.FC = React.memo(() => {
-  const { data, isLoading, refetch } = useGetLoginAudits();
+  const { data, isLoading, refetch, isRefetching } = useGetLoginAudits();
 
   const columns = useMemo<MRT_ColumnDef<LoginAuditPropType>[]>(
     () => [
@@ -31,18 +32,16 @@ const LoginAudit: React.FC = React.memo(() => {
 
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <Table
-          data={data ?? []}
-          columns={columns}
-          isError={false}
-          enableRowNumbers={true}
-          enableRowActions={false}
-          refreshButton={refetch}
-        />
-      )}
+      <LoaderModal isLoading={isLoading || isRefetching} />
+
+      <Table
+        data={data ?? []}
+        columns={columns}
+        isError={false}
+        enableRowNumbers={true}
+        enableRowActions={false}
+        refreshButton={refetch}
+      />
     </>
   );
 });

@@ -9,8 +9,11 @@ import Loading from "../../errors/Loading";
 import useDeleteTransaction from "../../../queries/transaction/useDeleteTransaction";
 import ViewDetails from "../../../components/ViewDetails";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
+import useAuthContext from "../../../queries/auth/useAuthContext";
 
 const Transaction: React.FC = React.memo(() => {
+  const auth = useAuthContext();
+
   const {
     data,
     isLoading: isTransactionsLoading,
@@ -85,6 +88,8 @@ const Transaction: React.FC = React.memo(() => {
         showEditButton={false}
         showViewButton={false}
         showBackButton={false}
+        enableRowActions={auth?.userRole === "Captain"}
+        showDeleteButton={auth?.userRole === "Captain"}
         refreshButton={refetch}
         deleteButton={mutate}
       >

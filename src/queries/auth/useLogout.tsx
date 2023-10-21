@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import useAuthContext from "./useAuthContext";
 
 // import Storage from '../data/Storage';
@@ -6,7 +5,7 @@ import useAuthContext from "./useAuthContext";
 const useLogout = () => {
   const authContext = useAuthContext();
 
-  const handleLogout = async (): Promise<void> => {
+  const handleLogout = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("userRole");
     localStorage.removeItem("accessToken");

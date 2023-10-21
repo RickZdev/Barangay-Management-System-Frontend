@@ -83,7 +83,7 @@ const SelectField: React.FC<SelectFieldPropType> = ({
           {...props}
         >
           {/* Placeholder MenuItem */}
-          <MenuItem value="">
+          <MenuItem value="" onClick={(e) => setSelectedValue("")}>
             <em>Select an option</em>
           </MenuItem>
 

@@ -54,13 +54,11 @@ const Dashboard: React.FC = () => {
 
   const residentsCount = residentData?.length;
 
-  const femaleCount = residentData?.filter(
-    (resident) => resident.sex === "Female"
-  ).length;
+  const femaleCount =
+    residentData?.filter((resident) => resident?.sex === "Female").length ?? 0;
 
-  const maleCount = residentData?.filter(
-    (resident) => resident.sex === "Male"
-  ).length;
+  const maleCount =
+    residentData?.filter((resident) => resident.sex === "Male").length ?? 0;
 
   const seniorsCount = residentData?.reduce((count, { birthDate }) => {
     const age = getResidentAge(birthDate);
@@ -84,7 +82,7 @@ const Dashboard: React.FC = () => {
   const data: DashboardPropType[] = [
     {
       _id: "1",
-      label: "Total Certificate Request (not yet)",
+      label: "Total Certificate Records (not yet)",
       total: 45,
       Icon: <DraftsIcon />,
       backgroundColor: "honeydew",
@@ -92,7 +90,7 @@ const Dashboard: React.FC = () => {
     },
     {
       _id: "2",
-      label: "Total Blotter Request",
+      label: "Total Blotters",
       total: blottersCount,
       Icon: <ReportGmailerrorredIcon />,
       backgroundColor: "gold",
@@ -116,7 +114,7 @@ const Dashboard: React.FC = () => {
     },
     {
       _id: "5",
-      label: "Total Inventory Request",
+      label: "Total Inventory Records",
       total: borrowedRecordsCount,
       Icon: <InventoryIcon />,
       backgroundColor: "cyan",
@@ -181,8 +179,6 @@ const Dashboard: React.FC = () => {
     },
   ];
 
-  const { data: sampleData } = useGetUserById(auth.userId ?? "");
-
   useEffect(() => {
     const userId = localStorage?.getItem("userId")
       ? JSON.parse(localStorage?.getItem("userId")!)
@@ -200,13 +196,6 @@ const Dashboard: React.FC = () => {
       auth.setAccessToken(token);
     }
   }, []);
-
-  useEffect(() => {
-    if (auth?.userRole === "Administrator") {
-      console.log("nice");
-      console.log(residentData?.length);
-    }
-  }, [auth]);
 
   return (
     <>

@@ -1,60 +1,29 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import Table from "../../../components/Table";
 import { MRT_ColumnDef } from "material-react-table";
-import { Box, IconButton, Tooltip, Typography } from "@mui/material";
-import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+
 import ViewDetails from "../../../components/ViewDetails";
 import { IndigentBenefitsPropType } from "../../../utils/types";
 import useGetIndigentBenefits from "../../../queries/indigentBenefit/useGetIndigentBenefits";
-import Loading from "../../errors/Loading";
 import dayjs from "dayjs";
 import useCreateIndigentBenefit from "../../../queries/indigentBenefit/useCreateIndigentBenefit";
 import useGetResidents from "../../../queries/resident/useGetResidents";
 import { getResidentAge } from "../../../helper/getResidentAge";
 import { getResidentFullName } from "../../../helper/getResidentFullName";
-import ModalReceiveBenefit from "../../../components/modals/ModalReceiveBenefit";
-import { getIndigentBenefitAge } from "../../../services/apiHelper";
+import LoaderModal from "../../../components/modals/loader/LoaderModal";
 
 const IndigentBenefits: React.FC = React.memo(() => {
-  const { data, isLoading } = useGetIndigentBenefits();
+  const {
+    data,
+    isLoading: isIndigentLoading,
+    refetch,
+    isRefetching,
+  } = useGetIndigentBenefits();
+  const { data: residents, isLoading: isResidentsLoading } = useGetResidents();
+
   const { mutate } = useCreateIndigentBenefit();
-  const { data: residents } = useGetResidents();
+
   const currentDate = dayjs();
-
-  useEffect(() => {
-    const seniorCitizen = residents?.filter(
-      (resident) => getResidentAge(resident.birthDate) >= 60
-    );
-
-    const isAlreadyFilled = data?.filter((resident) => {
-      if (
-        resident.monthAndYear ===
-        dayjs().format("MMMM") + " " + dayjs().year()
-      ) {
-        return resident;
-      }
-    });
-
-    if (currentDate.date() === 1 && isAlreadyFilled?.length === 0) {
-      seniorCitizen?.map((resident) =>
-        mutate({
-          residentId: resident._id,
-          residentName: getResidentFullName({
-            lastName: resident?.lastName,
-            firstName: resident?.firstName,
-            middleName: resident?.middleName,
-            suffix: resident?.suffix,
-          }),
-          pension: 500,
-          purok: resident?.purokNumber,
-          status: "Not Received",
-          receiver: "",
-          relation: "",
-          monthAndYear: dayjs().format("MMMM") + " " + dayjs().year(),
-        })
-      );
-    }
-  }, [residents, data]);
 
   const columns = useMemo<MRT_ColumnDef<IndigentBenefitsPropType>[]>(
     () => [
@@ -77,20 +46,11 @@ const IndigentBenefits: React.FC = React.memo(() => {
       {
         header: "Age",
         size: 150,
-        Cell: ({ cell }) => {
-          const { residentId } = cell.row.original;
-          const [age, setAge] = useState<number>();
+        Cell: (props) => {
+          const birthDate = props?.row?.original?.birthDate;
 
-          useEffect(() => {
-            const fetchAge = async () => {
-              const age = await getIndigentBenefitAge(residentId);
-              setAge(age);
-            };
-
-            fetchAge();
-          }, [residentId]);
-
-          return <Typography>{age}</Typography>;
+          const age = getResidentAge(birthDate);
+          return <div>{age}</div>;
         },
       },
       {
@@ -140,58 +100,64 @@ const IndigentBenefits: React.FC = React.memo(() => {
     []
   );
 
-  const [open, setOpen] = useState<boolean>(false);
+  const isLoading = isIndigentLoading || isResidentsLoading || isRefetching;
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  useEffect(() => {
+    const seniorCitizen = residents?.filter(
+      (resident) => getResidentAge(resident.birthDate) >= 60
+    );
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+    const isAlreadyFilled = data?.filter((resident) => {
+      if (
+        resident.monthAndYear ===
+        dayjs().format("MMMM") + " " + dayjs().year()
+      ) {
+        return resident;
+      }
+    });
+
+    if (currentDate.date() === 1 && isAlreadyFilled?.length === 0) {
+      seniorCitizen?.map((resident) =>
+        mutate({
+          residentId: resident._id,
+          residentName: getResidentFullName({
+            lastName: resident?.lastName,
+            firstName: resident?.firstName,
+            middleName: resident?.middleName,
+            suffix: resident?.suffix,
+          }),
+          pension: 500,
+          purok: resident?.purokNumber,
+          status: "Not Received",
+          receiver: "",
+          relation: "",
+          birthDate: resident?.birthDate ?? "",
+          monthAndYear: dayjs().format("MMMM") + " " + dayjs().year(),
+        })
+      );
+    }
+  }, [residents, data]);
 
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <Table
-          data={data ?? []}
-          columns={columns}
-          isError={false}
-          showBackButton={false}
-          enableRowNumbers={false}
-          enableGrouping
-          positionToolbarAlertBanner="top"
-          enableColumnDragging={false}
-          initialState={{ grouping: ["monthAndYear"] }}
-          renderRowActions={({ row, cell }) => [
-            <>
-              {row.original.status === "Not Received" && (
-                <Box
-                  sx={{ display: "flex", flexWrap: "nowrap", gap: "8px" }}
-                  key={row.id}
-                >
-                  <Tooltip arrow title="Received" onClick={handleClickOpen}>
-                    <IconButton>
-                      <KeyboardReturnIcon
-                        className="text-yellow-500"
-                        sx={{ color: "rgb(234, 179, 8)" }}
-                      />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              )}
+      <LoaderModal isLoading={isLoading} />
 
-              <ModalReceiveBenefit
-                open={open}
-                handleClose={handleClose}
-                indigentId={cell.row.original?._id}
-              />
-            </>,
-          ]}
-        />
-      )}
+      <Table
+        data={data ?? []}
+        columns={columns}
+        isError={false}
+        showBackButton={false}
+        enableRowNumbers={false}
+        showDeleteButton={false}
+        showEditButton={false}
+        showViewButton={false}
+        showIndigentButton
+        enableGrouping
+        positionToolbarAlertBanner="top"
+        enableColumnDragging={false}
+        initialState={{ grouping: ["monthAndYear"] }}
+        refreshButton={refetch}
+      />
     </>
   );
 });

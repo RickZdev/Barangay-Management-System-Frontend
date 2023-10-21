@@ -159,3 +159,13 @@ export const transactionFormValidation = Yup.object().shape({
   paymentAmount: Yup.string().required("This is a required field."),
   contactNumber: Yup.string(),
 });
+
+export const indigentBenefitFormValidation = Yup.object().shape({
+  receiverName: Yup.string().required("This is a required field."),
+  relationName: Yup.string().required("This is a required field."),
+});
+
+export const adminFormValidation = Yup.object().shape({
+  adminName: Yup.string().required("This is a required field."),
+  adminRole: Yup.string().required("This is a required field."),
+});

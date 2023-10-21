@@ -170,6 +170,7 @@ export type IndigentBenefitsPropType = {
   status?: string;
   receiver?: string;
   relation?: string;
+  birthDate: string;
   monthAndYear?: string;
 };
 

@@ -6,6 +6,8 @@ import MaterialReactTable, {
 import { Box, IconButton, Tooltip } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Edit from "@mui/icons-material/Edit";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
 import { mkConfig, generateCsv, download } from "export-to-csv"; //or use your library of choice here
 
@@ -19,6 +21,8 @@ import ModalWarning from "./modals/alert/ModalWarning";
 import dayjs from "dayjs";
 import ModalExportData from "./modals/ModalExportData";
 import { string } from "yup";
+import ModalReceiveBenefit from "./modals/ModalReceiveBenefit";
+import useUpdateIndigentBenefit from "../queries/indigentBenefit/useUpdateIndigentBenefit";
 
 type TableTypeProps<T extends Record<string, any>> = {
   data: T[];
@@ -29,6 +33,7 @@ type TableTypeProps<T extends Record<string, any>> = {
   showEditButton?: boolean;
   showDeleteButton?: boolean;
   showExportButton?: boolean;
+  showIndigentButton?: boolean;
   refreshButton?: () => void;
   deleteButton?: UseMutateFunction<string, unknown, string, unknown>;
   children?: React.ReactNode;
@@ -43,6 +48,7 @@ const Table = <T extends Record<string, any>>({
   showEditButton = true,
   showDeleteButton = true,
   showExportButton,
+  showIndigentButton,
   refreshButton,
   deleteButton,
   children,
@@ -59,6 +65,12 @@ const Table = <T extends Record<string, any>>({
     useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
+  const [showIndigentModal, setShowIndigentModal] = useState<boolean>(false);
+  const [showIndigentSelfModal, setShowIndigentSelfModal] =
+    useState<boolean>(false);
+
+  const { mutateAsync: updateIndigent } = useUpdateIndigentBenefit();
+
   const handleDelete = () => {
     if (deleteButton && rowId) {
       deleteButton(rowId);
@@ -66,10 +78,6 @@ const Table = <T extends Record<string, any>>({
 
     setShowDeleteModal(false);
   };
-
-  useEffect(() => {
-    setDefaultPath(location.pathname === "/");
-  }, []);
 
   const csvConfig = mkConfig({
     fieldSeparator: ",",
@@ -91,6 +99,22 @@ const Table = <T extends Record<string, any>>({
   const handleSetFileName = (text: string) => {
     setFileName(text);
   };
+
+  const handleReceiveBySelf = async (indigentId: string) => {
+    await updateIndigent({
+      indigentBenefitId: indigentId,
+      updatedData: {
+        status: "Received",
+        receiver: "Self",
+      },
+    });
+
+    setShowIndigentSelfModal(false);
+  };
+
+  useEffect(() => {
+    setDefaultPath(location.pathname === "/");
+  }, []);
 
   return (
     <div>
@@ -143,6 +167,42 @@ const Table = <T extends Record<string, any>>({
                   <Delete color="error" />
                 </IconButton>
               </Tooltip>
+            )}
+
+            {showIndigentButton && row.original.status === "Not Received" && (
+              <>
+                <Tooltip
+                  arrow
+                  title="Received by Others"
+                  onClick={() => {
+                    setRowId(row.original._id);
+                    setShowIndigentModal(true);
+                  }}
+                >
+                  <IconButton>
+                    <CompareArrowsIcon
+                      className="text-yellow-500"
+                      sx={{ color: "rgb(234, 179, 8)" }}
+                    />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip
+                  arrow
+                  title="Received by Self"
+                  onClick={() => {
+                    setRowId(row.original._id);
+                    setShowIndigentSelfModal(true);
+                  }}
+                >
+                  <IconButton>
+                    <KeyboardReturnIcon
+                      className="text-yellow-500"
+                      sx={{ color: "rgb(234, 179, 8)" }}
+                    />
+                  </IconButton>
+                </Tooltip>
+              </>
             )}
           </Box>,
         ]}
@@ -290,6 +350,22 @@ const Table = <T extends Record<string, any>>({
         handleSetFileName={handleSetFileName}
         handleSubmit={handleExportData}
         handleClose={() => setShowExportDataModal(false)}
+      />
+
+      <ModalReceiveBenefit
+        open={showIndigentModal}
+        handleClose={() => setShowIndigentModal(false)}
+        indigentId={rowId}
+      />
+
+      <ModalWarning
+        open={showIndigentSelfModal}
+        title="RECEIVING BY SELF"
+        description="Confirm to receive the benefit by self."
+        primaryButtonLabel="Confirm"
+        secondaryButtonLabel="Cancel"
+        handlePrimaryButton={() => handleReceiveBySelf(rowId ?? "")}
+        handleSecondaryButton={() => setShowIndigentSelfModal(false)}
       />
     </div>
   );
