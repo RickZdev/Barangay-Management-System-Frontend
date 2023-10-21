@@ -141,7 +141,7 @@ export const rootRouter = createBrowserRouter(
       </Route>
 
       {/* error */}
-      <Route path="*" element={<NotFound />} />
+      {/* <Route path="*" element={<NotFound />} /> */}
     </Route>
   )
 );
