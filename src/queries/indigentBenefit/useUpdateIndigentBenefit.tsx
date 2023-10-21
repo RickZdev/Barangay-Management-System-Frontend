@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateIndigentBenefit } from "../../services/apiHelper";
 
-const useUpdateIndigentBenefit = (indigentBenefitId: string | undefined) => {
+const useUpdateIndigentBenefit = () => {
   const queryClient = useQueryClient();
   const indigentBenefit = useMutation({
     mutationFn: updateIndigentBenefit,

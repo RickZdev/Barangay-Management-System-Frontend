@@ -331,7 +331,7 @@ const ResidentView: React.FC = () => {
                 <SelectField
                   register={register("purokNumber")}
                   label={"Purok No."}
-                  initialValue={resident?.purokNumber ?? ""}
+                  initialValue={resident?.purokNumber.toString() ?? ""}
                   selections={SELECTION.purokSelection}
                   isEdit={isEdit}
                   error={errors?.purokNumber?.message}

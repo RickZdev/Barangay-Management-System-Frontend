@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 
 import TopBar from "../../components/TopBar";
 import ModalAddTransaction from "../../components/modals/ModalAddTransaction";
@@ -8,6 +8,8 @@ import SidebarRouter from "../routes/SidebarRouter";
 import useAuthContext from "../../queries/auth/useAuthContext";
 
 export const RootLayout: React.FC = () => {
+  const navigate = useNavigate();
+
   const auth = useAuthContext();
 
   useEffect(() => {
@@ -25,8 +27,11 @@ export const RootLayout: React.FC = () => {
       auth.setUserId(userId);
       auth.setUserRole(userRole);
       auth.setAccessToken(token);
+    } else {
+      navigate("/");
     }
   }, []);
+
   return (
     <>
       <Outlet />

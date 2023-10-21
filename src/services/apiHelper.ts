@@ -1,4 +1,5 @@
-import axios from "axios";
+import { axios, authApi } from "./axios-config";
+
 import type {
   AdminAccountPropType,
   AllOfficialsPropType,
@@ -11,15 +12,11 @@ import type {
   LoginAuditPropType,
   LoginPropType,
   ResidentPropType,
-  SignupPropType,
   SulatReklamoPropType,
   TransactionPropType,
   UserPropType,
 } from "../utils/types";
 import { getResidentAge } from "../helper/getResidentAge";
-
-// const BASE_URL = import.meta.env.VITE_LOCAL_SERVER_URL;
-const BASE_URL = import.meta.env.VITE_API_SERVER_URL;
 
 // auth functions
 export const loginUser = async ({
@@ -30,10 +27,11 @@ export const loginUser = async ({
   password: string;
 }): Promise<LoginPropType> => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/auth/login`, {
+    const response = await authApi.post("/api/auth/login", {
       username: username,
       password: password,
     });
+
     return response.data;
   } catch (error: any) {
     console.log(error.response.data.error);
@@ -49,7 +47,7 @@ export const signupUser = async ({
   password: string;
 }) => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/auth/signup`, {
+    const response = await authApi.post(`/api/auth/signup`, {
       username: username,
       password: password,
     });
@@ -61,7 +59,7 @@ export const signupUser = async ({
 
 export const deleteAuthUser = async ({ userId }: { userId: string }) => {
   try {
-    const response = await axios.delete(`${BASE_URL}/api/auth/${userId}`);
+    const response = await authApi.delete(`/api/auth/${userId}`);
     return { message: "success", data: response.data, error: "" };
   } catch (error: any) {
     return { message: "error", data: "", error: error.response.data.error };
@@ -85,7 +83,7 @@ export const createUser = async ({
   };
 
   try {
-    const response = await axios.post(`${BASE_URL}/api/users/`, data);
+    const response = await authApi.post(`/api/users/`, data);
     return { message: "success", data: response.data, error: "" };
   } catch (error: any) {
     return { message: "error", data: "", error: error.response.data.error };
@@ -96,9 +94,7 @@ export const getUserById = async (
   id: string | undefined
 ): Promise<UserPropType> => {
   try {
-    const response = await axios.get<UserPropType>(
-      `${BASE_URL}/api/users/${id}`
-    );
+    const response = await authApi.get<UserPropType>(`/api/users/${id}`);
 
     return response.data;
   } catch (error: any) {
@@ -114,10 +110,7 @@ export const updateUser = async ({
   updatedData: any;
 }): Promise<string> => {
   try {
-    const response = await axios.patch(
-      `${BASE_URL}/api/users/${userId}`,
-      updatedData
-    );
+    const response = await authApi.patch(`/api/users/${userId}`, updatedData);
     return response.data;
   } catch (error: any) {
     console.log(error.response.data.error);
@@ -128,10 +121,11 @@ export const updateUser = async ({
 // resident functions
 export const getAllResidents = async (): Promise<ResidentPropType[]> => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/residents`);
+    const response = await axios.get(`/api/residents`);
+
     return response.data;
   } catch (error: any) {
-    return error.response.data.error;
+    throw error.response.data.error;
   }
 };
 
@@ -159,7 +153,7 @@ export const createResident = async (residentData: ResidentPropType) => {
   } = residentData;
 
   try {
-    const response = await axios.post(`${BASE_URL}/api/residents`, {
+    const response = await axios.post(`/api/residents`, {
       _id,
       lastName,
       firstName,
@@ -191,9 +185,7 @@ export const getResidentById = async (
   id: string | undefined | null
 ): Promise<ResidentPropType> => {
   try {
-    const response = await axios.get<ResidentPropType>(
-      `${BASE_URL}/api/residents/${id}`
-    );
+    const response = await axios.get<ResidentPropType>(`/api/residents/${id}`);
 
     let { birthDate } = response.data;
     let { ...residentDetails } = response.data;
@@ -207,9 +199,7 @@ export const getResidentById = async (
 
 export const deleteResident = async (residentId: string): Promise<string> => {
   try {
-    const response = await axios.delete(
-      `${BASE_URL}/api/residents/${residentId}`
-    );
+    const response = await axios.delete(`/api/residents/${residentId}`);
 
     const official = await getOfficialPosition(residentId);
 
@@ -238,7 +228,7 @@ export const updateResident = async ({
 }) => {
   try {
     const response = await axios.patch(
-      `${BASE_URL}/api/residents/${residentId}`,
+      `/api/residents/${residentId}`,
       updatedData
     );
     return response.data;
@@ -249,9 +239,7 @@ export const updateResident = async ({
 
 export const searchResidents = async (searchText: string) => {
   try {
-    const response = await axios.get(
-      `${BASE_URL}/api/residents/search/${searchText}`
-    );
+    const response = await axios.get(`/api/residents/search/${searchText}`);
     return response.data;
   } catch (error: any) {
     return error.response.data.error;
@@ -261,7 +249,7 @@ export const searchResidents = async (searchText: string) => {
 // complaints function
 export const getAllComplaints = async (): Promise<ComplaintsPropType[]> => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/complaints`);
+    const response = await axios.get(`/api/complaints`);
     return response.data;
   } catch (error: any) {
     return error.response.data.error;
@@ -273,7 +261,7 @@ export const getComplaintById = async (
 ): Promise<ComplaintsPropType> => {
   try {
     const response = await axios.get<ComplaintsPropType>(
-      `${BASE_URL}/api/complaints/${id}`
+      `/api/complaints/${id}`
     );
 
     return response.data;
@@ -297,7 +285,7 @@ export const createComplaint = async (
     incidentDateAndTime,
   } = complaintData;
   try {
-    const response = await axios.post(`${BASE_URL}/api/complaints`, {
+    const response = await axios.post(`/api/complaints`, {
       complainantsId,
       complainantsName,
       complainantsAddress,
@@ -318,9 +306,7 @@ export const createComplaint = async (
 
 export const deleteComplaint = async (complaintId: string): Promise<string> => {
   try {
-    const response = await axios.delete(
-      `${BASE_URL}/api/complaints/${complaintId}`
-    );
+    const response = await axios.delete(`/api/complaints/${complaintId}`);
     return response.data;
   } catch (error: any) {
     console.log(error.response.data.error);
@@ -337,12 +323,11 @@ export const updateComplaint = async ({
 }): Promise<string> => {
   try {
     const response = await axios.patch(
-      `${BASE_URL}/api/complaints/${complaintId}`,
+      `/api/complaints/${complaintId}`,
       status
     );
     return response.data;
   } catch (error: any) {
-    console.log(error.response.data.error);
     return error.response.data.error;
   }
 };
@@ -352,10 +337,10 @@ export const getAllAnnouncements = async (): Promise<
   AnnouncementPropType[]
 > => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/announcements`);
+    const response = await axios.get(`/api/announcements`);
     return response.data;
   } catch (error: any) {
-    return error.response.data.error;
+    throw error.response.data.error;
   }
 };
 
@@ -364,7 +349,7 @@ export const getAnnouncementById = async (
 ): Promise<AnnouncementPropType> => {
   try {
     const response = await axios.get<AnnouncementPropType>(
-      `${BASE_URL}/api/announcements/${id}`
+      `/api/announcements/${id}`
     );
 
     return response.data;
@@ -385,7 +370,7 @@ export const createAnnouncement = async (
     datePosted,
   } = announcementData;
   try {
-    const response = await axios.post(`${BASE_URL}/api/announcements`, {
+    const response = await axios.post(`/api/announcements`, {
       _id,
       announcementTitle,
       announcementMessage,
@@ -404,9 +389,7 @@ export const deleteAnnouncement = async (
   announcementId: string
 ): Promise<string> => {
   try {
-    const response = await axios.delete(
-      `${BASE_URL}/api/announcements/${announcementId}`
-    );
+    const response = await axios.delete(`/api/announcements/${announcementId}`);
     return response.data;
   } catch (error: any) {
     console.log(error);
@@ -423,7 +406,7 @@ export const updateAnnouncement = async ({
 }): Promise<string> => {
   try {
     const response = await axios.patch(
-      `${BASE_URL}/api/announcements/${announcementId}`,
+      `/api/announcements/${announcementId}`,
       updatedData
     );
     return response.data;
@@ -436,7 +419,7 @@ export const updateAnnouncement = async ({
 // transactions function
 export const getAllTransactions = async (): Promise<TransactionPropType[]> => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/transactions`);
+    const response = await axios.get(`/api/transactions`);
     return response.data;
   } catch (error: any) {
     return error.response.data.error;
@@ -448,7 +431,7 @@ export const getTransactionById = async (
 ): Promise<TransactionPropType> => {
   try {
     const response = await axios.get<TransactionPropType>(
-      `${BASE_URL}/api/transactions/${id}`
+      `/api/transactions/${id}`
     );
 
     return response.data;
@@ -471,7 +454,7 @@ export const createTransaction = async (
     officialInCharge,
   } = transactionData;
   try {
-    const response = await axios.post(`${BASE_URL}/api/transactions`, {
+    const response = await axios.post(`/api/transactions`, {
       _id,
       residentId,
       residentName,
@@ -492,9 +475,7 @@ export const deleteTransaction = async (
   transactionId: string
 ): Promise<string> => {
   try {
-    const response = await axios.delete(
-      `${BASE_URL}/api/transactions/${transactionId}`
-    );
+    const response = await axios.delete(`/api/transactions/${transactionId}`);
     return response.data;
   } catch (error: any) {
     console.log(error.response.data.error);
@@ -505,7 +486,7 @@ export const deleteTransaction = async (
 // admins function
 export const getAllAdmins = async (): Promise<AdminAccountPropType[]> => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/admins`);
+    const response = await axios.get(`/api/admins`);
     return response.data;
   } catch (error: any) {
     return error.response.data.error;
@@ -516,9 +497,7 @@ export const getAdminById = async (
   id: string | undefined
 ): Promise<AdminAccountPropType> => {
   try {
-    const response = await axios.get<AdminAccountPropType>(
-      `${BASE_URL}/api/admins/${id}`
-    );
+    const response = await axios.get<AdminAccountPropType>(`/api/admins/${id}`);
 
     return response.data;
   } catch (error: any) {
@@ -534,7 +513,7 @@ export const createAdmin = async ({
   adminRole: string;
 }): Promise<string> => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/admins/`, {
+    const response = await axios.post(`/api/admins/`, {
       adminId,
       adminRole,
     });
@@ -548,7 +527,7 @@ export const createAdmin = async ({
 
 export const deleteAdmin = async (adminId: string): Promise<string> => {
   try {
-    const response = await axios.delete(`${BASE_URL}/api/admins/${adminId}`);
+    const response = await axios.delete(`/api/admins/${adminId}`);
     return response.data;
   } catch (error: any) {
     console.log(error.response.data.error);
@@ -559,7 +538,7 @@ export const deleteAdmin = async (adminId: string): Promise<string> => {
 // login audits function
 export const getAllLoginAudits = async (): Promise<LoginAuditPropType[]> => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/loginaudits`);
+    const response = await axios.get(`/api/loginaudits`);
     return response.data;
   } catch (error: any) {
     return error.response.data.error;
@@ -571,7 +550,7 @@ export const getLoginAuditById = async (
 ): Promise<LoginAuditPropType[]> => {
   try {
     const response = await axios.get<LoginAuditPropType[]>(
-      `${BASE_URL}/api/loginaudits/${id}`
+      `/api/loginaudits/${id}`
     );
 
     return response.data;
@@ -585,7 +564,7 @@ export const getAllBorrowedInventory = async (): Promise<
   BorrowedInventoryPropType[]
 > => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/borrowedinventory`);
+    const response = await axios.get(`/api/borrowedinventory`);
     return response.data;
   } catch (error: any) {
     return error.response.data.error;
@@ -597,7 +576,7 @@ export const getBorrowedInventoryById = async (
 ): Promise<BorrowedInventoryPropType> => {
   try {
     const response = await axios.get<BorrowedInventoryPropType>(
-      `${BASE_URL}/api/borrowedinventory/${id}`
+      `/api/borrowedinventory/${id}`
     );
 
     return response.data;
@@ -620,7 +599,7 @@ export const createBorrowedInventory = async (
     officialInCharge,
   } = borrowedInventoryData;
   try {
-    const response = await axios.post(`${BASE_URL}/api/borrowedinventory`, {
+    const response = await axios.post(`/api/borrowedinventory`, {
       borroweeId,
       borroweeName,
       borroweeContactNumber,
@@ -642,7 +621,7 @@ export const deleteBorrowedInventory = async (
 ): Promise<string> => {
   try {
     const response = await axios.delete(
-      `${BASE_URL}/api/borrowedinventory/${borrowedInventoryId}`
+      `/api/borrowedinventory/${borrowedInventoryId}`
     );
     return response.data;
   } catch (error: any) {
@@ -656,7 +635,7 @@ export const getAllBorrowedRecords = async (): Promise<
   BorrowedRecordsPropType[]
 > => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/borrowedrecords`);
+    const response = await axios.get(`/api/borrowedrecords`);
     return response.data;
   } catch (error: any) {
     return error.response.data.error;
@@ -682,7 +661,7 @@ export const createBorrowedRecord = async ({
       officialInCharge,
     } = await getBorrowedInventoryById(borrowedId);
 
-    const response = await axios.post(`${BASE_URL}/api/borrowedrecords`, {
+    const response = await axios.post(`/api/borrowedrecords`, {
       borroweeId,
       borroweeName,
       borroweeContactNumber,
@@ -705,7 +684,7 @@ export const deleteBorrowedRecord = async (
 ): Promise<string> => {
   try {
     const response = await axios.delete(
-      `${BASE_URL}/api/borrowedrecords/${borrowedRecordId}`
+      `/api/borrowedrecords/${borrowedRecordId}`
     );
 
     console.log(response.data);
@@ -719,9 +698,7 @@ export const deleteBorrowedRecord = async (
 // officials function
 export const getAllOfficials = async (): Promise<ResidentPropType[]> => {
   try {
-    const officials = await axios.get<AllOfficialsPropType[]>(
-      `${BASE_URL}/api/officials`
-    );
+    const officials = await axios.get<AllOfficialsPropType[]>(`/api/officials`);
 
     const officialWithPosition = officials?.data.filter(
       (official) => official.residentId !== ""
@@ -743,10 +720,9 @@ export const getAllOfficials = async (): Promise<ResidentPropType[]> => {
 
 export const getOfficialByPosition = async (position: string | undefined) => {
   try {
-    const response = await axios.get<AllOfficialsPropType>(
-      `${BASE_URL}/api/officials/${position}`
-    );
-    return response.data;
+    const response = await axios.get(`/api/officials/${position}`);
+
+    return { message: "success", data: response?.data, error: "" };
   } catch (error: any) {
     return { message: "error", data: "", error: error.response.data.error };
   }
@@ -754,9 +730,7 @@ export const getOfficialByPosition = async (position: string | undefined) => {
 
 export const deleteOfficial = async (officialId: string): Promise<string> => {
   try {
-    const response = await axios.delete(
-      `${BASE_URL}/api/officials/${officialId}`
-    );
+    const response = await axios.delete(`/api/officials/${officialId}`);
     return response.data;
   } catch (error: any) {
     console.log(error.response.data.error);
@@ -773,7 +747,7 @@ export const updateOfficial = async ({
 }) => {
   try {
     const response = await axios.patch(
-      `${BASE_URL}/api/officials/${position}`,
+      `/api/officials/${position}`,
       updatedData
     );
     return { message: "success", data: response.data, error: "" };
@@ -786,9 +760,7 @@ export const getOfficialPosition = async (
   residentId: string | undefined
 ): Promise<AllOfficialsPropType | undefined> => {
   try {
-    const officials = await axios.get<AllOfficialsPropType[]>(
-      `${BASE_URL}/api/officials`
-    );
+    const officials = await axios.get<AllOfficialsPropType[]>(`api/officials`);
 
     const officialWithPosition = officials?.data.filter(
       (official) => official.residentId !== ""
@@ -807,7 +779,7 @@ export const getOfficialPosition = async (
 // blotter function
 export const getAllBlotters = async (): Promise<BlotterPropType[]> => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/blotters`);
+    const response = await axios.get(`/api/blotters`);
     return response.data;
   } catch (error: any) {
     return error.response.data.error;
@@ -818,9 +790,7 @@ export const getBlotterById = async (
   id: string | undefined
 ): Promise<BlotterPropType> => {
   try {
-    const response = await axios.get<BlotterPropType>(
-      `${BASE_URL}/api/blotters/${id}`
-    );
+    const response = await axios.get<BlotterPropType>(`/api/blotters/${id}`);
 
     return response.data;
   } catch (error: any) {
@@ -832,7 +802,7 @@ export const createBlotter = async (
   blotterData: BlotterPropType
 ): Promise<BlotterPropType | null | undefined> => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/blotters`, {
+    const response = await axios.post(`/api/blotters`, {
       ...blotterData,
     });
     return response.data;
@@ -844,9 +814,7 @@ export const createBlotter = async (
 
 export const deleteBlotter = async (blotterId: string): Promise<string> => {
   try {
-    const response = await axios.delete(
-      `${BASE_URL}/api/blotters/${blotterId}`
-    );
+    const response = await axios.delete(`/api/blotters/${blotterId}`);
     return response.data;
   } catch (error: any) {
     console.log(error.response.data.error);
@@ -862,10 +830,7 @@ export const updateBlotter = async ({
   status: string;
 }): Promise<string> => {
   try {
-    const response = await axios.patch(
-      `${BASE_URL}/api/blotters/${blotterId}`,
-      status
-    );
+    const response = await axios.patch(`/api/blotters/${blotterId}`, status);
     return response.data;
   } catch (error: any) {
     console.log(error.response.data.error);
@@ -876,7 +841,7 @@ export const updateBlotter = async ({
 // sulat reklamo function
 export const getAllSulatReklamo = async (): Promise<SulatReklamoPropType[]> => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/sulatreklamo`);
+    const response = await axios.get(`/api/sulatreklamo`);
     return response.data;
   } catch (error: any) {
     return error.response.data.error;
@@ -888,7 +853,7 @@ export const getSulatReklamoById = async (
 ): Promise<SulatReklamoPropType> => {
   try {
     const response = await axios.get<SulatReklamoPropType>(
-      `${BASE_URL}/api/sulatreklamo/${id}`
+      `/api/sulatreklamo/${id}`
     );
 
     return response.data;
@@ -901,7 +866,7 @@ export const createSulatReklamo = async (
   sulatReklamoData: SulatReklamoPropType
 ): Promise<SulatReklamoPropType | null | undefined> => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/sulatreklamo`, {
+    const response = await axios.post(`/api/sulatreklamo`, {
       ...sulatReklamoData,
     });
     return response.data;
@@ -915,9 +880,7 @@ export const deleteSulatReklamo = async (
   sulatReklamoId: string
 ): Promise<string> => {
   try {
-    const response = await axios.delete(
-      `${BASE_URL}/api/sulatreklamo/${sulatReklamoId}`
-    );
+    const response = await axios.delete(`/api/sulatreklamo/${sulatReklamoId}`);
     return response.data;
   } catch (error: any) {
     console.log(error.response.data.error);
@@ -934,7 +897,7 @@ export const updateSulatReklamo = async ({
 }): Promise<string> => {
   try {
     const response = await axios.patch(
-      `${BASE_URL}/api/sulatreklamo/${sulatReklamoId}`,
+      `/api/sulatreklamo/${sulatReklamoId}`,
       status
     );
     return response.data;
@@ -949,7 +912,7 @@ export const getAllIndigentBenefit = async (): Promise<
   IndigentBenefitsPropType[]
 > => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/indigentbenefits`);
+    const response = await axios.get(`/api/indigentbenefits`);
     return response.data;
   } catch (error: any) {
     return error.response.data.error;
@@ -964,12 +927,13 @@ export const createIndigentBenefit = async ({
   status,
   receiver,
   relation,
+  birthDate,
   monthAndYear,
 }: IndigentBenefitsPropType): Promise<
   IndigentBenefitsPropType[] | null | undefined
 > => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/indigentbenefits`, {
+    const response = await axios.post(`/api/indigentbenefits`, {
       residentId,
       residentName,
       pension,
@@ -978,6 +942,7 @@ export const createIndigentBenefit = async ({
       status,
       receiver,
       relation,
+      birthDate,
       monthAndYear,
     });
 
@@ -997,24 +962,12 @@ export const updateIndigentBenefit = async ({
 }): Promise<string> => {
   try {
     const response = await axios.patch(
-      `${BASE_URL}/api/indigentbenefits/${indigentBenefitId}`,
+      `/api/indigentbenefits/${indigentBenefitId}`,
       updatedData
     );
     return response.data;
   } catch (error: any) {
     console.log(error.response.data.error);
-    return error.response.data.error;
-  }
-};
-
-export const getIndigentBenefitAge = async (
-  indigentId: string | undefined
-): Promise<number | undefined> => {
-  try {
-    const age = await getResidentById(indigentId);
-
-    return age.age;
-  } catch (error: any) {
     return error.response.data.error;
   }
 };

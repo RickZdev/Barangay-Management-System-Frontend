@@ -15,10 +15,10 @@ const useGetOfficialByPosition = (position: string | undefined) => {
     }
   );
 
-  const details = useGetResidentById(official.data?.residentId);
+  const details = useGetResidentById(official?.data?.data?.residentId);
 
   const data: OfficialPropType = {
-    _id: official?.data?._id,
+    _id: official?.data?.data?._id,
     position: position,
     officialDetails: details.data,
   };

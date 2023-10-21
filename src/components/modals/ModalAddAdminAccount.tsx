@@ -1,5 +1,5 @@
 import { Dialog, IconButton, Tooltip } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "../Card";
 import CardHeader from "../CardHeader";
 import { ResidentPropType } from "../../utils/types";
@@ -10,6 +10,9 @@ import { useForm } from "react-hook-form";
 import useCreateAdmin from "../../queries/admin/useCreateAdmin";
 import OfficialSearchableTextField from "../OfficialsSearchableTextField";
 import { Close } from "@mui/icons-material";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { adminFormValidation } from "../../utils/validation";
+import { getResidentFullName } from "../../helper/getResidentFullName";
 
 type ModalAddAdminAccountPropType = {
   open: boolean;
@@ -20,21 +23,57 @@ const ModalAddAdminAccount: React.FC<ModalAddAdminAccountPropType> = ({
   open,
   handleClose,
 }) => {
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    setValue,
+    setError,
+    clearErrors,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(adminFormValidation),
+  });
+
   const { mutate } = useCreateAdmin();
-  const [adminDetails, setAdminDetails] = useState<ResidentPropType>();
-  const handleChange = (resident: ResidentPropType | undefined) => {
-    setAdminDetails(resident);
+
+  const [isOfficialTextEmpty, setisOfficialTextEmpty] = useState<boolean>(true);
+  const [official, setOfficial] = useState<ResidentPropType | undefined>();
+
+  const onSubmit = (data: any) => {
+    const { adminRole } = data;
+
+    mutate({ adminId: official?._id, adminRole: adminRole });
+
+    setOfficial(undefined);
+    setValue("adminName", "");
+    setValue("adminRole", "");
+    clearErrors();
+    handleClose();
   };
 
-  const onSubmit = (event: any) => {
-    handleClose();
-    const { adminRole } = event;
-    mutate({ adminId: adminDetails?._id, adminRole: adminRole });
-    console.log({
-      adminId: adminDetails?._id,
-    });
-  };
+  useEffect(() => {
+    if (isOfficialTextEmpty) {
+      setValue(
+        "adminName",
+        getResidentFullName({
+          lastName: official?.lastName,
+          firstName: official?.firstName,
+          middleName: official?.middleName,
+          suffix: official?.suffix,
+        })
+      );
+
+      clearErrors("adminName");
+    } else {
+      setValue("adminName", "");
+      setError("adminName", { message: "This is a required field." });
+    }
+  }, [isOfficialTextEmpty]);
+
+  useEffect(() => {
+    setValue("adminName", "");
+    setValue("adminRole", "");
+  }, []);
 
   return (
     <Dialog
@@ -53,23 +92,35 @@ const ModalAddAdminAccount: React.FC<ModalAddAdminAccountPropType> = ({
               title="Close"
               sx={{ alignSelf: "flex-end" }}
               color="error"
-              onClick={handleClose}
+              onClick={() => {
+                setOfficial(undefined);
+                setValue("adminName", "");
+                setValue("adminRole", "");
+                clearErrors();
+                handleClose();
+              }}
             >
               <IconButton>
                 <Close color="error" />
               </IconButton>
             </Tooltip>
-            <CardHeader title="Add Admin Account" />
+
+            <CardHeader title="Add/Edit Admin Account" />
+
             <OfficialSearchableTextField
               label="Admin User"
-              handleChange={handleChange}
               isEdit
+              handleChange={setOfficial}
+              handleIsEmptyText={setisOfficialTextEmpty}
+              error={errors?.adminName?.message}
             />
+
             <SelectField
               label="Admin Role"
               selections={SELECTION.adminRoleTypeSelection}
               isEdit
               register={register("adminRole")}
+              error={errors?.adminRole?.message}
             />
 
             <div className="flex justify-end">

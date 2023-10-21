@@ -9,9 +9,11 @@ import {
 export type AuthContextType = {
   userId: string | null | undefined;
   setUserId: Dispatch<SetStateAction<string | null | undefined>>;
-  userRole: "Resident" | "Captain" | "Administrator" | "Moderator";
+  userRole: "Resident" | "Captain" | "Administrator" | "Moderator" | null;
   setUserRole: Dispatch<
-    SetStateAction<"Resident" | "Captain" | "Administrator" | "Moderator">
+    SetStateAction<
+      "Resident" | "Captain" | "Administrator" | "Moderator" | null
+    >
   >;
   accessToken: string | null | undefined;
   setAccessToken: Dispatch<SetStateAction<string | null>>;
@@ -22,7 +24,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 const ContextProvider = ({ children }: { children: ReactNode }) => {
   const [userId, setUserId] = useState<string | null | undefined>(null);
   const [userRole, setUserRole] = useState<
-    "Resident" | "Captain" | "Administrator" | "Moderator"
+    "Resident" | "Captain" | "Administrator" | "Moderator" | null
   >("Resident");
   const [accessToken, setAccessToken] = useState<string | null>(null);
 

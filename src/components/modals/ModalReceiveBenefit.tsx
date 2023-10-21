@@ -1,21 +1,14 @@
 import { Dialog, IconButton, Tooltip } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "../Card";
 import CardHeader from "../CardHeader";
 import { useForm } from "react-hook-form";
 import SubmitButton from "../SubmitButton";
-import SelectField from "../SelectField";
-import SELECTION from "../../constants/SELECTION";
-import NumberField from "../NumberField";
-import SearchableTextField from "../SearchableTextField";
-import { ResidentPropType } from "../../utils/types";
-import dayjs from "dayjs";
-import useCreateTransaction from "../../queries/transaction/useCreateTransaction";
-import { getResidentFullName } from "../../helper/getResidentFullName";
 import { Close } from "@mui/icons-material";
-import useAuthContext from "../../queries/auth/useAuthContext";
 import TextField from "../TextField";
 import useUpdateIndigentBenefit from "../../queries/indigentBenefit/useUpdateIndigentBenefit";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { indigentBenefitFormValidation } from "../../utils/validation";
 
 type ModalAddTransactionPropType = {
   indigentId: string | undefined;
@@ -28,20 +21,34 @@ const ModalReceiveBenefit: React.FC<ModalAddTransactionPropType> = ({
   open,
   handleClose,
 }) => {
-  const { register, handleSubmit } = useForm();
-  const { mutate } = useUpdateIndigentBenefit(indigentId);
+  const {
+    register,
+    setValue,
+    clearErrors,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(indigentBenefitFormValidation) });
+  const { mutateAsync } = useUpdateIndigentBenefit();
 
-  const onSubmit = (event: any) => {
-    handleClose();
-
-    mutate({
+  const onSubmit = async (data: any) => {
+    await mutateAsync({
       indigentBenefitId: indigentId,
       updatedData: {
         status: "Received",
-        ...event,
+        receiver: data?.receiverName,
+        relation: data?.relationName,
       },
     });
+
+    setValue("receiverName", "");
+    setValue("relationName", "");
+    handleClose();
   };
+
+  useEffect(() => {
+    setValue("receiverName", "");
+    setValue("relationName", "");
+  }, []);
 
   return (
     <Dialog
@@ -62,27 +69,35 @@ const ModalReceiveBenefit: React.FC<ModalAddTransactionPropType> = ({
             title="Close"
             sx={{ alignSelf: "flex-end" }}
             color="error"
-            onClick={handleClose}
+            onClick={() => {
+              setValue("receiverName", "");
+              setValue("relationName", "");
+              clearErrors();
+              handleClose();
+            }}
           >
             <IconButton>
               <Close color="error" />
             </IconButton>
           </Tooltip>
-          <CardHeader title="Receive Benefit" isRequired />
-          <h1>{indigentId}</h1>
+
+          <CardHeader title="Receive Benefit" />
+
           <TextField
-            label="Receiver Name"
+            label="Receiver's Name"
             isEdit
-            register={register}
-            name="receiver"
+            register={register("receiverName")}
+            error={errors?.receiverName?.message}
           />
 
           <TextField
-            label="Relation Name"
+            label="Relation to the Indigent"
             isEdit
-            register={register}
-            name="relation"
+            register={register("relationName")}
+            error={errors?.relationName?.message}
           />
+
+          {/* <Num */}
 
           <div className="flex justify-end">
             <SubmitButton label="Submit" />
