@@ -309,35 +309,6 @@ const ResidentView: React.FC = () => {
                 />
               </div>
             </Card>
-            <Card>
-              <CardHeader title="Address Details" />
-              <div className="space-y-3">
-                <NumberField
-                  register={register("houseNumber")}
-                  label={"House No."}
-                  isEdit={isEdit}
-                  isOptional
-                  error={errors?.houseNumber?.message}
-                />
-
-                <TextField
-                  register={register("streetAddress")}
-                  label={"Street Address"}
-                  isEdit={isEdit}
-                  isCapitalize
-                  error={errors?.streetAddress?.message}
-                />
-
-                <SelectField
-                  register={register("purokNumber")}
-                  label={"Purok No."}
-                  initialValue={resident?.purokNumber.toString() ?? ""}
-                  selections={SELECTION.purokSelection}
-                  isEdit={isEdit}
-                  error={errors?.purokNumber?.message}
-                />
-              </div>
-            </Card>
           </div>
 
           <div className="flex flex-col space-y-6">
@@ -372,14 +343,33 @@ const ResidentView: React.FC = () => {
               </div>
             </Card>
             <Card>
-              <TextAreaField
-                register={register("profileNotes")}
-                label="Profile Notes"
-                initialValue={resident?.profileNotes}
-                rows={8}
-                isOptional
-                isEdit={isEdit}
-              />
+              <CardHeader title="Address Details" />
+              <div className="space-y-3">
+                <NumberField
+                  register={register("houseNumber")}
+                  label={"House No."}
+                  isEdit={isEdit}
+                  isOptional
+                  error={errors?.houseNumber?.message}
+                />
+
+                <TextField
+                  register={register("streetAddress")}
+                  label={"Street Address"}
+                  isEdit={isEdit}
+                  isCapitalize
+                  error={errors?.streetAddress?.message}
+                />
+
+                <SelectField
+                  register={register("purokNumber")}
+                  label={"Purok No."}
+                  initialValue={resident?.purokNumber.toString() ?? ""}
+                  selections={SELECTION.purokSelection}
+                  isEdit={isEdit}
+                  error={errors?.purokNumber?.message}
+                />
+              </div>
             </Card>
             <div className="flex justify-end space-x-3 mt-6">
               {!isEdit ? (

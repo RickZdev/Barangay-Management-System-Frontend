@@ -11,9 +11,9 @@ const useUpdateResident = (residentId: string | undefined) => {
     mutationFn: updateResident,
     onSuccess: async (data) => {
       console.log("success!", data);
-      if (data?.data?.profilePhoto) {
-        await handleDeleteImage(data?.data?.profilePhoto);
-      }
+      // if (data?.data?.profilePhoto) {
+      //   await handleDeleteImage(data?.data?.profilePhoto);
+      // }
 
       queryClient.invalidateQueries(["resident", residentId]);
     },

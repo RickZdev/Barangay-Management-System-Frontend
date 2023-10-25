@@ -33,6 +33,7 @@ import {
   ComplaintsLayout,
   IndigentLayout,
   InventoryLayout,
+  ProfileLayout,
   ResidentLayout,
   RootLayout,
   SidebarLayout,
@@ -84,6 +85,10 @@ export const rootRouter = createBrowserRouter(
           <Route path="resident" element={<Resident />} />
           <Route path="resident/add/" element={<ResidentAdd />} />
           <Route path="resident/view/:_id" element={<ResidentView />} />
+        </Route>
+
+        <Route element={<ProfileLayout />}>
+          <Route path="resident/profile/:_id" element={<ResidentView />} />
         </Route>
 
         <Route element={<BlotterLayout />}>
