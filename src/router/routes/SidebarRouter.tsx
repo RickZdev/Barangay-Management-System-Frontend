@@ -127,53 +127,91 @@ const SidebarRouter: React.FC = () => {
               </SubMenu>
             )}
 
-            <SubMenu
-              icon={<SummarizeIcon />}
-              style={iconStyle}
-              rootStyles={menuItemStyle}
-              component={<NavLink to="/blotter" />}
-              label="Blotter"
-            >
-              <CustomMenuItem
-                Icon={Add}
-                onClick={() => navigate("/blotter/add/resident")}
+            {/* BLOTTER */}
+            {auth?.userRole !== "Resident" ? (
+              <SubMenu
+                icon={<SummarizeIcon />}
+                style={iconStyle}
+                rootStyles={menuItemStyle}
+                component={<NavLink to="/blotter" />}
+                label="Blotter"
               >
-                Create Resident Blotter
-              </CustomMenuItem>
-              <CustomMenuItem
-                Icon={Add}
-                onClick={() => navigate("/blotter/add/non-resident")}
+                <CustomMenuItem
+                  Icon={Add}
+                  onClick={() => navigate("/blotter/add/resident")}
+                >
+                  Create Resident Blotter
+                </CustomMenuItem>
+                <CustomMenuItem
+                  Icon={Add}
+                  onClick={() => navigate("/blotter/add/non-resident")}
+                >
+                  Create Non-Resident Blotter
+                </CustomMenuItem>
+              </SubMenu>
+            ) : (
+              <MenuItem
+                component={<NavLink to="/blotter" />}
+                icon={<SummarizeIcon />}
+                style={iconStyle}
+                rootStyles={menuItemStyle}
               >
-                Create Non-Resident Blotter
-              </CustomMenuItem>
-            </SubMenu>
-            <SubMenu
-              icon={<AnnouncementIcon />}
-              style={iconStyle}
-              component={<NavLink to="/complaints" />}
-              label="Complaints"
-            >
-              <CustomMenuItem
-                Icon={Add}
-                onClick={() => navigate("/complaints/add")}
+                Blotter
+              </MenuItem>
+            )}
+
+            {/* COMPLAINTS */}
+            {auth?.userRole !== "Resident" ? (
+              <SubMenu
+                icon={<AnnouncementIcon />}
+                style={iconStyle}
+                component={<NavLink to="/complaints" />}
+                label="Complaints"
               >
-                Create Complaints
-              </CustomMenuItem>
-            </SubMenu>
-            <SubMenu
-              icon={<GavelIcon />}
-              style={iconStyle}
-              rootStyles={menuItemStyle}
-              component={<NavLink to="/sulat-reklamo/" />}
-              label="Sulat Reklamo"
-            >
-              <CustomMenuItem
-                Icon={Add}
-                onClick={() => navigate("/sulat-reklamo/add")}
+                <CustomMenuItem
+                  Icon={Add}
+                  onClick={() => navigate("/complaints/add")}
+                >
+                  Create Complaints
+                </CustomMenuItem>
+              </SubMenu>
+            ) : (
+              <MenuItem
+                component={<NavLink to="/complaints" />}
+                icon={<AnnouncementIcon />}
+                style={iconStyle}
+                rootStyles={menuItemStyle}
               >
-                Create Sulat Reklamo
-              </CustomMenuItem>
-            </SubMenu>
+                Complaints
+              </MenuItem>
+            )}
+
+            {/* SULAT REKLAMO */}
+            {auth?.userRole !== "Resident" ? (
+              <SubMenu
+                icon={<GavelIcon />}
+                style={iconStyle}
+                rootStyles={menuItemStyle}
+                component={<NavLink to="/sulat-reklamo" />}
+                label="Sulat Reklamo"
+              >
+                <CustomMenuItem
+                  Icon={Add}
+                  onClick={() => navigate("/sulat-reklamo/add")}
+                >
+                  Create Sulat Reklamo
+                </CustomMenuItem>
+              </SubMenu>
+            ) : (
+              <MenuItem
+                component={<NavLink to="/sulat-reklamo" />}
+                icon={<GavelIcon />}
+                style={iconStyle}
+                rootStyles={menuItemStyle}
+              >
+                Sulat Reklamo
+              </MenuItem>
+            )}
             <SubMenu
               icon={<ContentPasteSearchIcon />}
               style={iconStyle}

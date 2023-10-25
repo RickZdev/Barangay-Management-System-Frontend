@@ -11,19 +11,9 @@ import ViewDetails from "../../../components/ViewDetails";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import useAuthContext from "../../../queries/auth/useAuthContext";
 import useDeleteBorrowedRecord from "../../../queries/borrowedRecords/useDeleteBorrowedRecord";
+import _ from "lodash";
 
 const InventoryRecords: React.FC = React.memo(() => {
-  const auth = useAuthContext();
-
-  const {
-    data,
-    isLoading: isGetRecordsLoading,
-    isRefetching,
-    refetch,
-  } = useGetBorrowedRecords();
-
-  const { mutate: deleteInventory } = useDeleteBorrowedRecord();
-
   const columns = useMemo<MRT_ColumnDef<BorrowedRecordsPropType>[]>(
     () => [
       {
@@ -65,6 +55,29 @@ const InventoryRecords: React.FC = React.memo(() => {
     ],
     []
   );
+
+  const auth = useAuthContext();
+
+  const {
+    data: inventoryRecords,
+    isLoading: isGetRecordsLoading,
+    isRefetching,
+    refetch,
+  } = useGetBorrowedRecords();
+
+  const { mutate: deleteInventory } = useDeleteBorrowedRecord();
+
+  const InventoryRecordsForResident = useMemo(() => {
+    return _.filter(
+      inventoryRecords,
+      (inventoryRecord) => inventoryRecord?.borroweeId === auth?.userId
+    );
+  }, [inventoryRecords]);
+
+  const data =
+    auth?.userRole !== "Resident"
+      ? inventoryRecords
+      : InventoryRecordsForResident;
 
   const isLoading = isGetRecordsLoading || isRefetching;
 

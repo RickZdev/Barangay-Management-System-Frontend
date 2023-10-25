@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useGetResidentById from "../queries/resident/useGetResidentById";
 import { useState } from "react";
 import ModalFailed from "./modals/alert/ModalFailed";
+import useAuthContext from "../queries/auth/useAuthContext";
 
 type ViewDetailsPropType = {
   residentId: string | undefined;
@@ -14,6 +15,7 @@ const ViewDetails: React.FC<ViewDetailsPropType> = ({
   residentName,
 }) => {
   const navigation = useNavigate();
+  const auth = useAuthContext();
 
   const { data: resident } = useGetResidentById(residentId ?? "");
 
@@ -21,21 +23,25 @@ const ViewDetails: React.FC<ViewDetailsPropType> = ({
 
   return (
     <>
-      <Tooltip arrow title="View Resident Details">
-        <Typography
-          variant="body1"
-          onClick={() => {
-            if (resident?._id) {
-              navigation(`/resident/view/${residentId}`);
-            } else {
-              setShowErrorModal(true);
-            }
-          }}
-          sx={{ cursor: "pointer" }}
-        >
-          {residentName}
-        </Typography>
-      </Tooltip>
+      {auth?.userRole !== "Resident" ? (
+        <Tooltip arrow title="View Resident Details">
+          <Typography
+            variant="body1"
+            onClick={() => {
+              if (resident?._id) {
+                navigation(`/resident/view/${residentId}`);
+              } else {
+                setShowErrorModal(true);
+              }
+            }}
+            sx={{ cursor: "pointer" }}
+          >
+            {residentName}
+          </Typography>
+        </Tooltip>
+      ) : (
+        <Typography variant="body1">{residentName}</Typography>
+      )}
 
       <ModalFailed
         open={showErrorModal}

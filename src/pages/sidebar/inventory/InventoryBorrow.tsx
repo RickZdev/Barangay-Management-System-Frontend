@@ -15,18 +15,10 @@ import useGetBorrowedInventoryById from "../../../queries/borrowedInventory/useG
 import dayjs from "dayjs";
 import ViewDetails from "../../../components/ViewDetails";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
+import useAuthContext from "../../../queries/auth/useAuthContext";
+import _ from "lodash";
 
 const InventoryBorrow: React.FC = React.memo(() => {
-  const {
-    data,
-    isLoading: isBorrowedLoading,
-    isRefetching,
-    refetch,
-  } = useGetBorrowedInventory();
-
-  const { mutate: deleteItem } = useDeleteBorrowedInventory();
-  const { mutate: returnItem } = useCreateBorrowedRecord();
-
   const columns = useMemo<MRT_ColumnDef<BorrowedInventoryPropType>[]>(
     () => [
       {
@@ -69,10 +61,34 @@ const InventoryBorrow: React.FC = React.memo(() => {
     []
   );
 
+  const auth = useAuthContext();
+
+  const {
+    data: borrowedInventories,
+    isLoading: isBorrowedLoading,
+    isRefetching,
+    refetch,
+  } = useGetBorrowedInventory();
+
+  const { mutate: deleteItem } = useDeleteBorrowedInventory();
+  const { mutate: returnItem } = useCreateBorrowedRecord();
+
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
   const [showAction, setShowAction] = useState<boolean>(false);
   const [rows, setRows] = useState<Array<string>>([]);
+
+  const borrowedInventoryForResident = useMemo(() => {
+    return _.filter(
+      borrowedInventories,
+      (borrowedInventory) => borrowedInventory?.borroweeId === auth?.userId
+    );
+  }, [borrowedInventories]);
+
+  const data =
+    auth?.userRole !== "Resident"
+      ? borrowedInventories
+      : borrowedInventoryForResident;
 
   const isLoading = isBorrowedLoading || isRefetching || isProcessing;
 
@@ -108,8 +124,8 @@ const InventoryBorrow: React.FC = React.memo(() => {
         data={data ?? []}
         columns={columns}
         enableRowNumbers={false}
-        enableRowActions={true}
-        enableRowSelection
+        enableRowActions={auth?.userRole !== "Resident"}
+        enableRowSelection={auth?.userRole !== "Resident"}
         getRowId={(row) => row._id}
         onRowSelectionChange={setRowSelection}
         state={{ rowSelection }}
@@ -147,7 +163,6 @@ const InventoryBorrow: React.FC = React.memo(() => {
             </div>
           </div>
         )}
-        isError={false}
         showEditButton={false}
         showViewButton={false}
         refreshButton={refetch}
