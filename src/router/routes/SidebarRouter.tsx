@@ -23,6 +23,7 @@ import GavelIcon from "@mui/icons-material/Gavel";
 import { Add, Inventory, Visibility } from "@mui/icons-material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { SvgIconTypeMap } from "@mui/material";
+import useAuthContext from "../../queries/auth/useAuthContext";
 
 const SidebarRouter: React.FC = () => {
   const { collapseSidebar } = useProSidebar();
@@ -55,6 +56,8 @@ const SidebarRouter: React.FC = () => {
   // const gradientSecondColor = "#e27c39";
   // const backgroundColor = `rgb(243, 244, 248)`;
 
+  const auth = useAuthContext();
+
   return (
     <>
       <div className="pl-8 pt-[125px]" style={{ background: backgroundColor }}>
@@ -84,21 +87,22 @@ const SidebarRouter: React.FC = () => {
             >
               Dashboard
             </MenuItem>
-
-            <SubMenu
-              component={<NavLink to="/announcement" />}
-              icon={<CampaignIcon />}
-              style={iconStyle}
-              rootStyles={menuItemStyle}
-              label="Announcement"
-            >
-              <CustomMenuItem
-                Icon={Add}
-                onClick={() => navigate("/announcement/add/")}
+            {auth?.userRole !== "Resident" && (
+              <SubMenu
+                component={<NavLink to="/announcement" />}
+                icon={<CampaignIcon />}
+                style={iconStyle}
+                rootStyles={menuItemStyle}
+                label="Announcement"
               >
-                Add Announcement
-              </CustomMenuItem>
-            </SubMenu>
+                <CustomMenuItem
+                  Icon={Add}
+                  onClick={() => navigate("/announcement/add/")}
+                >
+                  Add Announcement
+                </CustomMenuItem>
+              </SubMenu>
+            )}
             <MenuItem
               icon={<SupervisorAccountIcon />}
               style={iconStyle}
@@ -107,19 +111,22 @@ const SidebarRouter: React.FC = () => {
             >
               Barangay Officials
             </MenuItem>
-            <SubMenu
-              icon={<PersonIcon />}
-              style={iconStyle}
-              component={<NavLink to="/resident" />}
-              label="Resident"
-            >
-              <CustomMenuItem
-                Icon={Add}
-                onClick={() => navigate("/resident/add/")}
+            {auth?.userRole !== "Resident" && (
+              <SubMenu
+                icon={<PersonIcon />}
+                style={iconStyle}
+                component={<NavLink to="/resident" />}
+                label="Resident"
               >
-                Add Resident
-              </CustomMenuItem>
-            </SubMenu>
+                <CustomMenuItem
+                  Icon={Add}
+                  onClick={() => navigate("/resident/add/")}
+                >
+                  Add Resident
+                </CustomMenuItem>
+              </SubMenu>
+            )}
+
             <SubMenu
               icon={<SummarizeIcon />}
               style={iconStyle}
@@ -221,19 +228,21 @@ const SidebarRouter: React.FC = () => {
             >
               Indigent Benefits
             </MenuItem>
-            <SubMenu
-              icon={<VpnKeyIcon />}
-              style={iconStyle}
-              component={<NavLink to="/admin-account" />}
-              label="Admin Account"
-            >
-              <CustomMenuItem
-                Icon={Visibility}
-                onClick={() => navigate("/admin-account/login-audit")}
+            {auth?.userRole !== "Resident" && (
+              <SubMenu
+                icon={<VpnKeyIcon />}
+                style={iconStyle}
+                component={<NavLink to="/admin-account" />}
+                label="Admin Account"
               >
-                View Login Audit
-              </CustomMenuItem>
-            </SubMenu>
+                <CustomMenuItem
+                  Icon={Visibility}
+                  onClick={() => navigate("/admin-account/login-audit")}
+                >
+                  View Login Audit
+                </CustomMenuItem>
+              </SubMenu>
+            )}
           </Menu>
         </Sidebar>
       </div>
