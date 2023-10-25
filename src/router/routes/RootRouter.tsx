@@ -53,6 +53,7 @@ import SulatReklamoEdit from "../../pages/sidebar/sulat-reklamo/SulatReklamoEdit
 import Login from "../../pages/auth/Login";
 import useAuthContext from "../../queries/auth/useAuthContext";
 import BlotterAddNonResident from "../../pages/sidebar/blotter/BlotterAddNonResident";
+import UnAuthorizedAccess from "../../pages/errors/UnAuthorizedAccess";
 
 export const rootRouter = createBrowserRouter(
   createRoutesFromElements(
@@ -142,6 +143,9 @@ export const rootRouter = createBrowserRouter(
 
       {/* error */}
       <Route path="*" element={<NotFound />} />
+
+      {/* unauthorized access */}
+      <Route path="unauthorized" element={<UnAuthorizedAccess />} />
     </Route>
   )
 );

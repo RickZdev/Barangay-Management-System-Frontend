@@ -179,23 +179,23 @@ const Dashboard: React.FC = () => {
     },
   ];
 
-  useEffect(() => {
-    const userId = localStorage?.getItem("userId")
-      ? JSON.parse(localStorage?.getItem("userId")!)
-      : null;
-    const userRole = localStorage?.getItem("userRole")
-      ? JSON.parse(localStorage?.getItem("userRole")!)
-      : null;
-    const token = localStorage?.getItem("accessToken")
-      ? JSON.parse(localStorage?.getItem("accessToken")!)
-      : null;
+  // useEffect(() => {
+  //   const userId = localStorage?.getItem("userId")
+  //     ? JSON.parse(localStorage?.getItem("userId")!)
+  //     : null;
+  //   const userRole = localStorage?.getItem("userRole")
+  //     ? JSON.parse(localStorage?.getItem("userRole")!)
+  //     : null;
+  //   const token = localStorage?.getItem("accessToken")
+  //     ? JSON.parse(localStorage?.getItem("accessToken")!)
+  //     : null;
 
-    if (userId && token) {
-      auth.setUserId(userId);
-      auth.setUserRole(userRole);
-      auth.setAccessToken(token);
-    }
-  }, []);
+  //   if (userId && token) {
+  //     auth.setUserId(userId);
+  //     auth.setUserRole(userRole);
+  //     auth.setAccessToken(token);
+  //   }
+  // }, []);
 
   return (
     <>

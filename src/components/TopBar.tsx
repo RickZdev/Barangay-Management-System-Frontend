@@ -46,18 +46,11 @@ const TopBar: React.FC = () => {
           // filter: "drop-shadow",
         }}
       >
-        <div className="px-8 space-x-4 flex">
-          <DarkModeOutlinedIcon className="text-white" />
-          <div className="relative flex justify-end">
-            <NotificationsOutlinedIcon className="text-white" />
-            <div className="w-3 h-3 rounded-full bg-green-500 absolute top-0.5 border-[2px] border-[#fff]" />
-          </div>
-        </div>
         <Avatar
-          alt="Natashia"
+          alt={resident?.firstName ?? "Resident"}
           src={resident?.profilePhoto ?? IMAGES.DefaultUserAvatar}
         />
-        <div className="px-6">
+        <div className="px-4 pr-2">
           {resident && (
             <>
               <Typography
@@ -75,6 +68,15 @@ const TopBar: React.FC = () => {
             </>
           )}
         </div>
+
+        <div className="px-4 space-x-4 flex">
+          <DarkModeOutlinedIcon className="text-white" />
+          <div className="relative flex justify-end">
+            <NotificationsOutlinedIcon className="text-white" />
+            <div className="w-3 h-3 rounded-full bg-green-500 absolute top-0.5 border-[2px] border-[#fff]" />
+          </div>
+        </div>
+
         <NavLink to={"/"} onClick={handleLogout}>
           <ExpandMoreIcon className="text-white" />
         </NavLink>

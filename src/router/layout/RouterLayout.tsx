@@ -87,7 +87,15 @@ export const SidebarLayout: React.FC = () => {
 };
 
 export const AnnouncementLayout: React.FC = () => {
-  return <Outlet />;
+  const userRole = localStorage?.getItem("userRole")
+    ? JSON.parse(localStorage?.getItem("userRole")!)
+    : null;
+
+  return (
+    <>
+      {userRole === "Resident" ? <Navigate to="/unauthorized" /> : <Outlet />}
+    </>
+  );
 };
 
 export const BarangayOfficialLayout: React.FC = () => {
@@ -95,7 +103,15 @@ export const BarangayOfficialLayout: React.FC = () => {
 };
 
 export const ResidentLayout: React.FC = () => {
-  return <Outlet />;
+  const userRole = localStorage?.getItem("userRole")
+    ? JSON.parse(localStorage?.getItem("userRole")!)
+    : null;
+
+  return (
+    <>
+      {userRole === "Resident" ? <Navigate to="/unauthorized" /> : <Outlet />}
+    </>
+  );
 };
 
 export const BlotterLayout: React.FC = () => {
@@ -127,5 +143,13 @@ export const IndigentLayout: React.FC = () => {
 };
 
 export const AdminLayout: React.FC = () => {
-  return <Outlet />;
+  const userRole = localStorage?.getItem("userRole")
+    ? JSON.parse(localStorage?.getItem("userRole")!)
+    : null;
+
+  return (
+    <>
+      {userRole === "Resident" ? <Navigate to="/unauthorized" /> : <Outlet />}
+    </>
+  );
 };

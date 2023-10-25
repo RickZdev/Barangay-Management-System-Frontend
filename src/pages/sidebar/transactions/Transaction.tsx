@@ -10,16 +10,19 @@ import useDeleteTransaction from "../../../queries/transaction/useDeleteTransact
 import ViewDetails from "../../../components/ViewDetails";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import useAuthContext from "../../../queries/auth/useAuthContext";
+import useGetTransactionById from "../../../queries/transaction/useGetTransactionById";
+import _ from "lodash";
 
 const Transaction: React.FC = React.memo(() => {
   const auth = useAuthContext();
 
   const {
-    data,
+    data: transactions,
     isLoading: isTransactionsLoading,
     isRefetching,
     refetch,
   } = useGetTransactions();
+
   const { mutate } = useDeleteTransaction();
 
   const columns = useMemo<MRT_ColumnDef<TransactionPropType>[]>(
@@ -64,15 +67,24 @@ const Transaction: React.FC = React.memo(() => {
     []
   );
 
-  const [open, setOpen] = useState<boolean>(false);
+  const [showTransactionModal, setShowTransactionModal] =
+    useState<boolean>(false);
 
   const handleClose = () => {
-    setOpen(false);
+    setShowTransactionModal(false);
   };
 
   const handleClickOpen = () => {
-    setOpen(true);
+    setShowTransactionModal(true);
   };
+
+  const transactionsByResident = _.filter(
+    transactions,
+    (transaction) => transaction?.residentId === auth?.userId
+  );
+
+  const data =
+    auth?.userRole !== "Resident" ? transactions : transactionsByResident;
 
   const isLoading = isTransactionsLoading || isRefetching;
 
@@ -93,10 +105,17 @@ const Transaction: React.FC = React.memo(() => {
         refreshButton={refetch}
         deleteButton={mutate}
       >
-        <div className="flex justify-end pt-4 px-2">
-          <TableButton label="Add Transaction" onClick={handleClickOpen} />
-          <ModalAddTransaction open={open} handleClose={handleClose} />
-        </div>
+        <>
+          {auth?.userRole !== "Resident" ? (
+            <div className="flex justify-end pt-4 px-2">
+              <TableButton label="Add Transaction" onClick={handleClickOpen} />
+              <ModalAddTransaction
+                open={showTransactionModal}
+                handleClose={handleClose}
+              />
+            </div>
+          ) : null}
+        </>
       </Table>
     </div>
   );
