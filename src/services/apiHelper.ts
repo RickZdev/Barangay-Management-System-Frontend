@@ -25,17 +25,16 @@ export const loginUser = async ({
 }: {
   username: string;
   password: string;
-}): Promise<LoginPropType> => {
+}) => {
   try {
     const response = await authApi.post("/api/auth/login", {
       username: username,
       password: password,
     });
 
-    return response.data;
+    return { message: "success", data: response.data, error: "" };
   } catch (error: any) {
-    console.log(error.response.data.error);
-    return error.response.data.error;
+    return { message: "error", data: "", error: error.response.data.error };
   }
 };
 
