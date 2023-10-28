@@ -8,49 +8,32 @@ import SidebarRouter from "../routes/SidebarRouter";
 import useAuthContext from "../../queries/auth/useAuthContext";
 
 export const RootLayout: React.FC = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const auth = useAuthContext();
+  // const userId = localStorage?.getItem("userId")
+  //   ? JSON.parse(localStorage?.getItem("userId")!)
+  //   : null;
+  // const token = localStorage?.getItem("accessToken")
+  //   ? JSON.parse(localStorage?.getItem("accessToken")!)
+  //   : null;
 
-  useEffect(() => {
-    const userId = localStorage?.getItem("userId")
-      ? JSON.parse(localStorage?.getItem("userId")!)
-      : null;
-    const userRole = localStorage?.getItem("userRole")
-      ? JSON.parse(localStorage?.getItem("userRole")!)
-      : null;
-    const token = localStorage?.getItem("accessToken")
-      ? JSON.parse(localStorage?.getItem("accessToken")!)
-      : null;
+  // useEffect(() => {
+  //   if (!userId && !token) {
+  //     navigate("/", { replace: true });
+  //   }
+  // }, []);
 
-    if (userId && token) {
-      auth.setUserId(userId);
-      auth.setUserRole(userRole);
-      auth.setAccessToken(token);
-    } else {
-      navigate("/", { replace: true });
-    }
-  }, []);
+  // return <>{userId && token ? <Navigate to="/dashboard" /> : <Outlet />}</>;
 
-  return (
-    <>
-      <Outlet />
-    </>
-  );
+  return <Outlet />;
+};
+
+export const HomepageLayout: React.FC = () => {
+  return <Outlet />;
 };
 
 export const AuthLayout: React.FC = () => {
-  const auth = useAuthContext();
-
-  return (
-    <>
-      {auth && auth?.accessToken && auth?.userId ? (
-        <Navigate to="/dashboard" />
-      ) : (
-        <Outlet />
-      )}
-    </>
-  );
+  return <Outlet />;
 };
 
 export const SidebarLayout: React.FC = () => {
@@ -140,11 +123,7 @@ export const ResidentLayout: React.FC = () => {
 };
 
 export const ProfileLayout: React.FC = () => {
-  return (
-    <>
-      <Outlet />
-    </>
-  );
+  return <Outlet />;
 };
 
 export const BlotterLayout: React.FC = () => {

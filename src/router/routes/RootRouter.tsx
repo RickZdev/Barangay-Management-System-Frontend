@@ -1,4 +1,5 @@
 import {
+  Navigate,
   Route,
   createBrowserRouter,
   createRoutesFromElements,
@@ -31,6 +32,7 @@ import {
   BlotterLayout,
   CertificateLayout,
   ComplaintsLayout,
+  HomepageLayout,
   IndigentLayout,
   InventoryLayout,
   ProfileLayout,
@@ -51,17 +53,26 @@ import Complaints from "../../pages/sidebar/complaints/Complaints";
 import ComplaintsAdd from "../../pages/sidebar/complaints/ComplaintsAdd";
 import ComplaintsEdit from "../../pages/sidebar/complaints/ComplaintsEdit";
 import SulatReklamoEdit from "../../pages/sidebar/sulat-reklamo/SulatReklamoEdit";
-import Login from "../../pages/auth/Login";
 import useAuthContext from "../../queries/auth/useAuthContext";
 import BlotterAddNonResident from "../../pages/sidebar/blotter/BlotterAddNonResident";
 import UnAuthorizedAccess from "../../pages/errors/UnAuthorizedAccess";
+import ResidentLogin from "../../pages/auth/ResidentLogin";
+import AdminLogin from "../../pages/auth/AdminLogin";
+import Homepage from "../../pages/homepage/Homepage";
 
 export const rootRouter = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
+      {/* landing page */}
+      <Route element={<HomepageLayout />}>
+        <Route index element={<Homepage />} />
+      </Route>
+
       {/* auth */}
-      <Route element={<AuthLayout />}>
-        <Route index element={<Login />} />
+      <Route path="portal/*" element={<AuthLayout />}>
+        <Route index element={<Navigate to="resident" replace />} />
+        <Route index path="resident" element={<ResidentLogin />} />
+        <Route path="admin" element={<AdminLogin />} />
       </Route>
 
       {/* sidebar */}

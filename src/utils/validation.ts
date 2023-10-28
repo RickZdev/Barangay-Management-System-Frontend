@@ -1,5 +1,9 @@
 import * as Yup from "yup";
 
+export const loginFormValidation = Yup.object().shape({
+  username: Yup.string().required("This is a required field."),
+  password: Yup.string().required("This is a required field."),
+});
 export const userFormValidation = Yup.object().shape({
   username: Yup.string()
     .required("This is a required field.")
