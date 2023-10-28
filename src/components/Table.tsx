@@ -23,12 +23,7 @@ import ModalExportData from "./modals/ModalExportData";
 import { string } from "yup";
 import ModalReceiveBenefit from "./modals/ModalReceiveBenefit";
 import useUpdateIndigentBenefit from "../queries/indigentBenefit/useUpdateIndigentBenefit";
-import toast, { Toaster } from "react-hot-toast";
-
-const notify = () =>
-  toast.success("Refreshing...", {
-    duration: 2000,
-  });
+import { refreshNotify } from "../helper/toastNotifications";
 
 type TableTypeProps<T extends Record<string, any>> = {
   data: T[];
@@ -319,7 +314,7 @@ const Table = <T extends Record<string, any>>({
                 onClick={() => {
                   if (refreshButton) {
                     refreshButton();
-                    notify();
+                    refreshNotify();
                   } else {
                     return null;
                   }
@@ -344,7 +339,6 @@ const Table = <T extends Record<string, any>>({
         )}
         {...props}
       />
-      <Toaster />
 
       <ModalWarning
         open={showDeleteModal}

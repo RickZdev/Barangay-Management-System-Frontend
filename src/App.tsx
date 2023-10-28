@@ -6,6 +6,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { ContextProvider } from "./context/ContextProvider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Toaster } from "react-hot-toast";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,6 +26,7 @@ const App: React.FC = () => {
       <ContextProvider>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <ProSidebarProvider>
+            <Toaster /> {/* global toast notifications */}
             <RouterProvider router={rootRouter} />
           </ProSidebarProvider>
         </LocalizationProvider>
