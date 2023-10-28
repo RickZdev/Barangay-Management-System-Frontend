@@ -27,7 +27,7 @@ import _ from "lodash";
 import ModalSuccess from "../../../components/modals/alert/ModalSuccess";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import ModalFailed from "../../../components/modals/alert/ModalFailed";
-import IMAGES from "../../../constants/IMAGES";
+import DefaultUserAvatar from "../../../assets/images/default-user-avatar.png";
 import useDragAndDrop from "../../../hooks/useDragAndDrop";
 import useFirebaseStorage from "../../../hooks/useFirebaseStorage";
 
@@ -328,7 +328,7 @@ const ResidentView: React.FC = () => {
                       />
                     ) : (
                       <CardPhoto
-                        image={IMAGES.DefaultUserAvatar}
+                        image={DefaultUserAvatar}
                         tooltip={isEdit ? "Upload Picture" : ""}
                       />
                     )}

@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 
 import { Close } from "@mui/icons-material";
 import CustomButton from "../../CustomButton";
-import IMAGES from "../../../constants/IMAGES";
+import WarningLogo from "../../../assets/logo/warning-logo.png";
 
 type ModalWarningPropType = {
   open: boolean;
@@ -43,7 +43,7 @@ const ModalWarning: React.FC<ModalWarningPropType> = ({
         <div className="flex flex-1  justify-center items-center mb-5">
           <Avatar
             alt="Success"
-            src={IMAGES.WarningLogo}
+            src={WarningLogo}
             sx={{ width: 120, height: 120 }}
           />
         </div>

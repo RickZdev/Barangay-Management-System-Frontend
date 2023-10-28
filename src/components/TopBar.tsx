@@ -14,7 +14,6 @@ import useAuthContext from "../queries/auth/useAuthContext";
 import useGetResidentById from "../queries/resident/useGetResidentById";
 import { getResidentFullName } from "../helper/getResidentFullName";
 import useLogout from "../queries/auth/useLogout";
-import IMAGES from "../constants/IMAGES";
 import AccountMenu from "./AccountMenu";
 
 const TopBar: React.FC = () => {

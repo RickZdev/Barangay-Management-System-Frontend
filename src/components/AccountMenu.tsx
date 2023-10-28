@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import useGetResidentById from "../queries/resident/useGetResidentById";
 import useAuthContext from "../queries/auth/useAuthContext";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import IMAGES from "../constants/IMAGES";
+import DefaultUserAvatar from "../assets/images/default-user-avatar.png";
 import { useNavigate } from "react-router-dom";
 import useLogout from "../queries/auth/useLogout";
 import CardPhoto from "./CardPhoto";
@@ -61,7 +61,7 @@ const AccountMenu = () => {
         <div className="flex-row flex cursor-pointer justify-center items-center">
           <Avatar
             alt={resident?.firstName ?? "Resident"}
-            src={resident?.profilePhoto ?? IMAGES.DefaultUserAvatar}
+            src={resident?.profilePhoto ?? DefaultUserAvatar}
           />
           <div className="px-4 pr-2">
             {resident && (
