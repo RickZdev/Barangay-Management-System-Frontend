@@ -10,19 +10,9 @@ import Loading from "../../errors/Loading";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import _ from "lodash";
 import ViewMessagePanel from "../../../components/ViewMessagePanel";
+import useAuthContext from "../../../queries/auth/useAuthContext";
 
 const Blotter: React.FC = React.memo(() => {
-  const {
-    data,
-    isLoading: isGetBlotterLoading,
-    isRefetching,
-    refetch,
-  } = useGetBlotters();
-
-  const { mutate, isLoading: isDeleteBlotter } = useDeleteBlotter();
-
-  const isLoading = isGetBlotterLoading || isDeleteBlotter;
-
   const columns = useMemo<MRT_ColumnDef<BlotterPropType>[]>(
     () => [
       {
@@ -91,16 +81,101 @@ const Blotter: React.FC = React.memo(() => {
     []
   );
 
+  const nonResidentColumns = useMemo<MRT_ColumnDef<BlotterPropType>[]>(
+    () => [
+      {
+        accessorKey: "complainantName",
+        header: "Complainant Name",
+        size: 150,
+        Cell: ({ cell }) => {
+          return (
+            <div className="font-poppins text-base">
+              {cell.row.original.complainantName}
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "incidentType",
+        header: "Incident Type",
+        size: 200,
+      },
+      {
+        accessorKey: "incidentLocation",
+        header: "Incident Location",
+        size: 200,
+      },
+      {
+        accessorKey: "respondentName",
+        header: "Respondent Name",
+        size: 150,
+        Cell: ({ cell }) => (
+          <ViewDetails
+            residentId={cell.row.original.respondentId}
+            residentName={cell.row.original.respondentName}
+          />
+        ),
+      },
+      {
+        accessorKey: "incidentTimeAndDate",
+        header: "Date Incident",
+        size: 150,
+      },
+      {
+        accessorKey: "incidentReported",
+        header: "Date Reported",
+        size: 150,
+      },
+      {
+        accessorKey: "incidentRecorded",
+        header: "Date Recorded",
+        size: 150,
+      },
+      {
+        accessorKey: "status",
+        header: "Status",
+        size: 150,
+      },
+    ],
+    []
+  );
+
+  const auth = useAuthContext();
+
+  const {
+    data: blotters,
+    isLoading: isGetBlotterLoading,
+    isRefetching,
+    refetch,
+  } = useGetBlotters();
+
+  const { mutate, isLoading: isDeleteBlotter } = useDeleteBlotter();
+
+  const isLoading = isGetBlotterLoading || isDeleteBlotter;
+
   const blotterResidents = useMemo(() => {
-    return _.filter(data, (blotter) => blotter?.complainantType === "Resident");
-  }, [data]);
+    return _.filter(
+      blotters,
+      (blotter) => blotter?.complainantType === "Resident"
+    );
+  }, [blotters]);
 
   const blotterNonResidents = useMemo(() => {
     return _.filter(
-      data,
+      blotters,
       (blotter) => blotter?.complainantType === "Non-Resident"
     );
-  }, [data]);
+  }, [blotters]);
+
+  const blottersForResident = useMemo(() => {
+    return _.filter(
+      blotters,
+      (blotter) => blotter?.complainantId === auth?.userId
+    );
+  }, [blotters]);
+
+  const data =
+    auth?.userRole !== "Resident" ? blotterResidents : blottersForResident;
 
   return (
     <>
@@ -108,7 +183,7 @@ const Blotter: React.FC = React.memo(() => {
 
       <div className="space-y-10 pb-10">
         <Table
-          data={blotterResidents ?? []}
+          data={data ?? []}
           columns={columns}
           isError={false}
           muiTableDetailPanelProps={{
@@ -117,51 +192,59 @@ const Blotter: React.FC = React.memo(() => {
           renderDetailPanel={({ row }) => (
             <ViewMessagePanel messageRow={row.original.narrativeReport} />
           )}
+          showExportButton
           enableRowNumbers={true}
           showBackButton={false}
           showViewButton={false}
           refreshButton={refetch}
           deleteButton={mutate}
         >
-          <div className="flex justify-between pt-4 px-2">
-            <h1 className="text-white text-3xl pl-8 uppercase font-extrabold">
-              Resident
-            </h1>
+          <>
+            {auth?.userRole !== "Resident" && (
+              <div className="flex justify-between pt-4 px-2">
+                <h1 className="text-white text-3xl pl-8 uppercase font-extrabold">
+                  Resident
+                </h1>
 
-            <TableButton
-              path={"/blotter/add/resident"}
-              label="Create Resident Blotter"
-            />
-          </div>
+                <TableButton
+                  path={"/blotter/add/resident"}
+                  label="Create Resident Blotter"
+                />
+              </div>
+            )}
+          </>
         </Table>
 
-        <Table
-          data={blotterNonResidents ?? []}
-          columns={columns}
-          isError={false}
-          muiTableDetailPanelProps={{
-            sx: { color: "white" },
-          }}
-          renderDetailPanel={({ row }) => (
-            <ViewMessagePanel messageRow={row.original.narrativeReport} />
-          )}
-          enableRowNumbers={true}
-          showBackButton={false}
-          showViewButton={false}
-          refreshButton={refetch}
-          deleteButton={mutate}
-        >
-          <div className="flex justify-between pt-4 px-2">
-            <h1 className="text-white text-3xl pl-8 uppercase font-extrabold">
-              Non-Resident
-            </h1>
+        {auth?.userRole !== "Resident" && (
+          <Table
+            data={blotterNonResidents ?? []}
+            columns={nonResidentColumns}
+            isError={false}
+            muiTableDetailPanelProps={{
+              sx: { color: "white" },
+            }}
+            renderDetailPanel={({ row }) => (
+              <ViewMessagePanel messageRow={row.original.narrativeReport} />
+            )}
+            showExportButton
+            enableRowNumbers={true}
+            showBackButton={false}
+            showViewButton={false}
+            refreshButton={refetch}
+            deleteButton={mutate}
+          >
+            <div className="flex justify-between pt-4 px-2">
+              <h1 className="text-white text-3xl pl-8 uppercase font-extrabold">
+                Non-Resident
+              </h1>
 
-            <TableButton
-              path={"/blotter/add/non-resident"}
-              label="Create Non-Resident Blotter"
-            />
-          </div>
-        </Table>
+              <TableButton
+                path={"/blotter/add/non-resident"}
+                label="Create Non-Resident Blotter"
+              />
+            </div>
+          </Table>
+        )}
       </div>
     </>
   );

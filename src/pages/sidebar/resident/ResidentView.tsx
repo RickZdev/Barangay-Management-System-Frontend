@@ -27,7 +27,7 @@ import _ from "lodash";
 import ModalSuccess from "../../../components/modals/alert/ModalSuccess";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import ModalFailed from "../../../components/modals/alert/ModalFailed";
-import IMAGES from "../../../constants/IMAGES";
+import DefaultUserAvatar from "../../../assets/images/default-user-avatar.png";
 import useDragAndDrop from "../../../hooks/useDragAndDrop";
 import useFirebaseStorage from "../../../hooks/useFirebaseStorage";
 
@@ -309,6 +309,39 @@ const ResidentView: React.FC = () => {
                 />
               </div>
             </Card>
+          </div>
+
+          <div className="flex flex-col space-y-6">
+            <Card>
+              <div className="space-y-6">
+                <CardHeader title="Account Details" />
+                <div className="flex justify-center items-center">
+                  <div
+                    className="w-40 h-40 rounded-full cursor-pointer"
+                    style={{ cursor: isEdit ? "pointer" : "default" }}
+                    {...(isEdit ? getRootProps() : {})}
+                  >
+                    {image ? (
+                      <CardPhoto
+                        image={image}
+                        tooltip={isEdit ? "Upload Picture" : ""}
+                      />
+                    ) : (
+                      <CardPhoto
+                        image={DefaultUserAvatar}
+                        tooltip={isEdit ? "Upload Picture" : ""}
+                      />
+                    )}
+                  </div>
+                </div>
+
+                <TextField
+                  label={"Account Username"}
+                  initialValue={userDetails?.username}
+                  isOptional
+                />
+              </div>
+            </Card>
             <Card>
               <CardHeader title="Address Details" />
               <div className="space-y-3">
@@ -337,49 +370,6 @@ const ResidentView: React.FC = () => {
                   error={errors?.purokNumber?.message}
                 />
               </div>
-            </Card>
-          </div>
-
-          <div className="flex flex-col space-y-6">
-            <Card>
-              <div className="space-y-6">
-                <CardHeader title="Account Details" />
-                <div className="flex justify-center items-center">
-                  <div
-                    className="w-40 h-40 rounded-full cursor-pointer"
-                    style={{ cursor: isEdit ? "pointer" : "default" }}
-                    {...(isEdit ? getRootProps() : {})}
-                  >
-                    {image ? (
-                      <CardPhoto
-                        image={image}
-                        tooltip={isEdit ? "Upload Picture" : ""}
-                      />
-                    ) : (
-                      <CardPhoto
-                        image={IMAGES.DefaultUserAvatar}
-                        tooltip={isEdit ? "Upload Picture" : ""}
-                      />
-                    )}
-                  </div>
-                </div>
-
-                <TextField
-                  label={"Account Username"}
-                  initialValue={userDetails?.username}
-                  isOptional
-                />
-              </div>
-            </Card>
-            <Card>
-              <TextAreaField
-                register={register("profileNotes")}
-                label="Profile Notes"
-                initialValue={resident?.profileNotes}
-                rows={8}
-                isOptional
-                isEdit={isEdit}
-              />
             </Card>
             <div className="flex justify-end space-x-3 mt-6">
               {!isEdit ? (

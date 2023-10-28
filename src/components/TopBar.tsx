@@ -2,18 +2,21 @@ import React, { useEffect, useState } from "react";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Avatar, Typography } from "@mui/material";
-import { NavLink, useLocation } from "react-router-dom";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Avatar,
+  Typography,
+} from "@mui/material";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import useAuthContext from "../queries/auth/useAuthContext";
 import useGetResidentById from "../queries/resident/useGetResidentById";
 import { getResidentFullName } from "../helper/getResidentFullName";
 import useLogout from "../queries/auth/useLogout";
-import IMAGES from "../constants/IMAGES";
+import AccountMenu from "./AccountMenu";
 
 const TopBar: React.FC = () => {
-  const auth = useAuthContext();
-  const { data: resident, isLoading } = useGetResidentById(auth?.userId);
-  const handleLogout = useLogout();
   // dark mode
   const backgroundColor = "#1e1e2f";
 
@@ -21,6 +24,7 @@ const TopBar: React.FC = () => {
   // const backgroundColor = '#e27c39'
 
   const location = useLocation();
+
   const [firstPath, setFirstPath] = useState<string | undefined>();
   const currentPath = location.pathname.split("/")[1];
 
@@ -38,7 +42,7 @@ const TopBar: React.FC = () => {
 
       {/* top bar details */}
       <div
-        className="flex justify-end items-center py-8 px-10 z-50"
+        className="flex justify-end items-center py-8 px-10 z-50 relative"
         style={{
           backgroundColor: backgroundColor,
           // boxShadow:
@@ -46,40 +50,16 @@ const TopBar: React.FC = () => {
           // filter: "drop-shadow",
         }}
       >
-        <Avatar
-          alt={resident?.firstName ?? "Resident"}
-          src={resident?.profilePhoto ?? IMAGES.DefaultUserAvatar}
-        />
-        <div className="px-4 pr-2">
-          {resident && (
-            <>
-              <Typography
-                noWrap
-                variant="h3"
-                fontSize={16}
-                fontWeight="bold"
-                color={"white"}
-              >
-                {resident?.fullName}
-              </Typography>
-              <Typography variant="h6" fontSize={14} color={"white"}>
-                {auth?.userRole}
-              </Typography>
-            </>
-          )}
-        </div>
-
-        <div className="px-4 space-x-4 flex">
-          <DarkModeOutlinedIcon className="text-white" />
+        <div className="px-6 space-x-4 flex">
           <div className="relative flex justify-end">
             <NotificationsOutlinedIcon className="text-white" />
             <div className="w-3 h-3 rounded-full bg-green-500 absolute top-0.5 border-[2px] border-[#fff]" />
           </div>
         </div>
 
-        <NavLink to={"/"} onClick={handleLogout}>
-          <ExpandMoreIcon className="text-white" />
-        </NavLink>
+        <div className="absolute top-2">
+          <AccountMenu />
+        </div>
       </div>
     </div>
   );

@@ -9,17 +9,10 @@ import ViewDetails from "../../../components/ViewDetails";
 import useDeleteSulatReklamo from "../../../queries/sulatReklamo/useDeleteSulatReklamo";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import ViewMessagePanel from "../../../components/ViewMessagePanel";
+import useAuthContext from "../../../queries/auth/useAuthContext";
+import _ from "lodash";
 
 const SulatReklamo: React.FC = React.memo(() => {
-  const {
-    data,
-    isLoading: isGetSulatReklamoLoading,
-    isError,
-    isRefetching,
-    refetch,
-  } = useGetSulatReklamo();
-  const { mutate, isLoading: isDeleteLoading } = useDeleteSulatReklamo();
-
   const columns = useMemo<MRT_ColumnDef<SulatReklamoPropType>[]>(
     () => [
       {
@@ -47,6 +40,26 @@ const SulatReklamo: React.FC = React.memo(() => {
     []
   );
 
+  const auth = useAuthContext();
+
+  const {
+    data: sulatReklamos,
+    isLoading: isGetSulatReklamoLoading,
+    isRefetching,
+    refetch,
+  } = useGetSulatReklamo();
+  const { mutate, isLoading: isDeleteLoading } = useDeleteSulatReklamo();
+
+  const sulatReklamosForResident = useMemo(() => {
+    return _.filter(
+      sulatReklamos,
+      (sulatReklamo) => sulatReklamo.residentId === auth?.userId
+    );
+  }, [sulatReklamos]);
+
+  const data =
+    auth?.userRole !== "Resident" ? sulatReklamos : sulatReklamosForResident;
+
   const isLoading = isGetSulatReklamoLoading || isDeleteLoading || isRefetching;
 
   return (
@@ -56,7 +69,6 @@ const SulatReklamo: React.FC = React.memo(() => {
       <Table
         data={data ?? []}
         columns={columns}
-        isError={isError}
         enableRowNumbers={false}
         muiTableDetailPanelProps={{
           sx: { color: "white" },
@@ -64,17 +76,22 @@ const SulatReklamo: React.FC = React.memo(() => {
         renderDetailPanel={({ row }) => (
           <ViewMessagePanel messageRow={row.original.narrativeReport} />
         )}
+        enableRowActions={auth?.userRole !== "Resident"}
         showViewButton={false}
         showBackButton={false}
         refreshButton={refetch}
         deleteButton={mutate}
       >
-        <div className="flex justify-end pt-4 px-2">
-          <TableButton
-            path={"/sulat-reklamo/add"}
-            label="Create Sulat-Reklamo"
-          />
-        </div>
+        <>
+          {auth?.userRole !== "Resident" && (
+            <div className="flex justify-end pt-4 px-2">
+              <TableButton
+                path={"/sulat-reklamo/add"}
+                label="Create Sulat-Reklamo"
+              />
+            </div>
+          )}
+        </>
       </Table>
     </>
   );

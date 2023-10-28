@@ -25,7 +25,7 @@ import ModalSuccess from "../../../components/modals/alert/ModalSuccess";
 import ModalFailed from "../../../components/modals/alert/ModalFailed";
 import Loading from "../../errors/Loading";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
-import IMAGES from "../../../constants/IMAGES";
+import DefaultUserAvatar from "../../../assets/images/default-user-avatar.png";
 import CustomButton from "../../../components/CustomButton";
 import useDragAndDrop from "../../../hooks/useDragAndDrop";
 import useFirebaseStorage from "../../../hooks/useFirebaseStorage";
@@ -320,7 +320,7 @@ const ResidentAdd: React.FC = () => {
                     {image ? (
                       <CardPhoto image={image} />
                     ) : (
-                      <CardPhoto image={IMAGES.DefaultUserAvatar} />
+                      <CardPhoto image={DefaultUserAvatar} />
                     )}
                   </div>
                 </div>

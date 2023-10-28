@@ -8,11 +8,10 @@ import useDeleteComplaint from "../../../queries/complaints/useDeleteComplaint";
 import ViewDetails from "../../../components/ViewDetails";
 import ViewMessagePanel from "../../../components/ViewMessagePanel";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
+import _ from "lodash";
+import useAuthContext from "../../../queries/auth/useAuthContext";
 
 const Complaints: React.FC = React.memo(() => {
-  const { data, isLoading, refetch, isRefetching } = useGetComplaints();
-  const { mutate, isLoading: isDeleteBlotter } = useDeleteComplaint();
-
   const columns = useMemo<MRT_ColumnDef<ComplaintsPropType>[]>(
     () => [
       {
@@ -61,9 +60,32 @@ const Complaints: React.FC = React.memo(() => {
     []
   );
 
+  const auth = useAuthContext();
+
+  const {
+    data: complaints,
+    isLoading: isComplaintsLoading,
+    refetch,
+    isRefetching,
+  } = useGetComplaints();
+
+  const { mutate, isLoading: isDeleteBlotter } = useDeleteComplaint();
+
+  const complaintsForResident = useMemo(() => {
+    return _.filter(
+      complaints,
+      (complaint) => complaint.complainantsId === auth?.userId
+    );
+  }, [complaints]);
+
+  const data =
+    auth?.userRole !== "Resident" ? complaints : complaintsForResident;
+
+  const isLoading = isComplaintsLoading || isRefetching || isDeleteBlotter;
+
   return (
     <>
-      <LoaderModal isLoading={isLoading || isRefetching || isDeleteBlotter} />
+      <LoaderModal isLoading={isLoading} />
       <Table
         data={data ?? []}
         columns={columns}
@@ -77,15 +99,20 @@ const Complaints: React.FC = React.memo(() => {
             title={`Complainant's Statement`}
           />
         )}
+        enableRowActions={auth?.userRole !== "Resident"}
         enableRowNumbers={true}
         showBackButton={false}
         showViewButton={false}
         refreshButton={refetch}
         deleteButton={mutate}
       >
-        <div className="flex justify-end pt-4 px-2">
-          <TableButton path={"/complaints/add"} label="Create Complaint" />
-        </div>
+        <>
+          {auth?.userRole !== "Resident" && (
+            <div className="flex justify-end pt-4 px-2">
+              <TableButton path={"/complaints/add"} label="Create Complaint" />
+            </div>
+          )}
+        </>
       </Table>
     </>
   );

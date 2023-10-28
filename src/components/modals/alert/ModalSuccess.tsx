@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 
 import { Close } from "@mui/icons-material";
 import CustomButton from "../../CustomButton";
-import IMAGES from "../../../constants/IMAGES";
+import SuccessLogo from "../../../assets/logo/success-logo.png";
 
 type ModalSuccessPropType = {
   open: boolean;
@@ -39,7 +39,7 @@ const ModalSuccess: React.FC<ModalSuccessPropType> = ({
         <div className="flex flex-1  justify-center items-center mb-5">
           <Avatar
             alt="Success"
-            src={IMAGES.SuccessLogo}
+            src={SuccessLogo}
             sx={{ width: 120, height: 120 }}
           />
         </div>

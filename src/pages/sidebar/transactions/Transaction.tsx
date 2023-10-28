@@ -14,17 +14,6 @@ import useGetTransactionById from "../../../queries/transaction/useGetTransactio
 import _ from "lodash";
 
 const Transaction: React.FC = React.memo(() => {
-  const auth = useAuthContext();
-
-  const {
-    data: transactions,
-    isLoading: isTransactionsLoading,
-    isRefetching,
-    refetch,
-  } = useGetTransactions();
-
-  const { mutate } = useDeleteTransaction();
-
   const columns = useMemo<MRT_ColumnDef<TransactionPropType>[]>(
     () => [
       {
@@ -67,8 +56,31 @@ const Transaction: React.FC = React.memo(() => {
     []
   );
 
+  const auth = useAuthContext();
+
+  const {
+    data: transactions,
+    isLoading: isTransactionsLoading,
+    isRefetching,
+    refetch,
+  } = useGetTransactions();
+
+  const { mutate } = useDeleteTransaction();
+
   const [showTransactionModal, setShowTransactionModal] =
     useState<boolean>(false);
+
+  const transactionsForResident = useMemo(() => {
+    return _.filter(
+      transactions,
+      (transaction) => transaction?.residentId === auth?.userId
+    );
+  }, [transactions]);
+
+  const data =
+    auth?.userRole !== "Resident" ? transactions : transactionsForResident;
+
+  const isLoading = isTransactionsLoading || isRefetching;
 
   const handleClose = () => {
     setShowTransactionModal(false);
@@ -77,16 +89,6 @@ const Transaction: React.FC = React.memo(() => {
   const handleClickOpen = () => {
     setShowTransactionModal(true);
   };
-
-  const transactionsByResident = _.filter(
-    transactions,
-    (transaction) => transaction?.residentId === auth?.userId
-  );
-
-  const data =
-    auth?.userRole !== "Resident" ? transactions : transactionsByResident;
-
-  const isLoading = isTransactionsLoading || isRefetching;
 
   return (
     <div className="pb-10">

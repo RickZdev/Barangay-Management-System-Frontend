@@ -3,7 +3,7 @@ import React from "react";
 import Card from "../../Card";
 
 import CustomButton from "../../CustomButton";
-import IMAGES from "../../../constants/IMAGES";
+import ErrorLogo from "../../../assets/logo/error-logo.png";
 
 type ModalFailedPropType = {
   open: boolean;
@@ -36,7 +36,7 @@ const ModalFailed: React.FC<ModalFailedPropType> = ({
         <div className="flex flex-1  justify-center items-center mb-5">
           <Avatar
             alt="Success"
-            src={IMAGES.ErrorLogo}
+            src={ErrorLogo}
             sx={{ width: 120, height: 120 }}
           />
         </div>

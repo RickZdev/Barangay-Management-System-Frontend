@@ -28,7 +28,7 @@ export const RootLayout: React.FC = () => {
       auth.setUserRole(userRole);
       auth.setAccessToken(token);
     } else {
-      navigate("/");
+      navigate("/", { replace: true });
     }
   }, []);
 
@@ -54,14 +54,39 @@ export const AuthLayout: React.FC = () => {
 };
 
 export const SidebarLayout: React.FC = () => {
-  const [openAddTransaction, setOpenAddTransaction] = useState<boolean>(false);
-  const [openAdminAccount, setOpenAdminAccount] = useState<boolean>(false);
+  // const [openAddTransaction, setOpenAddTransaction] = useState<boolean>(false);
+  // const [openAdminAccount, setOpenAdminAccount] = useState<boolean>(false);
 
   // dark mode
   const backgroundColor = "#1e1e2f";
 
   // light mode
   // const backgroundColor = `rgb(243, 244, 248)`;
+
+  const navigate = useNavigate();
+
+  const auth = useAuthContext();
+
+  useEffect(() => {
+    const userId = localStorage?.getItem("userId")
+      ? JSON.parse(localStorage?.getItem("userId")!)
+      : null;
+    const userRole = localStorage?.getItem("userRole")
+      ? JSON.parse(localStorage?.getItem("userRole")!)
+      : null;
+    const token = localStorage?.getItem("accessToken")
+      ? JSON.parse(localStorage?.getItem("accessToken")!)
+      : null;
+
+    if (userId && token) {
+      auth.setUserId(userId);
+      auth.setUserRole(userRole);
+      auth.setAccessToken(token);
+    } else {
+      navigate("/", { replace: true });
+    }
+  }, []);
+
   return (
     <div className="flex flex-row h-screen">
       <SidebarRouter />
@@ -72,14 +97,14 @@ export const SidebarLayout: React.FC = () => {
         <TopBar />
         <div className="px-8 pt-5">
           <Outlet />
-          <ModalAddTransaction
+          {/* <ModalAddTransaction
             open={openAddTransaction}
             handleClose={() => setOpenAddTransaction(false)}
           />
           <ModalAddAdminAccount
             open={openAdminAccount}
             handleClose={() => setOpenAdminAccount(false)}
-          />
+          /> */}
         </div>
       </main>
     </div>
@@ -110,6 +135,14 @@ export const ResidentLayout: React.FC = () => {
   return (
     <>
       {userRole === "Resident" ? <Navigate to="/unauthorized" /> : <Outlet />}
+    </>
+  );
+};
+
+export const ProfileLayout: React.FC = () => {
+  return (
+    <>
+      <Outlet />
     </>
   );
 };

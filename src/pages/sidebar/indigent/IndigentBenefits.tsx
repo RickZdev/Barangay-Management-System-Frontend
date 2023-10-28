@@ -11,20 +11,10 @@ import useGetResidents from "../../../queries/resident/useGetResidents";
 import { getResidentAge } from "../../../helper/getResidentAge";
 import { getResidentFullName } from "../../../helper/getResidentFullName";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
+import useAuthContext from "../../../queries/auth/useAuthContext";
+import _ from "lodash";
 
 const IndigentBenefits: React.FC = React.memo(() => {
-  const {
-    data,
-    isLoading: isIndigentLoading,
-    refetch,
-    isRefetching,
-  } = useGetIndigentBenefits();
-  const { data: residents, isLoading: isResidentsLoading } = useGetResidents();
-
-  const { mutate } = useCreateIndigentBenefit();
-
-  const currentDate = dayjs();
-
   const columns = useMemo<MRT_ColumnDef<IndigentBenefitsPropType>[]>(
     () => [
       {
@@ -100,6 +90,28 @@ const IndigentBenefits: React.FC = React.memo(() => {
     []
   );
 
+  const auth = useAuthContext();
+
+  const {
+    data: indigents,
+    isLoading: isIndigentLoading,
+    refetch,
+    isRefetching,
+  } = useGetIndigentBenefits();
+
+  const { data: residents, isLoading: isResidentsLoading } = useGetResidents();
+  const { mutate } = useCreateIndigentBenefit();
+
+  const IndigentsForResident = useMemo(() => {
+    return _.filter(
+      indigents,
+      (indigent) => indigent?.residentId === auth?.userId
+    );
+  }, [indigents]);
+
+  const data = auth?.userRole !== "Resident" ? indigents : IndigentsForResident;
+
+  const currentDate = dayjs();
   const isLoading = isIndigentLoading || isResidentsLoading || isRefetching;
 
   useEffect(() => {
@@ -107,7 +119,7 @@ const IndigentBenefits: React.FC = React.memo(() => {
       (resident) => getResidentAge(resident.birthDate) >= 60
     );
 
-    const isAlreadyFilled = data?.filter((resident) => {
+    const isAlreadyFilled = indigents?.filter((resident) => {
       if (
         resident.monthAndYear ===
         dayjs().format("MMMM") + " " + dayjs().year()
@@ -136,28 +148,39 @@ const IndigentBenefits: React.FC = React.memo(() => {
         })
       );
     }
-  }, [residents, data]);
+  }, [residents, indigents]);
 
   return (
     <>
       <LoaderModal isLoading={isLoading} />
 
-      <Table
-        data={data ?? []}
-        columns={columns}
-        isError={false}
-        showBackButton={false}
-        enableRowNumbers={false}
-        showDeleteButton={false}
-        showEditButton={false}
-        showViewButton={false}
-        showIndigentButton
-        enableGrouping
-        positionToolbarAlertBanner="top"
-        enableColumnDragging={false}
-        initialState={{ grouping: ["monthAndYear"] }}
-        refreshButton={refetch}
-      />
+      {auth?.userRole !== "Resident" ? (
+        <Table
+          data={data ?? []}
+          columns={columns}
+          isError={false}
+          showBackButton={false}
+          enableRowNumbers={false}
+          showDeleteButton={false}
+          showEditButton={false}
+          showViewButton={false}
+          showIndigentButton
+          enableGrouping
+          positionToolbarAlertBanner="top"
+          enableColumnDragging={false}
+          initialState={{ grouping: ["monthAndYear"] }}
+          refreshButton={refetch}
+        />
+      ) : (
+        <Table
+          data={data ?? []}
+          columns={columns}
+          showBackButton={false}
+          enableRowNumbers={false}
+          enableRowActions={false}
+          refreshButton={refetch}
+        />
+      )}
     </>
   );
 });
