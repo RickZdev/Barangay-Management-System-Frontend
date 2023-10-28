@@ -14,7 +14,7 @@ import useDeleteOfficial from "../../../queries/official/useDeleteOfficial";
 import useGetResidents from "../../../queries/resident/useGetResidents";
 import useDeleteAdmin from "../../../queries/admin/useDeleteAdmin";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
-import IMAGES from "../../../constants/IMAGES";
+import DefaultUserAvatar from "../../../assets/images/default-user-avatar.png";
 import useAuthContext from "../../../queries/auth/useAuthContext";
 import ModalFailed from "../../../components/modals/alert/ModalFailed";
 import { useQueryClient } from "@tanstack/react-query";
@@ -409,7 +409,7 @@ const CardField: React.FC<CardFieldPropType> = ({
     deleteAdminButton(officialDetails?._id ?? "");
     setShowDeleteWarningModal(false);
 
-    window.location.reload();
+    // window.location.reload();
   };
 
   return (
@@ -489,7 +489,7 @@ const OfficialCard: React.FC<OfficialPropType> = ({
           }}
         >
           <img
-            src={officialDetails?.profilePhoto ?? IMAGES.DefaultUserAvatar}
+            src={officialDetails?.profilePhoto ?? DefaultUserAvatar}
             className="rounded-full object-cover w-full"
           />
         </div>
@@ -548,7 +548,7 @@ const CaptainCard: React.FC<OfficialPropType> = ({
           }}
         >
           <img
-            src={officialDetails?.profilePhoto ?? IMAGES.DefaultUserAvatar}
+            src={officialDetails?.profilePhoto ?? DefaultUserAvatar}
             className="rounded-full object-cover w-full"
           />
         </div>
