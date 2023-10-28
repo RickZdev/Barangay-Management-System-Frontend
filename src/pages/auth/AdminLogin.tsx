@@ -14,6 +14,7 @@ import LoaderModal from "../../components/modals/loader/LoaderModal";
 import { useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginFormValidation } from "../../utils/validation";
+import useLoginTimer from "../../hooks/useLoginTimer";
 
 const AdminLogin: React.FC = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const AdminLogin: React.FC = () => {
   } = useForm({ resolver: yupResolver(loginFormValidation) });
   const { data: adminAccounts, isLoading: isGetAdminLoading } = useGetAdmins();
   const { mutateAsync, isLoading: isLoginLoading } = useLogin();
+  const { storedTimer, onLoginSuccess, onLoginError } = useLoginTimer();
 
   const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
   const [showAccountNotFound, setShowAccountNotFound] =
@@ -57,6 +59,7 @@ const AdminLogin: React.FC = () => {
         auth.setUserId(res.data?._id);
         auth.setUserRole(res.data?.userRole);
         auth.setAccessToken(res.data?.token);
+        onLoginSuccess();
 
         console.log("User Logged In Successfully!");
         navigate("/dashboard", { replace: true });
@@ -66,6 +69,7 @@ const AdminLogin: React.FC = () => {
       }
     } else {
       setShowErrorModal(true);
+      onLoginError();
     }
 
     setIsProcessing(false);
@@ -111,7 +115,14 @@ const AdminLogin: React.FC = () => {
               />
             </div>
             <div className="mt-5">
-              <SubmitButton label="Sign In" />
+              <SubmitButton label="Sign In" isButtonDisabled={!!storedTimer} />
+
+              {storedTimer && (
+                <p className="text-red-500 text-xs mt-5 font-poppins font-bold text-center">
+                  You have been locked out. You can try again after{" "}
+                  {storedTimer}
+                </p>
+              )}
             </div>
           </form>
         </Card>
@@ -119,17 +130,21 @@ const AdminLogin: React.FC = () => {
 
       <ModalFailed
         open={showErrorModal}
-        title="Login Failed"
+        title={!storedTimer ? "Login Failed" : "You have been locked out"}
         buttonLabel="Okay"
-        description="Your username or password is incorrect. Please try again."
+        description={
+          !storedTimer
+            ? "Your username or password is incorrect. Please try again."
+            : "Please try again after 15 minutes."
+        }
         handleButtonPress={() => setShowErrorModal(false)}
       />
 
       <ModalFailed
         open={showAccountNotFound}
-        title="Admin Account Is Unregistered Or Unrecognized"
+        title={"Admin account is unnregistered or unrecognized"}
         buttonLabel="Okay"
-        description="You're not authorized to proceed"
+        description={"You are not authorized to proceed."}
         handleButtonPress={() => setShowAccountNotFound(false)}
       />
     </>

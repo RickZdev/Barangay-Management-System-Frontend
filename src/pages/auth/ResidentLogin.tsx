@@ -13,6 +13,7 @@ import LoaderModal from "../../components/modals/loader/LoaderModal";
 import { useNavigate } from "react-router-dom";
 import { loginFormValidation } from "../../utils/validation";
 import { yupResolver } from "@hookform/resolvers/yup";
+import useLoginTimer from "../../hooks/useLoginTimer";
 
 const ResidentLogin: React.FC = () => {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ const ResidentLogin: React.FC = () => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(loginFormValidation) });
   const { mutateAsync, isLoading: isLoginLoading } = useLogin();
+  const { storedTimer, onLoginSuccess, onLoginError } = useLoginTimer();
 
   const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
 
@@ -47,11 +49,13 @@ const ResidentLogin: React.FC = () => {
       auth.setUserId(res.data._id);
       auth.setUserRole("Resident");
       auth.setAccessToken(res.data.token);
+      onLoginSuccess();
 
       console.log("User Logged In Successfully!");
       navigate("/dashboard", { replace: true });
     } else {
       setShowErrorModal(true);
+      onLoginError();
     }
 
     setIsProcessing(false);
@@ -97,7 +101,14 @@ const ResidentLogin: React.FC = () => {
               />
             </div>
             <div className="mt-5">
-              <SubmitButton label="Sign In" />
+              <SubmitButton label="Sign In" isButtonDisabled={!!storedTimer} />
+
+              {storedTimer && (
+                <p className="text-red-500 text-xs mt-5 font-poppins font-bold text-center">
+                  You have been locked out. You can try again after{" "}
+                  {storedTimer}
+                </p>
+              )}
             </div>
           </form>
         </Card>
@@ -105,9 +116,13 @@ const ResidentLogin: React.FC = () => {
 
       <ModalFailed
         open={showErrorModal}
-        title="Login Failed"
+        title={!storedTimer ? "Login Failed" : "You have been locked out"}
         buttonLabel="Okay"
-        description="Your username or password is incorrect. Please try again."
+        description={
+          !storedTimer
+            ? "Your username or password is incorrect. Please try again."
+            : "Please try again after 15 minutes."
+        }
         handleButtonPress={() => setShowErrorModal(false)}
       />
     </>
