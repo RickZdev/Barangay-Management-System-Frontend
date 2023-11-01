@@ -4,6 +4,7 @@ export const loginFormValidation = Yup.object().shape({
   username: Yup.string().required("This is a required field."),
   password: Yup.string().required("This is a required field."),
 });
+
 export const userFormValidation = Yup.object().shape({
   username: Yup.string()
     .required("This is a required field.")
@@ -19,7 +20,22 @@ export const userFormValidation = Yup.object().shape({
     ),
   confirmPassword: Yup.string()
     .required("This is a required field")
-    .oneOf([Yup.ref("password"), ""], "Password didn't match."),
+    .oneOf([Yup.ref("password"), ""], "Password did not match."),
+});
+
+export const resetPasswordFormValidation = Yup.object().shape({
+  newPassword: Yup.string()
+    .required("This is a required field.")
+    .min(8, "Password must be at least 8 characters")
+    .matches(/[A-Z]+/, "Password should have at least 1 uppercase character")
+    .matches(/[0-9]+/, "Password should have at least 1 numeric character")
+    .matches(
+      /[@$!%*#?&]+/,
+      "Password should have at least 1 special character"
+    ),
+  confirmPassword: Yup.string()
+    .required("This is a required field")
+    .oneOf([Yup.ref("newPassword"), ""], "Password did not match."),
 });
 
 export const residentFormValidation = Yup.object().shape({

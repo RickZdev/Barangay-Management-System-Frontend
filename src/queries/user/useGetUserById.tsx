@@ -6,9 +6,6 @@ const useGetUserById = (userId?: string) => {
     onSuccess: (data) => {
       console.log("FETCHED USER: ", data);
     },
-    onError: (error) => {
-      console.log(error, "asdas");
-    },
     enabled: userId ? true : false,
   });
 

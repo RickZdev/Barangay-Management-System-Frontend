@@ -17,6 +17,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import SettingsIcon from "@mui/icons-material/Settings";
 import FaceIcon from "@mui/icons-material/Face";
+import { logoutSuccessNotify } from "../helper/toastNotifications";
 
 const AccountMenu = () => {
   const auth = useAuthContext();
@@ -32,7 +33,14 @@ const AccountMenu = () => {
 
   const handleLogout = () => {
     logoutUser();
-    navigate("/", { replace: true });
+
+    if (auth?.userRole === "Resident") {
+      navigate("/portal/resident", { replace: true });
+    } else {
+      navigate("/portal/admin", { replace: true });
+    }
+
+    logoutSuccessNotify();
   };
 
   const handleViewProfile = () => {
@@ -76,9 +84,11 @@ const AccountMenu = () => {
                 >
                   {resident?.fullName}
                 </Typography>
-                <Typography variant="h6" fontSize={12} color={"white"}>
-                  {auth?.userRole}
-                </Typography>
+                {auth?.userRole !== "Resident" && (
+                  <Typography variant="h6" fontSize={12} color={"white"}>
+                    {auth?.userRole}
+                  </Typography>
+                )}
               </>
             )}
           </div>

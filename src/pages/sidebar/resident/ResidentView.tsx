@@ -337,7 +337,7 @@ const ResidentView: React.FC = () => {
 
                 <TextField
                   label={"Account Username"}
-                  initialValue={userDetails?.username}
+                  initialValue={userDetails?.data?.username}
                   isOptional
                 />
               </div>
