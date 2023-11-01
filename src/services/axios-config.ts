@@ -3,7 +3,6 @@ import Axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
-import { useNavigate } from "react-router-dom"; // Import useHistory from react-router-dom
 
 // export const BASE_URL = import.meta.env.VITE_LOCAL_SERVER_URL;
 const BASE_URL = import.meta.env.VITE_API_SERVER_URL;

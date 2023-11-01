@@ -10,7 +10,6 @@ import type {
   ComplaintsPropType,
   IndigentBenefitsPropType,
   LoginAuditPropType,
-  LoginPropType,
   ResidentPropType,
   SulatReklamoPropType,
   TransactionPropType,
@@ -65,6 +64,58 @@ export const deleteAuthUser = async ({ userId }: { userId: string }) => {
   }
 };
 
+export const forgotPassword = async ({
+  emailAddress,
+}: {
+  emailAddress: string;
+}) => {
+  try {
+    const response = await authApi.post(`/api/auth/forgot-password`, {
+      emailAddress,
+    });
+    return { message: "success", data: response.data, error: "" };
+  } catch (error: any) {
+    return { message: "error", data: "", error: error.response.data.error };
+  }
+};
+
+export const resetPassword = async ({
+  id,
+  token,
+}: {
+  id: string;
+  token: string;
+}) => {
+  try {
+    const response = await authApi.get(
+      `/api/auth/reset-password/${id}/${token}`
+    );
+    return { message: "success", data: response.data, error: "" };
+  } catch (error: any) {
+    return { message: "error", data: "", error: error.response.data.error };
+  }
+};
+
+export const changePassword = async ({
+  userId,
+  newPassword,
+}: {
+  userId: string | undefined;
+  newPassword: string;
+}) => {
+  try {
+    const response = await authApi.patch(`/api/auth/change-password`, {
+      id: userId,
+      newPassword: newPassword,
+    });
+
+    return { message: "success", data: response.data, error: "" };
+  } catch (error: any) {
+    console.log(error.response.data.error);
+    return { message: "error", data: "", error: error.response.data.error };
+  }
+};
+
 // users function
 export const createUser = async ({
   userId,
@@ -91,13 +142,21 @@ export const createUser = async ({
 
 export const getUserById = async (
   id: string | undefined
-): Promise<UserPropType> => {
+): Promise<{
+  message: string;
+  data: UserPropType | undefined;
+  error: string;
+}> => {
   try {
-    const response = await authApi.get<UserPropType>(`/api/users/${id}`);
+    const response = await authApi.get(`/api/users/${id}`);
 
-    return response.data;
+    return { message: "success", data: response.data, error: "" };
   } catch (error: any) {
-    return error.response.data.error;
+    return {
+      message: "error",
+      data: undefined,
+      error: error.response.data.error,
+    };
   }
 };
 

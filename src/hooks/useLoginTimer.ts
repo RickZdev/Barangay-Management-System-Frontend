@@ -44,9 +44,9 @@ const useLoginTimer = () => {
     setAttempts(attempts + 1);
     localStorage.setItem("loginAttempts", JSON.stringify(attempts + 1)); // Store attempts in storage
     if (attempts >= 4 && !isTimerActive) {
-      setTimer(30); // should be 15 minutes in seconds
+      setTimer(900); // should be 15 minutes in seconds
       setIsTimerActive(true);
-      localStorage.setItem("loginTimer", "30"); // Store timer in storage
+      localStorage.setItem("loginTimer", "900"); // Store timer in storage
     } else {
       loginAttemptsNotify(4 - attempts);
     }

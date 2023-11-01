@@ -59,6 +59,8 @@ import UnAuthorizedAccess from "../../pages/errors/UnAuthorizedAccess";
 import ResidentLogin from "../../pages/auth/ResidentLogin";
 import AdminLogin from "../../pages/auth/AdminLogin";
 import Homepage from "../../pages/homepage/Homepage";
+import ForgotPassword from "../../pages/auth/ForgotPassword";
+import ResetPassword from "../../pages/auth/ResetPassword";
 
 export const rootRouter = createBrowserRouter(
   createRoutesFromElements(
@@ -73,6 +75,8 @@ export const rootRouter = createBrowserRouter(
         <Route index element={<Navigate to="resident" replace />} />
         <Route index path="resident" element={<ResidentLogin />} />
         <Route path="admin" element={<AdminLogin />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="reset-password/" element={<ResetPassword />} />
       </Route>
 
       {/* sidebar */}

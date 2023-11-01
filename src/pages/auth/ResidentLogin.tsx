@@ -10,10 +10,11 @@ import ModalFailed from "../../components/modals/alert/ModalFailed";
 import _ from "lodash";
 import useAuthContext from "../../queries/auth/useAuthContext";
 import LoaderModal from "../../components/modals/loader/LoaderModal";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { loginFormValidation } from "../../utils/validation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import useLoginTimer from "../../hooks/useLoginTimer";
+import { loginSuccessNotify } from "../../helper/toastNotifications";
 
 const ResidentLogin: React.FC = () => {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ const ResidentLogin: React.FC = () => {
       onLoginSuccess();
 
       console.log("User Logged In Successfully!");
+      loginSuccessNotify("Resident");
       navigate("/dashboard", { replace: true });
     } else {
       setShowErrorModal(true);
@@ -99,6 +101,14 @@ const ResidentLogin: React.FC = () => {
                 register={register("password")}
                 error={errors?.password?.message}
               />
+            </div>
+
+            <div className="my-2">
+              <NavLink to={"/portal/forgot-password"}>
+                <p className="text-white font-poppins text-center">
+                  Forgot Password?
+                </p>
+              </NavLink>
             </div>
             <div className="mt-5">
               <SubmitButton label="Sign In" isButtonDisabled={!!storedTimer} />

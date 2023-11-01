@@ -25,8 +25,6 @@ import useGetBlotters from "../../../queries/blotter/useGetBlotters";
 import useGetSulatReklamo from "../../../queries/sulatReklamo/useGetSulatReklamo";
 import useAuthContext from "../../../queries/auth/useAuthContext";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
-import useGetUserById from "../../../queries/user/useGetUserById";
-import useGetResidentById from "../../../queries/resident/useGetResidentById";
 
 const Dashboard: React.FC = () => {
   const navigation = useNavigate();

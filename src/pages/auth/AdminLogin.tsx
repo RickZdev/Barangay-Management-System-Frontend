@@ -11,10 +11,11 @@ import _ from "lodash";
 import useGetAdmins from "../../queries/admin/useGetAdmins";
 import useAuthContext from "../../queries/auth/useAuthContext";
 import LoaderModal from "../../components/modals/loader/LoaderModal";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginFormValidation } from "../../utils/validation";
 import useLoginTimer from "../../hooks/useLoginTimer";
+import { loginSuccessNotify } from "../../helper/toastNotifications";
 
 const AdminLogin: React.FC = () => {
   const navigate = useNavigate();
@@ -62,6 +63,7 @@ const AdminLogin: React.FC = () => {
         onLoginSuccess();
 
         console.log("User Logged In Successfully!");
+        loginSuccessNotify(res.data?.userRole);
         navigate("/dashboard", { replace: true });
       } else {
         console.log("Admin Account Not Found");
@@ -114,6 +116,15 @@ const AdminLogin: React.FC = () => {
                 error={errors?.password?.message}
               />
             </div>
+
+            <div className="my-2">
+              <NavLink to={"/portal/forgot-password"}>
+                <p className="text-white font-poppins text-center">
+                  Forgot Password?
+                </p>
+              </NavLink>
+            </div>
+
             <div className="mt-5">
               <SubmitButton label="Sign In" isButtonDisabled={!!storedTimer} />
 

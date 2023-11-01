@@ -8,23 +8,6 @@ import SidebarRouter from "../routes/SidebarRouter";
 import useAuthContext from "../../queries/auth/useAuthContext";
 
 export const RootLayout: React.FC = () => {
-  // const navigate = useNavigate();
-
-  // const userId = localStorage?.getItem("userId")
-  //   ? JSON.parse(localStorage?.getItem("userId")!)
-  //   : null;
-  // const token = localStorage?.getItem("accessToken")
-  //   ? JSON.parse(localStorage?.getItem("accessToken")!)
-  //   : null;
-
-  // useEffect(() => {
-  //   if (!userId && !token) {
-  //     navigate("/", { replace: true });
-  //   }
-  // }, []);
-
-  // return <>{userId && token ? <Navigate to="/dashboard" /> : <Outlet />}</>;
-
   return <Outlet />;
 };
 
@@ -80,14 +63,6 @@ export const SidebarLayout: React.FC = () => {
         <TopBar />
         <div className="px-8 pt-5">
           <Outlet />
-          {/* <ModalAddTransaction
-            open={openAddTransaction}
-            handleClose={() => setOpenAddTransaction(false)}
-          />
-          <ModalAddAdminAccount
-            open={openAdminAccount}
-            handleClose={() => setOpenAdminAccount(false)}
-          /> */}
         </div>
       </main>
     </div>

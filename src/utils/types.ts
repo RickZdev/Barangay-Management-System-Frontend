@@ -4,7 +4,7 @@ export type LoginPropType = {
   _id?: string;
   username: string;
   token: string;
-  userRole: "Resident" | "Captain" | "Administrator" | "Moderator";
+  userRole: UserRolePropType;
 };
 
 export type SignupPropType = {
@@ -95,14 +95,14 @@ export type AdminAccountPropType = {
   _id: string;
   adminUsername: string;
   adminUser: string;
-  adminRole: "Captain" | "Administrator" | "Moderator";
+  adminRole: AdminRolePropType;
   loggedIns: string;
 };
 
 export type LoginAuditPropType = {
   _id: string;
   adminUser: string;
-  adminRole: "Captain" | "Administrator" | "Moderator";
+  adminRole: AdminRolePropType;
   loginTime: string;
 };
 
@@ -175,3 +175,6 @@ export type IndigentBenefitsPropType = {
 };
 
 export type StorageFolderPropType = "announcements" | "profile";
+
+export type AdminRolePropType = "Captain" | "Administrator" | "Moderator";
+export type UserRolePropType = "Resident" | AdminRolePropType;
