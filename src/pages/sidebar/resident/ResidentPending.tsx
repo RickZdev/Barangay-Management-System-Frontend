@@ -394,7 +394,29 @@ const ResidentPending: React.FC = () => {
 
     _.filter(data, (resident, index) => {
       if (rows.includes(index.toString())) {
-        deleteResidentStatus(resident?._id ?? "");
+        deleteResidentStatus({
+          residentId: resident?._id ?? "",
+          status: "Approved",
+        });
+      }
+    });
+
+    setRowSelection({});
+
+    setIsProcessing(false);
+  };
+
+  const handleReject = () => {
+    setIsProcessing(true);
+
+    _.filter(data, (resident, index) => {
+      if (rows.includes(index.toString())) {
+        deleteResidentStatus({
+          residentId: resident?._id ?? "",
+          status: "Rejected",
+        });
+
+        deleteResident(resident?._id ?? "");
       }
     });
 
@@ -434,20 +456,27 @@ const ResidentPending: React.FC = () => {
           }}
           showBackButton
           showEditButton={false}
-          showDeleteButton={auth?.userRole !== "Moderator"}
+          showDeleteButton={false}
           showExportButton
           refreshButton={refetch}
-          deleteButton={deleteResident}
         >
           <>
             {showAction && (
               <div className="flex flex-col space-y-2 px-4 py-8 justify-end md:flex-row md:space-y-0 md:space-x-4">
+                <div className="flex-1 flex">
+                  <CustomButton
+                    label="Cancel"
+                    backgroundColor="#1565c0"
+                    onClick={() => setRowSelection({})}
+                  />
+                </div>
                 <CustomButton
-                  label="Cancel"
+                  label="Reject Account"
                   backgroundColor="rgb(239, 68, 68)"
-                  onClick={() => setRowSelection({})}
+                  onClick={handleReject}
                 />
-                <CustomButton label="Accept Resident" onClick={handleAccept} />
+
+                <CustomButton label="Accept Account" onClick={handleAccept} />
               </div>
             )}
           </>

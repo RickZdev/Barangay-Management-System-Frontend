@@ -384,7 +384,7 @@ const ResidentAdd: React.FC = () => {
       <ModalSuccess
         open={showSuccessModal}
         title="Registration Completed"
-        description="Ask an official for further instructions"
+        description="You can now check your email for further instructions."
         buttonLabel="Back to Screen"
         handleButtonPress={handleSuccess}
       />

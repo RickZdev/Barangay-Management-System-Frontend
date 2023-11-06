@@ -109,7 +109,7 @@ export const rootRouter = createBrowserRouter(
         <Route element={<ResidentLayout />}>
           <Route path="resident" element={<Resident />} />
           <Route
-            path="resident/add/"
+            path="resident/add"
             element={
               <ProtectedRoute
                 unauthorizedRoles={["Moderator"]}
@@ -119,13 +119,17 @@ export const rootRouter = createBrowserRouter(
           />
           <Route path="resident/view/:_id" element={<ResidentView />} />
           <Route
-            path="resident/pending/"
+            path="resident/pending"
             element={
               <ProtectedRoute
                 unauthorizedRoles={["Moderator"]}
                 RouteName={ResidentPending}
               />
             }
+          />
+          <Route
+            path="resident/pending/view/:_id"
+            element={<ResidentView isEditable={false} />}
           />
         </Route>
 

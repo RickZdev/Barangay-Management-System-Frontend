@@ -59,6 +59,7 @@ const ResidentLogin: React.FC = () => {
       navigate("/dashboard", { replace: true });
     } else if (res.error === "Resident not verified yet.") {
       setShowNotVerifiedModal(true);
+      onLoginSuccess();
     } else {
       setShowErrorModal(true);
       onLoginError();

@@ -371,10 +371,21 @@ export const getResidentStatuses = async (): Promise<ResidentPropType[]> => {
   }
 };
 
-export const deleteResidentStatus = async (residentId: string) => {
+export const deleteResidentStatus = async ({
+  residentId,
+  status = "Approved",
+}: {
+  residentId: string;
+  status?: "Approved" | "Rejected";
+}) => {
   try {
     const response = await axios.delete(
-      `/api/residents/status/resident/${residentId}`
+      `/api/residents/status/resident/${residentId}`,
+      {
+        params: {
+          status: status,
+        },
+      }
     );
 
     return response.data;

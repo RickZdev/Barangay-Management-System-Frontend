@@ -73,6 +73,7 @@ const AdminLogin: React.FC = () => {
       }
     } else if (res.error === "Resident not verified yet.") {
       setShowNotVerifiedModal(true);
+      onLoginSuccess();
     } else {
       setShowErrorModal(true);
       onLoginError();

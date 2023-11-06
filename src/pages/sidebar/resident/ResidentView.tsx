@@ -30,8 +30,10 @@ import ModalFailed from "../../../components/modals/alert/ModalFailed";
 import DefaultUserAvatar from "../../../assets/images/default-user-avatar.png";
 import useDragAndDrop from "../../../hooks/useDragAndDrop";
 import useFirebaseStorage from "../../../hooks/useFirebaseStorage";
+import useAuthContext from "../../../queries/auth/useAuthContext";
 
-const ResidentView: React.FC = () => {
+const ResidentView = ({ isEditable = true }: { isEditable?: boolean }) => {
+  const auth = useAuthContext();
   const { _id: residentId } = useParams();
 
   const { data: resident, isLoading: isResidentLoading } =
@@ -371,24 +373,27 @@ const ResidentView: React.FC = () => {
                 />
               </div>
             </Card>
-            <div className="flex justify-end space-x-3 mt-6">
-              {!isEdit ? (
-                <CustomButton
-                  label="Edit Details"
-                  onClick={() => setIsEdit(true)}
-                />
-              ) : (
-                <>
-                  <CustomButton
-                    label="Cancel"
-                    backgroundColor="rgb(239, 68, 68)"
-                    onClick={() => setIsEdit(false)}
-                  />
 
-                  <SubmitButton label="Save Changes" />
-                </>
-              )}
-            </div>
+            {isEditable && auth?.userRole !== "Moderator" && (
+              <div className="flex justify-end space-x-3 mt-6">
+                {!isEdit ? (
+                  <CustomButton
+                    label="Edit Details"
+                    onClick={() => setIsEdit(true)}
+                  />
+                ) : (
+                  <>
+                    <CustomButton
+                      label="Cancel"
+                      backgroundColor="rgb(239, 68, 68)"
+                      onClick={() => setIsEdit(false)}
+                    />
+
+                    <SubmitButton label="Save Changes" />
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </form>
