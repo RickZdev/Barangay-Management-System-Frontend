@@ -4,8 +4,8 @@ import Axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
-// export const BASE_URL = import.meta.env.VITE_LOCAL_SERVER_URL;
-const BASE_URL = import.meta.env.VITE_API_SERVER_URL;
+export const BASE_URL = import.meta.env.VITE_LOCAL_SERVER_URL;
+// const BASE_URL = import.meta.env.VITE_API_SERVER_URL;
 
 const axios = Axios.create({
   baseURL: BASE_URL,

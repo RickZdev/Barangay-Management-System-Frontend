@@ -73,10 +73,18 @@ export const rootRouter = createBrowserRouter(
       {/* auth */}
       <Route path="portal/*" element={<AuthLayout />}>
         <Route index element={<Navigate to="resident" replace />} />
-        <Route index path="resident" element={<ResidentLogin />} />
+        <Route path="resident" element={<ResidentLogin />} />
         <Route path="admin" element={<AdminLogin />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
-        <Route path="reset-password/" element={<ResetPassword />} />
+        <Route path="reset-password" element={<ResetPassword />} />
+        <Route
+          path="resident-signup"
+          element={
+            <div className="bg-[#1e1e2f] p-10">
+              <ResidentAdd />
+            </div>
+          }
+        />
       </Route>
 
       {/* sidebar */}

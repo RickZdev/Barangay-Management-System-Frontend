@@ -489,7 +489,11 @@ const OfficialCard: React.FC<OfficialPropType> = ({
           }}
         >
           <img
-            src={officialDetails?.profilePhoto ?? DefaultUserAvatar}
+            src={
+              officialDetails?.profilePhoto === ""
+                ? DefaultUserAvatar
+                : officialDetails?.profilePhoto
+            }
             className="rounded-full object-cover w-full"
           />
         </div>

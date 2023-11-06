@@ -16,6 +16,7 @@ import Loading from "../../errors/Loading";
 import useGetLoginAuditById from "../../../queries/loginAudit/useGetLoginAuditById";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import useGetResidentById from "../../../queries/resident/useGetResidentById";
+import DefaultUserAvatar from "../../../assets/images/default-user-avatar.png";
 
 const AdminAccountView: React.FC = () => {
   const { _id } = useParams();
@@ -73,7 +74,11 @@ const AdminAccountView: React.FC = () => {
             <div className="flex flex-col justify-center items-center space-y-5">
               <CardPhoto
                 showTooltip={false}
-                image={resident?.profilePhoto ?? ""}
+                image={
+                  resident?.profilePhoto === ""
+                    ? DefaultUserAvatar
+                    : resident?.profilePhoto ?? ""
+                }
               />
 
               <div className="flex flex-col items-center">

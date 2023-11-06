@@ -104,6 +104,14 @@ const ResidentLogin: React.FC = () => {
             </div>
 
             <div className="my-2">
+              <NavLink to={"/portal/resident-signup"}>
+                <p className="text-white font-poppins text-center">
+                  Register as Resident
+                </p>
+              </NavLink>
+            </div>
+
+            <div className="my-2">
               <NavLink to={"/portal/forgot-password"}>
                 <p className="text-white font-poppins text-center">
                   Forgot Password?

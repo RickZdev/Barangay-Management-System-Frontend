@@ -9,8 +9,11 @@ import useDeleteResident from "../../../queries/resident/useDeleteResident";
 import useGetResidents from "../../../queries/resident/useGetResidents";
 import Loading from "../../errors/Loading";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
+import useAuthContext from "../../../queries/auth/useAuthContext";
 
 const Resident: React.FC = () => {
+  const auth = useAuthContext();
+
   const {
     data,
     isError,
@@ -369,22 +372,25 @@ const Resident: React.FC = () => {
         isLoading={isResidentsLoading || isDeleteLoading || isRefetching}
       />
 
-      <Table
-        data={data ?? []}
-        columns={columns}
-        isError={isError}
-        enableGlobalFilter={true}
-        enableFilters
-        showBackButton={false}
-        showEditButton={false}
-        showExportButton
-        refreshButton={refetch}
-        deleteButton={mutate}
-      >
-        <div className="flex justify-end pt-4 px-2">
-          <TableButton path={"/resident/add"} label="Add Resident" />
-        </div>
-      </Table>
+      <div className="pb-10">
+        <Table
+          data={data ?? []}
+          columns={columns}
+          isError={isError}
+          enableGlobalFilter={true}
+          enableFilters
+          showBackButton={false}
+          showEditButton={false}
+          showDeleteButton={auth?.userRole !== "Moderator"}
+          showExportButton
+          refreshButton={refetch}
+          deleteButton={mutate}
+        >
+          <div className="flex justify-end pt-4 px-2">
+            <TableButton path={"/resident/add"} label="Add Resident" />
+          </div>
+        </Table>
+      </div>
     </>
   );
 };

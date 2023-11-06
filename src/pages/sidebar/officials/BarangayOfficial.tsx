@@ -8,6 +8,7 @@ import { OfficialPropType } from "../../../utils/types";
 import { getResidentFullName } from "../../../helper/getResidentFullName";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import useAuthContext from "../../../queries/auth/useAuthContext";
+import DefaultUserAvatar from "../../../assets/images/default-user-avatar.png";
 
 const BarangayOfficial: React.FC = () => {
   const navigation = useNavigate();
@@ -213,7 +214,11 @@ const OfficialCard: React.FC<OfficialPropType> = ({
       {/* image */}
       <div className="w-8 h-8 md:w-14 md:h-14 relative z-10 p-0.5 border-white rounded-full overflow-hidden">
         <img
-          src={officialDetails?.profilePhoto}
+          src={
+            officialDetails?.profilePhoto === ""
+              ? DefaultUserAvatar
+              : officialDetails?.profilePhoto
+          }
           className="rounded-full w-full h-full object-cover object-center overflow-hidden bg-white"
         />
       </div>
