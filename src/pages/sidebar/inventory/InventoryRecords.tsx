@@ -12,6 +12,7 @@ import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import useAuthContext from "../../../queries/auth/useAuthContext";
 import useDeleteBorrowedRecord from "../../../queries/borrowedRecords/useDeleteBorrowedRecord";
 import _ from "lodash";
+import useGetBorrowedInventory from "../../../queries/borrowedInventory/useGetBorrowedInventory";
 
 const InventoryRecords: React.FC = React.memo(() => {
   const columns = useMemo<MRT_ColumnDef<BorrowedRecordsPropType>[]>(
@@ -65,6 +66,9 @@ const InventoryRecords: React.FC = React.memo(() => {
     refetch,
   } = useGetBorrowedRecords();
 
+  const { data: borrowedInventories, isLoading: isBorrowedInventoriesLoading } =
+    useGetBorrowedInventory();
+
   const { mutate: deleteInventory } = useDeleteBorrowedRecord();
 
   const InventoryRecordsForResident = useMemo(() => {
@@ -74,12 +78,25 @@ const InventoryRecords: React.FC = React.memo(() => {
     );
   }, [inventoryRecords]);
 
+  const BorrowedInventoriesForResident = useMemo(() => {
+    return _.filter(
+      borrowedInventories,
+      (borrowedInventory) => borrowedInventory?.borroweeId === auth?.userId
+    );
+  }, [borrowedInventories]);
+
   const data =
     auth?.userRole !== "Resident"
       ? inventoryRecords
       : InventoryRecordsForResident;
 
-  const isLoading = isGetRecordsLoading || isRefetching;
+  const countBorrowedInventories =
+    auth?.userRole !== "Resident"
+      ? borrowedInventories
+      : BorrowedInventoriesForResident;
+
+  const isLoading =
+    isGetRecordsLoading || isRefetching || isBorrowedInventoriesLoading;
 
   return (
     <>
@@ -136,6 +153,7 @@ const InventoryRecords: React.FC = React.memo(() => {
             label="Borrowed Inventory"
             path={"borrow"}
             Icon={InventoryIcon}
+            count={countBorrowedInventories?.length.toString()}
           />
           <TableButton label="Request Inventory" path={"request"} />
         </div>

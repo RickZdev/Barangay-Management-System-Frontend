@@ -114,19 +114,21 @@ const AccountMenu = () => {
             <Typography fontSize={14}>{auth?.userRole}</Typography>
           </div>
 
-          <div
-            onClick={handleViewProfile}
-            className="flex flex-row justify-between px-4 py-3 cursor-pointer hover:bg-[rgb(242,242,242)]"
-          >
-            <div className="flex-row flex space-x-3">
-              <FaceIcon sx={{ color: "black" }} />
-              <Typography fontSize={14} fontWeight={"bold"}>
-                View Profile
-              </Typography>
-            </div>
+          {auth?.userRole === "Resident" && (
+            <div
+              onClick={handleViewProfile}
+              className="flex flex-row justify-between px-4 py-3 cursor-pointer hover:bg-[rgb(242,242,242)]"
+            >
+              <div className="flex-row flex space-x-3">
+                <FaceIcon sx={{ color: "black" }} />
+                <Typography fontSize={14} fontWeight={"bold"}>
+                  View Profile
+                </Typography>
+              </div>
 
-            <ChevronRightIcon sx={{ color: "black" }} />
-          </div>
+              <ChevronRightIcon sx={{ color: "black" }} />
+            </div>
+          )}
 
           <div className="flex flex-row justify-between px-4 py-3 cursor-pointer hover:bg-[rgb(242,242,242)]">
             <div className="flex-row flex space-x-3">

@@ -11,6 +11,7 @@ import BarangayOfficial from "../../pages/sidebar/officials/BarangayOfficial";
 import Resident from "../../pages/sidebar/resident/Resident";
 import ResidentAdd from "../../pages/sidebar/resident/ResidentAdd";
 import ResidentView from "../../pages/sidebar/resident/ResidentView";
+import ResidentPending from "../../pages/sidebar/resident/ResidentPending";
 import AnnouncementAdd from "../../pages/sidebar/announcement/AnnouncementAdd";
 import Blotter from "../../pages/sidebar/blotter/Blotter";
 import BlotterAdd from "../../pages/sidebar/blotter/BlotterAdd";
@@ -61,6 +62,7 @@ import AdminLogin from "../../pages/auth/AdminLogin";
 import Homepage from "../../pages/homepage/Homepage";
 import ForgotPassword from "../../pages/auth/ForgotPassword";
 import ResetPassword from "../../pages/auth/ResetPassword";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const rootRouter = createBrowserRouter(
   createRoutesFromElements(
@@ -73,10 +75,18 @@ export const rootRouter = createBrowserRouter(
       {/* auth */}
       <Route path="portal/*" element={<AuthLayout />}>
         <Route index element={<Navigate to="resident" replace />} />
-        <Route index path="resident" element={<ResidentLogin />} />
+        <Route path="resident" element={<ResidentLogin />} />
         <Route path="admin" element={<AdminLogin />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
-        <Route path="reset-password/" element={<ResetPassword />} />
+        <Route path="reset-password" element={<ResetPassword />} />
+        <Route
+          path="resident-signup"
+          element={
+            <div className="bg-[#1e1e2f] p-10">
+              <ResidentAdd />
+            </div>
+          }
+        />
       </Route>
 
       {/* sidebar */}
@@ -98,8 +108,29 @@ export const rootRouter = createBrowserRouter(
 
         <Route element={<ResidentLayout />}>
           <Route path="resident" element={<Resident />} />
-          <Route path="resident/add/" element={<ResidentAdd />} />
+          <Route
+            path="resident/add"
+            element={
+              <ProtectedRoute
+                unauthorizedRoles={["Moderator"]}
+                RouteName={ResidentAdd}
+              />
+            }
+          />
           <Route path="resident/view/:_id" element={<ResidentView />} />
+          <Route
+            path="resident/pending"
+            element={
+              <ProtectedRoute
+                unauthorizedRoles={["Moderator"]}
+                RouteName={ResidentPending}
+              />
+            }
+          />
+          <Route
+            path="resident/pending/view/:_id"
+            element={<ResidentView isEditable={false} />}
+          />
         </Route>
 
         <Route element={<ProfileLayout />}>

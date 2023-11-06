@@ -27,7 +27,7 @@ export const logoutSuccessNotify = () =>
 
 export const tokenExpiredNotify = () => {
   toast.error(
-    `Reset Password token either not valid or expired. Please try again.`,
+    `Reset Password link either not valid or expired. Please try again.`,
     {
       duration: 4000,
     }

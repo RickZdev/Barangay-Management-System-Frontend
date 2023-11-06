@@ -15,6 +15,8 @@ import useAuthContext from "../../../queries/auth/useAuthContext";
 import _ from "lodash";
 
 const IndigentBenefits: React.FC = React.memo(() => {
+  const auth = useAuthContext();
+
   const columns = useMemo<MRT_ColumnDef<IndigentBenefitsPropType>[]>(
     () => [
       {
@@ -90,15 +92,12 @@ const IndigentBenefits: React.FC = React.memo(() => {
     []
   );
 
-  const auth = useAuthContext();
-
   const {
     data: indigents,
     isLoading: isIndigentLoading,
     refetch,
     isRefetching,
   } = useGetIndigentBenefits();
-
   const { data: residents, isLoading: isResidentsLoading } = useGetResidents();
   const { mutate } = useCreateIndigentBenefit();
 

@@ -1,5 +1,8 @@
-import React, { useMemo } from "react";
-import { type MRT_ColumnDef } from "material-react-table";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  MRT_RowSelectionState,
+  type MRT_ColumnDef,
+} from "material-react-table";
 import Table from "../../../components/Table";
 import TableButton from "../../../components/TableButton";
 import dayjs, { Dayjs } from "dayjs";
@@ -10,10 +13,12 @@ import useGetResidents from "../../../queries/resident/useGetResidents";
 import Loading from "../../errors/Loading";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import useAuthContext from "../../../queries/auth/useAuthContext";
-import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import useGetResidentStatuses from "../../../queries/resident/useGetResidentStatuses";
+import CustomButton from "../../../components/CustomButton";
+import useDeleteResidentStatus from "../../../queries/resident/useDeleteResidentStatus";
+import _ from "lodash";
 
-const Resident: React.FC = () => {
+const ResidentPending: React.FC = () => {
   const auth = useAuthContext();
 
   const {
@@ -22,11 +27,24 @@ const Resident: React.FC = () => {
     isLoading: isResidentsLoading,
     isRefetching,
     refetch,
-  } = useGetResidents();
+  } = useGetResidentStatuses();
+  const { mutate: deleteResident, isLoading: isDeleteLoading } =
+    useDeleteResident();
 
-  const { data: pendingResidents, isLoading: isPendingResidentsLoading } =
-    useGetResidentStatuses();
-  const { mutate, isLoading: isDeleteLoading } = useDeleteResident();
+  const { mutate: deleteResidentStatus, isLoading: isResidentStatusLoading } =
+    useDeleteResidentStatus();
+
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
+  const [showAction, setShowAction] = useState<boolean>(false);
+  const [rows, setRows] = useState<string[]>([]);
+
+  const isLoading =
+    isResidentsLoading ||
+    isDeleteLoading ||
+    isResidentStatusLoading ||
+    isRefetching ||
+    isProcessing;
 
   const columns = useMemo<MRT_ColumnDef<ResidentPropType>[]>(
     () => [
@@ -371,16 +389,56 @@ const Resident: React.FC = () => {
     return educationBracket;
   };
 
+  const handleAccept = () => {
+    setIsProcessing(true);
+
+    _.filter(data, (resident, index) => {
+      if (rows.includes(index.toString())) {
+        deleteResidentStatus({
+          residentId: resident?._id ?? "",
+          status: "Approved",
+        });
+      }
+    });
+
+    setRowSelection({});
+
+    setIsProcessing(false);
+  };
+
+  const handleReject = () => {
+    setIsProcessing(true);
+
+    _.filter(data, (resident, index) => {
+      if (rows.includes(index.toString())) {
+        deleteResidentStatus({
+          residentId: resident?._id ?? "",
+          status: "Rejected",
+        });
+
+        deleteResident(resident?._id ?? "");
+      }
+    });
+
+    setRowSelection({});
+
+    setIsProcessing(false);
+  };
+
+  useEffect(() => {
+    if (Object.values(rowSelection).length === 0) {
+      setShowAction(false);
+    } else {
+      setShowAction(true);
+    }
+
+    const selectedRowsId = Object.keys(rowSelection);
+    setRows(selectedRowsId);
+  }, [rowSelection]);
+
   return (
     <>
-      <LoaderModal
-        isLoading={
-          isResidentsLoading ||
-          isDeleteLoading ||
-          isRefetching ||
-          isPendingResidentsLoading
-        }
-      />
+      <LoaderModal isLoading={isLoading} />
 
       <div className="pb-10">
         <Table
@@ -389,28 +447,43 @@ const Resident: React.FC = () => {
           isError={isError}
           enableGlobalFilter={true}
           enableFilters
-          showBackButton={false}
+          enableRowSelection
+          onRowSelectionChange={setRowSelection}
+          state={{ rowSelection }}
+          positionToolbarAlertBanner="top"
+          muiTableDetailPanelProps={{
+            sx: { color: "white" },
+          }}
+          showBackButton
           showEditButton={false}
-          showDeleteButton={auth?.userRole !== "Moderator"}
+          showDeleteButton={false}
           showExportButton
           refreshButton={refetch}
-          deleteButton={mutate}
         >
-          {auth?.userRole !== "Moderator" && (
-            <div className="flex justify-end pt-4 px-2 gap-2">
-              <TableButton
-                path={"/resident/pending"}
-                label="Pending Residents"
-                Icon={PendingActionsIcon}
-                count={pendingResidents?.length.toString()}
-              />
-              <TableButton path={"/resident/add"} label="Add Resident" />
-            </div>
-          )}
+          <>
+            {showAction && (
+              <div className="flex flex-col space-y-2 px-4 py-8 justify-end md:flex-row md:space-y-0 md:space-x-4">
+                <div className="flex-1 flex">
+                  <CustomButton
+                    label="Cancel"
+                    backgroundColor="#1565c0"
+                    onClick={() => setRowSelection({})}
+                  />
+                </div>
+                <CustomButton
+                  label="Reject Account"
+                  backgroundColor="rgb(239, 68, 68)"
+                  onClick={handleReject}
+                />
+
+                <CustomButton label="Accept Account" onClick={handleAccept} />
+              </div>
+            )}
+          </>
         </Table>
       </div>
     </>
   );
 };
 
-export default Resident;
+export default ResidentPending;
