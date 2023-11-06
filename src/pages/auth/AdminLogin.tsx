@@ -31,6 +31,8 @@ const AdminLogin: React.FC = () => {
   const { storedTimer, onLoginSuccess, onLoginError } = useLoginTimer();
 
   const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+  const [showNotVerifiedModal, setShowNotVerifiedModal] =
+    useState<boolean>(false);
   const [showAccountNotFound, setShowAccountNotFound] =
     useState<boolean>(false);
 
@@ -69,6 +71,8 @@ const AdminLogin: React.FC = () => {
         console.log("Admin Account Not Found");
         setShowAccountNotFound(true);
       }
+    } else if (res.error === "Resident not verified yet.") {
+      setShowNotVerifiedModal(true);
     } else {
       setShowErrorModal(true);
       onLoginError();
@@ -157,6 +161,16 @@ const AdminLogin: React.FC = () => {
         buttonLabel="Okay"
         description={"You are not authorized to proceed."}
         handleButtonPress={() => setShowAccountNotFound(false)}
+      />
+
+      <ModalFailed
+        open={showNotVerifiedModal}
+        title={"Account Still Processing"}
+        buttonLabel="Okay"
+        description={
+          "Your account still not verified. Please contact barangay official for more information."
+        }
+        handleButtonPress={() => setShowNotVerifiedModal(false)}
       />
     </>
   );

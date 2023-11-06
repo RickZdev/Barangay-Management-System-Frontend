@@ -16,6 +16,7 @@ import type {
   UserPropType,
 } from "../utils/types";
 import { getResidentAge } from "../helper/getResidentAge";
+import _ from "lodash";
 
 // auth functions
 export const loginUser = async ({
@@ -31,7 +32,23 @@ export const loginUser = async ({
       password: password,
     });
 
-    return { message: "success", data: response.data, error: "" };
+    const pendingResidents = await authApi.get(
+      "/api/residents/status/resident"
+    );
+
+    const isResidentStillPending = _.find(
+      pendingResidents.data,
+      (resident) => resident._id === response.data._id
+    );
+    if (!isResidentStillPending) {
+      return { message: "success", data: response.data, error: "" };
+    } else {
+      return {
+        message: "error",
+        data: "",
+        error: "Resident not verified yet.",
+      };
+    }
   } catch (error: any) {
     return { message: "error", data: "", error: error.response.data.error };
   }
@@ -179,9 +196,23 @@ export const updateUser = async ({
 // resident functions
 export const getAllResidents = async (): Promise<ResidentPropType[]> => {
   try {
-    const response = await axios.get(`/api/residents`);
+    const residents = await axios.get(`/api/residents`);
 
-    return response.data;
+    const residentStatus = await axios.get("api/residents/status/resident");
+
+    const residentsData = residents.data;
+    const residentStatusData = residentStatus.data;
+
+    // Extract _id values from residentStatus array using _.map()
+    const residentStatusIds = _.map(residentStatusData, "_id");
+
+    // Filter out residents that are not in residentStatus using _.filter()
+    const residentsWithoutStatus = _.filter(
+      residentsData,
+      (resident) => !residentStatusIds.includes(resident._id)
+    );
+
+    return residentsWithoutStatus;
   } catch (error: any) {
     throw error.response.data.error;
   }
@@ -297,9 +328,58 @@ export const updateResident = async ({
 
 export const searchResidents = async (searchText: string) => {
   try {
-    const response = await axios.get(`/api/residents/search/${searchText}`);
+    const residents = await axios.get(`/api/residents/search/${searchText}`);
+    const residentStatus = await axios.get("api/residents/status/resident");
+    const residentsData = residents.data;
+    const residentStatusData = residentStatus.data;
+
+    // Extract _id values from residentStatus array using _.map()
+    const residentStatusIds = _.map(residentStatusData, "_id");
+
+    // Filter out residents that are not in residentStatus using _.filter()
+    const residentsWithoutStatus = _.filter(
+      residentsData,
+      (resident) => !residentStatusIds.includes(resident._id)
+    );
+
+    return residentsWithoutStatus;
+  } catch (error: any) {
+    return error.response.data.error;
+  }
+};
+
+export const getResidentStatuses = async (): Promise<ResidentPropType[]> => {
+  try {
+    const residents = await axios.get(`/api/residents`);
+
+    const residentStatus = await axios.get("api/residents/status/resident");
+
+    const residentsData = residents.data;
+    const residentStatusData = residentStatus.data;
+
+    // Extract _id values from residentStatus array using _.map()
+    const residentStatusIds = _.map(residentStatusData, "_id");
+
+    // Filter out residents that are not in residentStatus using _.filter()
+    const residentsWithoutStatus = _.filter(residentsData, (resident) =>
+      residentStatusIds.includes(resident._id)
+    );
+
+    return residentsWithoutStatus;
+  } catch (error: any) {
+    throw error.response.data.error;
+  }
+};
+
+export const deleteResidentStatus = async (residentId: string) => {
+  try {
+    const response = await axios.delete(
+      `/api/residents/status/resident/${residentId}`
+    );
+
     return response.data;
   } catch (error: any) {
+    console.log(error.response.data.error);
     return error.response.data.error;
   }
 };

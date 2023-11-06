@@ -29,6 +29,8 @@ const ResidentLogin: React.FC = () => {
   const { storedTimer, onLoginSuccess, onLoginError } = useLoginTimer();
 
   const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+  const [showNotVerifiedModal, setShowNotVerifiedModal] =
+    useState<boolean>(false);
 
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
@@ -55,6 +57,8 @@ const ResidentLogin: React.FC = () => {
       console.log("User Logged In Successfully!");
       loginSuccessNotify("Resident");
       navigate("/dashboard", { replace: true });
+    } else if (res.error === "Resident not verified yet.") {
+      setShowNotVerifiedModal(true);
     } else {
       setShowErrorModal(true);
       onLoginError();
@@ -131,7 +135,6 @@ const ResidentLogin: React.FC = () => {
           </form>
         </Card>
       </div>
-
       <ModalFailed
         open={showErrorModal}
         title={!storedTimer ? "Login Failed" : "You have been locked out"}
@@ -142,6 +145,16 @@ const ResidentLogin: React.FC = () => {
             : "Please try again after 15 minutes."
         }
         handleButtonPress={() => setShowErrorModal(false)}
+      />
+
+      <ModalFailed
+        open={showNotVerifiedModal}
+        title={"Account Still Processing"}
+        buttonLabel="Okay"
+        description={
+          "Your account still not verified. Please contact barangay official for more information."
+        }
+        handleButtonPress={() => setShowNotVerifiedModal(false)}
       />
     </>
   );

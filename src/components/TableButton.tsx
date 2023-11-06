@@ -5,6 +5,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 
 type TableButtonPropType = {
+  count?: string;
   path?: To;
   label: string;
   Icon?: OverridableComponent<SvgIconTypeMap<{}, "svg">> & {
@@ -14,6 +15,7 @@ type TableButtonPropType = {
 };
 
 const TableButton: React.FC<TableButtonPropType> = ({
+  count,
   path,
   label,
   Icon = AddIcon,
@@ -38,6 +40,14 @@ const TableButton: React.FC<TableButtonPropType> = ({
       >
         <Icon className="text-sm text-inherit" fontSize="small" />
         <p className="text-sm capitalize font-poppins text-inherit">{label}</p>
+
+        {count && count !== "0" && (
+          <div className="pl-1">
+            <div className="rounded-full h-5 w-5 flex items-center justify-center bg-[#067D68]">
+              <p className="text-[12px] text-white">{count}</p>
+            </div>
+          </div>
+        )}
       </Button>
     </Link>
   );
