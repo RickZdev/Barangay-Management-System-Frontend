@@ -10,13 +10,13 @@ import useUpdateIndigentBenefit from "../../queries/indigentBenefit/useUpdateInd
 import { yupResolver } from "@hookform/resolvers/yup";
 import { indigentBenefitFormValidation } from "../../utils/validation";
 
-type ModalAddTransactionPropType = {
+type ModalReceiveBenefitPropType = {
   indigentId: string | undefined;
   open: boolean;
   handleClose: () => void;
 };
 
-const ModalReceiveBenefit: React.FC<ModalAddTransactionPropType> = ({
+const ModalReceiveBenefit: React.FC<ModalReceiveBenefitPropType> = ({
   indigentId,
   open,
   handleClose,
