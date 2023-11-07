@@ -38,6 +38,22 @@ export const resetPasswordFormValidation = Yup.object().shape({
     .oneOf([Yup.ref("newPassword"), ""], "Password did not match."),
 });
 
+export const changePasswordFormValidation = Yup.object().shape({
+  currentPassword: Yup.string().required("This is a required field."),
+  newPassword: Yup.string()
+    .required("This is a required field.")
+    .min(8, "Password must be at least 8 characters")
+    .matches(/[A-Z]+/, "Password should have at least 1 uppercase character")
+    .matches(/[0-9]+/, "Password should have at least 1 numeric character")
+    .matches(
+      /[@$!%*#?&]+/,
+      "Password should have at least 1 special character"
+    ),
+  confirmPassword: Yup.string()
+    .required("This is a required field")
+    .oneOf([Yup.ref("newPassword"), ""], "Password did not match."),
+});
+
 export const residentFormValidation = Yup.object().shape({
   lastName: Yup.string()
     .required("This is a required field.")

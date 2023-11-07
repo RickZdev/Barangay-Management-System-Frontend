@@ -176,6 +176,7 @@ const ResidentView = ({ isEditable = true }: { isEditable?: boolean }) => {
   useEffect(() => {
     setImage(resident?.profilePhoto);
     setAge(resident?.age?.toString());
+    setValue("sex", resident?.sex ?? "");
 
     if (resident?.birthDate) {
       const dateObj = dayjs(resident?.birthDate);
@@ -198,14 +199,14 @@ const ResidentView = ({ isEditable = true }: { isEditable?: boolean }) => {
                 <TextField
                   register={register("lastName")}
                   label={"Last Name"}
-                  isEdit={isEdit}
+                  isEdit={auth?.userRole !== "Resident" ? isEdit : false}
                   isCapitalize
                   error={errors?.lastName?.message}
                 />
                 <TextField
                   register={register("firstName")}
                   label={"First Name"}
-                  isEdit={isEdit}
+                  isEdit={auth?.userRole !== "Resident" ? isEdit : false}
                   isCapitalize
                   error={errors?.firstName?.message}
                 />
@@ -213,7 +214,7 @@ const ResidentView = ({ isEditable = true }: { isEditable?: boolean }) => {
                   register={register("middleName")}
                   label={"Middle Name"}
                   isOptional
-                  isEdit={isEdit}
+                  isEdit={auth?.userRole !== "Resident" ? isEdit : false}
                   isCapitalize
                   error={errors?.middleName?.message}
                 />
@@ -223,16 +224,18 @@ const ResidentView = ({ isEditable = true }: { isEditable?: boolean }) => {
                   label={"Suffix"}
                   initialValue={resident?.suffix}
                   selections={SELECTION.suffixSelection}
-                  isEdit={isEdit}
+                  isEdit={auth?.userRole !== "Resident" ? isEdit : false}
                   isOptional
                   error={errors?.suffix?.message}
                 />
 
                 <RadioButton
+                  register={register("sex")}
                   label="Sex"
                   initialValue={resident?.sex}
                   selections={SELECTION.sexSelection}
-                  isEdit={isEdit}
+                  isEdit={auth?.userRole !== "Resident" ? isEdit : false}
+                  error={errors?.sex?.message}
                 />
 
                 <TextField
@@ -252,7 +255,7 @@ const ResidentView = ({ isEditable = true }: { isEditable?: boolean }) => {
                 <DatePickerField
                   label="Date of Birth"
                   value={dateValue}
-                  isEdit={isEdit}
+                  isEdit={auth?.userRole !== "Resident" ? isEdit : false}
                   onChange={handleOnChangeDate}
                   error={errors?.birthDate?.message}
                 />
@@ -350,7 +353,7 @@ const ResidentView = ({ isEditable = true }: { isEditable?: boolean }) => {
                 <NumberField
                   register={register("houseNumber")}
                   label={"House No."}
-                  isEdit={isEdit}
+                  isEdit={auth?.userRole !== "Resident" ? isEdit : false}
                   isOptional
                   error={errors?.houseNumber?.message}
                 />
@@ -358,7 +361,7 @@ const ResidentView = ({ isEditable = true }: { isEditable?: boolean }) => {
                 <TextField
                   register={register("streetAddress")}
                   label={"Street Address"}
-                  isEdit={isEdit}
+                  isEdit={auth?.userRole !== "Resident" ? isEdit : false}
                   isCapitalize
                   error={errors?.streetAddress?.message}
                 />
@@ -368,7 +371,7 @@ const ResidentView = ({ isEditable = true }: { isEditable?: boolean }) => {
                   label={"Purok No."}
                   initialValue={resident?.purokNumber.toString() ?? ""}
                   selections={SELECTION.purokSelection}
-                  isEdit={isEdit}
+                  isEdit={auth?.userRole !== "Resident" ? isEdit : false}
                   error={errors?.purokNumber?.message}
                 />
               </div>

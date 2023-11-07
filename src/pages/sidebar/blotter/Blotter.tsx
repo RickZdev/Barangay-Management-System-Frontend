@@ -192,6 +192,7 @@ const Blotter: React.FC = React.memo(() => {
           renderDetailPanel={({ row }) => (
             <ViewMessagePanel messageRow={row.original.narrativeReport} />
           )}
+          enableRowActions={auth?.userRole !== "Resident"}
           showExportButton
           enableRowNumbers={true}
           showBackButton={false}

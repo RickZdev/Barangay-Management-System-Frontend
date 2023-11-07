@@ -116,14 +116,17 @@ export const resetPassword = async ({
 export const changePassword = async ({
   userId,
   newPassword,
+  currentPassword,
 }: {
   userId: string | undefined;
+  currentPassword?: string;
   newPassword: string;
 }) => {
   try {
     const response = await authApi.patch(`/api/auth/change-password`, {
       id: userId,
       newPassword: newPassword,
+      currentPassword: currentPassword,
     });
 
     return { message: "success", data: response.data, error: "" };
