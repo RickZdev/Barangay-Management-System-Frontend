@@ -25,6 +25,7 @@ import useGetBlotters from "../../../queries/blotter/useGetBlotters";
 import useGetSulatReklamo from "../../../queries/sulatReklamo/useGetSulatReklamo";
 import useAuthContext from "../../../queries/auth/useAuthContext";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
+import _ from "lodash";
 
 const Dashboard: React.FC = () => {
   const navigation = useNavigate();
@@ -50,6 +51,7 @@ const Dashboard: React.FC = () => {
     blotterIsLoading ||
     sulatReklamoIsLoading;
 
+  // admin side of dashboard
   const residentsCount = residentData?.length;
 
   const femaleCount =
@@ -77,7 +79,33 @@ const Dashboard: React.FC = () => {
   const blottersCount = blotterData?.length;
   const sulatReklamoCount = sulatReklamoData?.length;
 
-  const data: DashboardPropType[] = [
+  // resident side of dashboard
+  const residentBlottersCount = _.filter(
+    blotterData,
+    (blotter) => blotter.complainantId === auth?.userId
+  ).length;
+
+  const residentComplaintsCount = _.filter(
+    complaintsData,
+    (complaint) => complaint.complainantsId === auth?.userId
+  ).length;
+
+  const residentSulatReklamosCount = _.filter(
+    sulatReklamoData,
+    (sulatReklamo) => sulatReklamo.residentId === auth?.userId
+  ).length;
+
+  const residentBorrowedCount = _.filter(
+    borrowedRecordsData,
+    (borrowedRecord) => borrowedRecord.borroweeId === auth?.userId
+  ).length;
+
+  const residentTransactionsCount = _.filter(
+    transactionsData,
+    (transaction) => transaction.residentId === auth?.userId
+  ).length;
+
+  const adminSideData: DashboardPropType[] = [
     {
       _id: "1",
       label: "Total Certificate Records (not yet)",
@@ -176,6 +204,59 @@ const Dashboard: React.FC = () => {
       navigationPath: "",
     },
   ];
+
+  const residentSideData: DashboardPropType[] = [
+    {
+      _id: "1",
+      label: "Total Certificate Records (not yet)",
+      total: 45,
+      Icon: <DraftsIcon />,
+      backgroundColor: "honeydew",
+      navigationPath: "/certificate",
+    },
+    {
+      _id: "2",
+      label: "Total Blotters",
+      total: residentBlottersCount,
+      Icon: <ReportGmailerrorredIcon />,
+      backgroundColor: "gold",
+      navigationPath: "/blotter",
+    },
+    {
+      _id: "3",
+      label: "Total Complaints",
+      total: residentComplaintsCount,
+      Icon: <FlagIcon />,
+      backgroundColor: "rgb(243, 113, 113)",
+      navigationPath: "/complaints",
+    },
+    {
+      _id: "4",
+      label: "Total Sulat-Reklamo",
+      total: residentSulatReklamosCount,
+      Icon: <DriveFileRenameOutlineIcon />,
+      backgroundColor: "goldenrod",
+      navigationPath: "/sulat-reklamo",
+    },
+    {
+      _id: "5",
+      label: "Total Inventory Records",
+      total: residentBorrowedCount,
+      Icon: <InventoryIcon />,
+      backgroundColor: "cyan",
+      navigationPath: "/inventory",
+    },
+    {
+      _id: "6",
+      label: "Total Transactions",
+      total: residentTransactionsCount,
+      Icon: <PointOfSaleIcon />,
+      backgroundColor: "khaki",
+      navigationPath: "/transaction",
+    },
+  ];
+
+  const data = auth?.userRole === "Resident" ? residentSideData : adminSideData;
 
   return (
     <>
