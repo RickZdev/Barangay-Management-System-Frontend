@@ -15,6 +15,8 @@ import _ from "lodash";
 import useGetBorrowedInventory from "../../../queries/borrowedInventory/useGetBorrowedInventory";
 
 const InventoryRecords: React.FC = React.memo(() => {
+  const auth = useAuthContext();
+
   const columns = useMemo<MRT_ColumnDef<BorrowedRecordsPropType>[]>(
     () => [
       {
@@ -48,16 +50,9 @@ const InventoryRecords: React.FC = React.memo(() => {
         header: "Returned Date",
         size: 150,
       },
-      {
-        accessorKey: "officialInCharge",
-        header: "Official-In-Charge",
-        size: 150,
-      },
     ],
     []
   );
-
-  const auth = useAuthContext();
 
   const {
     data: inventoryRecords,

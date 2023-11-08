@@ -205,3 +205,16 @@ export const adminFormValidation = Yup.object().shape({
   adminName: Yup.string().required("This is a required field."),
   adminRole: Yup.string().required("This is a required field."),
 });
+
+export const certificateFormValidation = Yup.object().shape({
+  residentName: Yup.string().required("This is a required field."),
+  typeOfCertificate: Yup.string().required("This is a required field."),
+  purpose: Yup.string(),
+  residency: Yup.string(),
+  businessOwner: Yup.string(),
+  businessName: Yup.string(),
+  businessNature: Yup.string(),
+  businessAddress: Yup.string(),
+  building: Yup.string(),
+  ownership: Yup.string(),
+});

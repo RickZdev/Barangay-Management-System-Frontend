@@ -7,9 +7,11 @@ import type {
   BlotterPropType,
   BorrowedInventoryPropType,
   BorrowedRecordsPropType,
+  CertificateRecordsPropType,
   ComplaintsPropType,
   IndigentBenefitsPropType,
   LoginAuditPropType,
+  OfficialWithPositionPropType,
   ResidentPropType,
   SulatReklamoPropType,
   TransactionPropType,
@@ -848,7 +850,9 @@ export const deleteBorrowedRecord = async (
 };
 
 // officials function
-export const getAllOfficials = async (): Promise<ResidentPropType[]> => {
+export const getAllOfficials = async (): Promise<
+  OfficialWithPositionPropType[]
+> => {
   try {
     const officials = await axios.get<AllOfficialsPropType[]>(`/api/officials`);
 
@@ -857,14 +861,15 @@ export const getAllOfficials = async (): Promise<ResidentPropType[]> => {
     );
 
     const officialsData = await Promise.all(
-      officialWithPosition?.map((official) => {
+      officialWithPosition?.map(async (official) => {
         if (official.residentId !== "") {
-          return getResidentById(official.residentId);
+          const officialData = await getResidentById(official.residentId);
+          return { ...officialData, position: official?.position };
         }
       })
     );
-    console.log("NICE", officialWithPosition);
-    return officialsData as ResidentPropType[];
+
+    return officialsData as OfficialWithPositionPropType[];
   } catch (error: any) {
     return error.response.data.error;
   }
@@ -1121,5 +1126,49 @@ export const updateIndigentBenefit = async ({
   } catch (error: any) {
     console.log(error.response.data.error);
     return error.response.data.error;
+  }
+};
+
+// certificates function
+export const getAllCertificates = async () => {
+  try {
+    const response = await axios.get(`/api/certificates`);
+
+    return { message: "success", data: response.data, error: "" };
+  } catch (error: any) {
+    return { message: "error", data: "", error: error.response.data.error };
+  }
+};
+
+export const createCertificate = async ({
+  residentId,
+  residentName,
+  typeOfCertificate,
+  dateOfReleased,
+  dateRequested,
+  certificateData,
+}: CertificateRecordsPropType) => {
+  try {
+    const response = await axios.post(`/api/certificates`, {
+      residentId,
+      residentName,
+      typeOfCertificate,
+      dateOfReleased,
+      dateRequested,
+      certificateData,
+    });
+
+    return { message: "success", data: response.data, error: "" };
+  } catch (error: any) {
+    return { message: "error", data: "", error: error.response.data.error };
+  }
+};
+
+export const deleteCertificate = async (certificateId: string) => {
+  try {
+    const response = await axios.delete(`/api/certificates/${certificateId}`);
+    return response.data;
+  } catch (error: any) {
+    return { message: "error", data: "", error: error.response.data.error };
   }
 };

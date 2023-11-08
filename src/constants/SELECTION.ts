@@ -144,4 +144,46 @@ export default {
       value: "Unresolved",
     },
   ],
+  certificateSelection: [
+    {
+      value: "Business Permit",
+    },
+    {
+      value: "Certificate of Indigency",
+    },
+    {
+      value: "Barangay Clearance",
+    },
+    {
+      value: "First-time Jobseeker Certificate",
+    },
+    {
+      value: "Certificate of Residency",
+    },
+  ],
+  certificateBuildingSelection: [
+    {
+      value: "OWNED",
+    },
+    {
+      value: "RENT",
+    },
+    {
+      value: "NOT APPLICABLE",
+    },
+  ],
+  certificateOwnershipSelection: [
+    {
+      value: "SINGLE PROPRIETORSHIP",
+    },
+    {
+      value: "PARTNERSHIP",
+    },
+    {
+      value: "CORPORATION",
+    },
+    {
+      value: "INCORPORATED",
+    },
+  ],
 };
