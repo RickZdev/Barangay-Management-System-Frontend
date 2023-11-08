@@ -128,6 +128,10 @@ export type OfficialPropType = {
   officialDetails: ResidentPropType | undefined;
 };
 
+export type OfficialWithPositionPropType = ResidentPropType & {
+  position: string;
+};
+
 export type AllOfficialsPropType = {
   _id: string;
   position: string;
@@ -172,6 +176,31 @@ export type IndigentBenefitsPropType = {
   relation?: string;
   birthDate: string;
   monthAndYear?: string;
+};
+
+export type CertificateFormTemplatePropType = {
+  officials: { officialName: string; position: string }[];
+  certificationTitle: string;
+  certificationSubtitle?: string;
+  validity?: string;
+  showSecretary?: boolean;
+};
+
+export type CertificationsPropType =
+  | "Business Permit"
+  | "Certificate of Indigency"
+  | "Barangay Clearance"
+  | "First-time Jobseeker Certificate"
+  | "Certificate of Residency";
+
+export type CertificateRecordsPropType = {
+  _id?: string;
+  residentId?: string;
+  residentName: string;
+  typeOfCertificate: CertificationsPropType;
+  dateRequested: string;
+  dateOfReleased?: string;
+  certificateData: any;
 };
 
 export type StorageFolderPropType = "announcements" | "profile";

@@ -52,11 +52,6 @@ const InventoryBorrow: React.FC = React.memo(() => {
         header: "Contact Number",
         size: 150,
       },
-      {
-        accessorKey: "officialInCharge",
-        header: "Official-In-Charge",
-        size: 150,
-      },
     ],
     []
   );
