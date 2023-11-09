@@ -57,6 +57,7 @@ const ModalAdminRequestCertificate: React.FC<
   const [showWithBusinessPermit, setShowWithBusinessPermit] =
     useState<boolean>(false);
   const [showWithJobseeker, setshowWithJobseeker] = useState<boolean>(false);
+  const [showWithIndigency, setShowWithIndigency] = useState<boolean>(false);
 
   const handleCloseModal = () => {
     setValue("residentName", "");
@@ -109,7 +110,6 @@ const ModalAdminRequestCertificate: React.FC<
     const certificationType = selectedCertificateType;
 
     if (
-      certificationType === "Certificate of Indigency" ||
       certificationType === "Barangay Clearance" ||
       certificationType === "Certificate of Residency"
     ) {
@@ -118,6 +118,16 @@ const ModalAdminRequestCertificate: React.FC<
       } else {
         await handleCreateCertificate(certificateData);
         setValue("purpose", "");
+      }
+    } else if (certificationType === "Certificate of Indigency") {
+      if (!data?.purpose) {
+        setError("purpose", { message: "This is a required field." });
+      } else if (!data?.indigent) {
+        setError("indigent", { message: "This is a required field." });
+      } else {
+        await handleCreateCertificate(certificateData);
+        setValue("purpose", "");
+        setValue("indigent", "");
       }
     } else if (certificationType === "First-time Jobseeker Certificate") {
       if (!data?.residency) {
@@ -182,13 +192,13 @@ const ModalAdminRequestCertificate: React.FC<
     const certificationType = selectedCertificateType;
 
     if (
-      certificationType === "Certificate of Indigency" ||
       certificationType === "Barangay Clearance" ||
       certificationType === "Certificate of Residency"
     ) {
       setShowWithPurpose(true);
       setShowWithBusinessPermit(false);
       setshowWithJobseeker(false);
+      setShowWithIndigency(false);
       setValue("ownership", "");
       setValue("building", "");
       setValue("businessAddress", "");
@@ -196,17 +206,34 @@ const ModalAdminRequestCertificate: React.FC<
       setValue("businessNature", "");
       setValue("businessOwner", "");
       setValue("residency", "");
+      setValue("indigent", "");
     } else if (certificationType === "Business Permit") {
       setShowWithBusinessPermit(true);
+      setShowWithIndigency(false);
       setShowWithPurpose(false);
       setshowWithJobseeker(false);
       setValue("purpose", "");
       setValue("residency", "");
+      setValue("indigent", "");
     } else if (certificationType === "First-time Jobseeker Certificate") {
       setshowWithJobseeker(true);
+      setShowWithIndigency(false);
       setShowWithBusinessPermit(false);
       setShowWithPurpose(false);
       setValue("purpose", "");
+      setValue("indigent", "");
+      setValue("ownership", "");
+      setValue("building", "");
+      setValue("businessAddress", "");
+      setValue("businessName", "");
+      setValue("businessNature", "");
+      setValue("businessOwner", "");
+    } else if (certificationType === "Certificate of Indigency") {
+      setShowWithIndigency(true);
+      setshowWithJobseeker(false);
+      setShowWithBusinessPermit(false);
+      setShowWithPurpose(false);
+      setValue("residency", "");
       setValue("ownership", "");
       setValue("building", "");
       setValue("businessAddress", "");
@@ -217,6 +244,7 @@ const ModalAdminRequestCertificate: React.FC<
       setShowWithBusinessPermit(false);
       setShowWithPurpose(false);
       setshowWithJobseeker(false);
+      setShowWithIndigency(false);
       resetField("building");
       resetField("ownership");
       resetField("businessAddress");
@@ -224,6 +252,7 @@ const ModalAdminRequestCertificate: React.FC<
       resetField("businessNature");
       resetField("businessOwner");
       resetField("purpose");
+      resetField("indigent");
       resetField("residency");
       resetField("residentName");
       resetField("typeOfCertificate");
@@ -307,6 +336,26 @@ const ModalAdminRequestCertificate: React.FC<
               />
             )}
 
+            {showWithIndigency && (
+              <>
+                <TextField
+                  register={register("indigent")}
+                  label={"Requested for"}
+                  isEdit
+                  isCapitalize
+                  error={errors?.indigent?.message}
+                />
+
+                <TextField
+                  register={register("purpose")}
+                  label={"Purpose"}
+                  isEdit
+                  isCapitalize
+                  error={errors?.purpose?.message}
+                />
+              </>
+            )}
+
             {showWithJobseeker && (
               <TextField
                 register={register("residency")}
@@ -367,6 +416,20 @@ const ModalAdminRequestCertificate: React.FC<
                   error={errors?.building?.message}
                 />
               </>
+            )}
+
+            {selectedCertificateType === "Certificate of Indigency" ||
+            !selectedCertificateType ? null : selectedCertificateType ===
+              "Business Permit" ? (
+              <p className="text-[#50D5B7] font-poppins text-sm">
+                Kindly prepare an amount of ₱100 pesos upon receiving the
+                certificate.
+              </p>
+            ) : (
+              <p className="text-[#50D5B7] font-poppins text-sm">
+                Kindly prepare an amount of ₱25 pesos upon receiving the
+                certificate.
+              </p>
             )}
 
             <div className="flex justify-end">

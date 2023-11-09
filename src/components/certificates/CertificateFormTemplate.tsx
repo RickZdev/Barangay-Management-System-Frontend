@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import {
   Page,
   Text,
@@ -63,7 +63,7 @@ const CertificateFormTemplate = ({
   );
 
   return (
-    <Document>
+    <Document title={certificationTitle} pageMode={"fullScreen"}>
       <Page size="A4" style={styles.page}>
         {/* header */}
         <View

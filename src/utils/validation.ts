@@ -210,6 +210,7 @@ export const certificateFormValidation = Yup.object().shape({
   residentName: Yup.string().required("This is a required field."),
   typeOfCertificate: Yup.string().required("This is a required field."),
   purpose: Yup.string(),
+  indigent: Yup.string(),
   residency: Yup.string(),
   businessOwner: Yup.string(),
   businessName: Yup.string(),
