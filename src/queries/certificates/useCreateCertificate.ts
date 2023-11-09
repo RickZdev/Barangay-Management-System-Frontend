@@ -6,7 +6,7 @@ const useCreateCertificate = () => {
   const certificate = useMutation({
     mutationFn: createCertificate,
     onSuccess: async (data) => {
-      queryClient.invalidateQueries(["allCertificates"]);
+      queryClient.invalidateQueries(["allPendingCertificates"]);
       console.log(data);
     },
   });

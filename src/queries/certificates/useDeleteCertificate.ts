@@ -5,7 +5,7 @@ const useDeleteCertificate = () => {
   const queryClient = useQueryClient();
   const certificate = useMutation({
     mutationFn: deleteCertificate,
-    onSuccess: () => queryClient.invalidateQueries(["allCertificates"]),
+    onSuccess: () => queryClient.invalidateQueries(["allApprovedCertificates"]),
     onError: (err) => {
       console.log(err);
     },

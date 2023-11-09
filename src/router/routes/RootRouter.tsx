@@ -62,6 +62,7 @@ import Homepage from "../../pages/homepage/Homepage";
 import ForgotPassword from "../../pages/auth/ForgotPassword";
 import ResetPassword from "../../pages/auth/ResetPassword";
 import ProtectedRoute from "./ProtectedRoute";
+import CertificateRejected from "../../pages/sidebar/certificates/CertificateRejected";
 
 export const rootRouter = createBrowserRouter(
   createRoutesFromElements(
@@ -164,6 +165,10 @@ export const rootRouter = createBrowserRouter(
         <Route element={<CertificateLayout />}>
           <Route path="certificate" element={<CertificateRecords />} />
           <Route path="certificate/pending" element={<CertificatePending />} />
+          <Route
+            path="certificate/rejected"
+            element={<CertificateRejected />}
+          />
         </Route>
 
         <Route element={<InventoryLayout />}>

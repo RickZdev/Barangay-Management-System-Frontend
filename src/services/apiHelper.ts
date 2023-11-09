@@ -1130,11 +1130,50 @@ export const updateIndigentBenefit = async ({
 };
 
 // certificates function
-export const getAllCertificates = async () => {
+export const getAllApprovedCertificates = async () => {
   try {
     const response = await axios.get(`/api/certificates`);
 
-    return { message: "success", data: response.data, error: "" };
+    const residentApprovedStatuses = _.filter(
+      response?.data,
+      (certificate) => certificate?.status === "Approved"
+    );
+
+    return {
+      message: "success",
+      data: residentApprovedStatuses as any[],
+      error: "",
+    };
+  } catch (error: any) {
+    return { message: "error", data: "", error: error.response.data.error };
+  }
+};
+
+export const getAllPendingCertificates = async () => {
+  try {
+    const response = await axios.get(`/api/certificates`);
+
+    const residentPendingStatuses = _.filter(
+      response?.data,
+      (certificate) => certificate?.status === "Pending"
+    );
+
+    return { message: "success", data: residentPendingStatuses, error: "" };
+  } catch (error: any) {
+    return { message: "error", data: "", error: error.response.data.error };
+  }
+};
+
+export const getAllRejectedCertificates = async () => {
+  try {
+    const response = await axios.get(`/api/certificates`);
+
+    const residentRejectedStatuses = _.filter(
+      response?.data,
+      (certificate) => certificate?.status === "Rejected"
+    );
+
+    return { message: "success", data: residentRejectedStatuses, error: "" };
   } catch (error: any) {
     return { message: "error", data: "", error: error.response.data.error };
   }
@@ -1168,6 +1207,24 @@ export const deleteCertificate = async (certificateId: string) => {
   try {
     const response = await axios.delete(`/api/certificates/${certificateId}`);
     return response.data;
+  } catch (error: any) {
+    return { message: "error", data: "", error: error.response.data.error };
+  }
+};
+
+export const updateCertificate = async ({
+  certificateId,
+  updatedData,
+}: {
+  certificateId: string;
+  updatedData: any;
+}) => {
+  try {
+    const response = await axios.patch(
+      `/api/certificates/${certificateId}`,
+      updatedData
+    );
+    return { message: "success", data: response.data, error: "" };
   } catch (error: any) {
     return { message: "error", data: "", error: error.response.data.error };
   }

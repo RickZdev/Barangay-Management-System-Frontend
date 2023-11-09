@@ -26,6 +26,7 @@ import useGetSulatReklamo from "../../../queries/sulatReklamo/useGetSulatReklamo
 import useAuthContext from "../../../queries/auth/useAuthContext";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import _ from "lodash";
+import useGetApprovedCertificates from "../../../queries/certificates/useGetApprovedCertificates";
 
 const Dashboard: React.FC = () => {
   const navigation = useNavigate();
@@ -43,13 +44,17 @@ const Dashboard: React.FC = () => {
     useGetSulatReklamo();
   const { data: blotterData, isLoading: blotterIsLoading } = useGetBlotters();
 
+  const { data: certificateData, isLoading: certificateIsLoading } =
+    useGetApprovedCertificates();
+
   const isLoading =
     residentIsLoading ||
     complaintsIsLoading ||
     transactionsIsLoading ||
     borrowedRecordsIsLoading ||
     blotterIsLoading ||
-    sulatReklamoIsLoading;
+    sulatReklamoIsLoading ||
+    certificateIsLoading;
 
   // admin side of dashboard
   const residentsCount = residentData?.length;
@@ -78,6 +83,7 @@ const Dashboard: React.FC = () => {
   const borrowedRecordsCount = borrowedRecordsData?.length;
   const blottersCount = blotterData?.length;
   const sulatReklamoCount = sulatReklamoData?.length;
+  const certificateCount = certificateData?.data?.length;
 
   // resident side of dashboard
   const residentBlottersCount = _.filter(
@@ -105,11 +111,16 @@ const Dashboard: React.FC = () => {
     (transaction) => transaction.residentId === auth?.userId
   ).length;
 
+  const residentCertificatesCount = _.filter(
+    certificateData?.data,
+    (certificate) => certificate.residentId === auth?.userId
+  ).length;
+
   const adminSideData: DashboardPropType[] = [
     {
       _id: "1",
-      label: "Total Certificate Records (not yet)",
-      total: 45,
+      label: "Total Certificate Records",
+      total: certificateCount,
       Icon: <DraftsIcon />,
       backgroundColor: "honeydew",
       navigationPath: "/certificate",
@@ -208,8 +219,8 @@ const Dashboard: React.FC = () => {
   const residentSideData: DashboardPropType[] = [
     {
       _id: "1",
-      label: "Total Certificate Records (not yet)",
-      total: 45,
+      label: "Total Certificate Records",
+      total: residentCertificatesCount,
       Icon: <DraftsIcon />,
       backgroundColor: "honeydew",
       navigationPath: "/certificate",

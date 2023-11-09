@@ -201,6 +201,7 @@ export type CertificateRecordsPropType = {
   dateRequested: string;
   dateOfReleased?: string;
   certificateData: any;
+  status?: string;
 };
 
 export type StorageFolderPropType = "announcements" | "profile";

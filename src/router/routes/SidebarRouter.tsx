@@ -25,6 +25,7 @@ import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { SvgIconTypeMap } from "@mui/material";
 import useAuthContext from "../../queries/auth/useAuthContext";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 
 const SidebarRouter: React.FC = () => {
   const { collapseSidebar } = useProSidebar();
@@ -219,6 +220,7 @@ const SidebarRouter: React.FC = () => {
                 Sulat Reklamo
               </MenuItem>
             )}
+
             <SubMenu
               icon={<ContentPasteSearchIcon />}
               style={iconStyle}
@@ -227,12 +229,19 @@ const SidebarRouter: React.FC = () => {
               label="Certificates"
             >
               <CustomMenuItem
+                Icon={ThumbDownIcon}
+                onClick={() => navigate("/certificate/rejected")}
+              >
+                Rejected Certificates
+              </CustomMenuItem>
+              <CustomMenuItem
                 Icon={PauseCircleOutlineIcon}
                 onClick={() => navigate("/certificate/pending")}
               >
                 Pending Certificates
               </CustomMenuItem>
             </SubMenu>
+
             <SubMenu
               icon={<InventoryIcon />}
               style={iconStyle}
