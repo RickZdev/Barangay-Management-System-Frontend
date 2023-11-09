@@ -24,6 +24,7 @@ import { Add, Inventory, Visibility } from "@mui/icons-material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { SvgIconTypeMap } from "@mui/material";
 import useAuthContext from "../../queries/auth/useAuthContext";
+import PendingActionsIcon from "@mui/icons-material/PendingActions";
 
 const SidebarRouter: React.FC = () => {
   const { collapseSidebar } = useProSidebar();
@@ -123,6 +124,12 @@ const SidebarRouter: React.FC = () => {
                   onClick={() => navigate("/resident/add/")}
                 >
                   Add Resident
+                </CustomMenuItem>
+                <CustomMenuItem
+                  Icon={PendingActionsIcon}
+                  onClick={() => navigate("/resident/pending/")}
+                >
+                  Pending Residents
                 </CustomMenuItem>
               </SubMenu>
             )}
@@ -224,12 +231,6 @@ const SidebarRouter: React.FC = () => {
                 onClick={() => navigate("/certificate/pending")}
               >
                 Pending Certificates
-              </CustomMenuItem>
-              <CustomMenuItem
-                Icon={Add}
-                onClick={() => navigate("/certificate/request")}
-              >
-                Request Certificates
               </CustomMenuItem>
             </SubMenu>
             <SubMenu
