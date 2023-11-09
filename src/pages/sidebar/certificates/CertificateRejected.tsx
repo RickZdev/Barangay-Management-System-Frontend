@@ -2,8 +2,6 @@ import React, { useMemo, useState } from "react";
 import Table from "../../../components/Table";
 import { MRT_ColumnDef } from "material-react-table";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import TableButton from "../../../components/TableButton";
 import useGetOfficials from "../../../queries/official/useGetOfficials";
 import { getResidentFullNameWithInitial } from "../../../helper/getResidentFullNameWithInitial";
 import useAuthContext from "../../../queries/auth/useAuthContext";
@@ -16,15 +14,10 @@ import {
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import ViewDetails from "../../../components/ViewDetails";
 import useDeleteCertificate from "../../../queries/certificates/useDeleteCertificate";
-import { Delete } from "@mui/icons-material";
-import ModalWarning from "../../../components/modals/alert/ModalWarning";
 import _ from "lodash";
-import ModalResidentRequestCertificate from "../../../components/modals/ModalResidentRequestCertificate";
-import ModalAdminRequestCertificate from "../../../components/modals/ModalAdminRequestCertificate";
-import useGetApprovedCertificates from "../../../queries/certificates/useGetApprovedCertificates";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import useGetRejectedCertificates from "../../../queries/certificates/useGetRejectedCertificates";
 
-const CertificateRecords: React.FC = React.memo(() => {
+const CertificateRejected: React.FC = React.memo(() => {
   const columns = useMemo<MRT_ColumnDef<CertificateRecordsPropType>[]>(
     () => [
       {
@@ -50,7 +43,7 @@ const CertificateRecords: React.FC = React.memo(() => {
       },
       {
         accessorKey: "dateOfReleased",
-        header: "Date of Release",
+        header: "Date Rejected",
         size: 150,
       },
       {
@@ -65,11 +58,11 @@ const CertificateRecords: React.FC = React.memo(() => {
   const auth = useAuthContext();
 
   const {
-    data: certificateRecords,
+    data: certificateRejected,
     isLoading: isCertificateRecordsLoading,
     isRefetching,
     refetch,
-  } = useGetApprovedCertificates();
+  } = useGetRejectedCertificates();
 
   const { mutate: deleteCertificate } = useDeleteCertificate();
   const { data: officials, isLoading: isOfficialsLoading } = useGetOfficials();
@@ -81,11 +74,6 @@ const CertificateRecords: React.FC = React.memo(() => {
 
   const [showCertificateModal, setShowCertificateModal] =
     useState<boolean>(false);
-  const [showRequestCertificateModal, setShowRequestCertificateModal] =
-    useState<boolean>(false);
-
-  const [rowId, setRowId] = useState<string>();
-  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
   const isLoading =
     isCertificateRecordsLoading || isOfficialsLoading || isRefetching;
@@ -108,23 +96,15 @@ const CertificateRecords: React.FC = React.memo(() => {
 
   const certificatesForResident = useMemo(() => {
     return _.filter(
-      certificateRecords?.data,
+      certificateRejected?.data,
       (certificate) => certificate?.residentId === auth?.userId
     );
-  }, [certificateRecords?.data]);
+  }, [certificateRejected?.data]);
 
   const data =
     auth?.userRole !== "Resident"
-      ? certificateRecords?.data
+      ? certificateRejected?.data
       : certificatesForResident;
-
-  const handleDelete = () => {
-    if (deleteCertificate && rowId) {
-      deleteCertificate(rowId);
-    }
-
-    setShowDeleteModal(false);
-  };
 
   return (
     <>
@@ -137,7 +117,7 @@ const CertificateRecords: React.FC = React.memo(() => {
         enableRowNumbers={true}
         showEditButton={false}
         showDeleteButton={true}
-        showBackButton={false}
+        showBackButton={true}
         refreshButton={refetch}
         deleteButton={deleteCertificate}
         enableRowActions
@@ -164,46 +144,9 @@ const CertificateRecords: React.FC = React.memo(() => {
                 />
               </IconButton>
             </Tooltip>
-            {auth?.userRole === "Captain" && (
-              <Tooltip
-                arrow
-                title="Delete"
-                onClick={() => {
-                  setShowDeleteModal(true);
-                  setRowId(row.original._id);
-                }}
-              >
-                <IconButton>
-                  <Delete color="error" />
-                </IconButton>
-              </Tooltip>
-            )}
           </Box>,
         ]}
-      >
-        <div className="flex flex-col pt-4 px-2 space-y-2 md:flex md:flex-row md:justify-end md:space-x-4 md:space-y-0">
-          <TableButton
-            path={"/certificate/rejected"}
-            label="Rejected Certificates"
-            Icon={ThumbDownIcon}
-            count={"6"}
-          />
-          <TableButton
-            path={"/certificate/pending"}
-            label="Pending Certificates"
-            Icon={VisibilityIcon}
-            count={"6"}
-          />
-
-          {auth?.userRole !== "Moderator" && (
-            <TableButton
-              label="Request Certificate"
-              Icon={AddCircleOutlineIcon}
-              onClick={() => setShowRequestCertificateModal(true)}
-            />
-          )}
-        </div>
-      </Table>
+      />
 
       <ModalViewCertificate
         officials={officialsData ?? []}
@@ -211,30 +154,8 @@ const CertificateRecords: React.FC = React.memo(() => {
         open={showCertificateModal}
         handleClose={() => setShowCertificateModal(false)}
       />
-
-      {auth?.userRole === "Resident" ? (
-        <ModalResidentRequestCertificate
-          open={showRequestCertificateModal}
-          handleClose={() => setShowRequestCertificateModal(false)}
-        />
-      ) : (
-        <ModalAdminRequestCertificate
-          open={showRequestCertificateModal}
-          handleClose={() => setShowRequestCertificateModal(false)}
-        />
-      )}
-
-      <ModalWarning
-        open={showDeleteModal}
-        title="ARE YOU SURE YOU WANT TO DELETE DATA"
-        description="This action is irreversible upon confirmation. Confirm to continue."
-        primaryButtonLabel="Confirm"
-        secondaryButtonLabel="Cancel"
-        handlePrimaryButton={handleDelete}
-        handleSecondaryButton={() => setShowDeleteModal(false)}
-      />
     </>
   );
 });
 
-export default CertificateRecords;
+export default CertificateRejected;
