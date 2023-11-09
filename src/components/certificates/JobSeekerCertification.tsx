@@ -49,7 +49,7 @@ const JobSeekerCertification = ({
 
         <Text style={{ textIndent: 20 }}>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I further certify that the
-          holder/bearer was informed of her rights, including the duties and
+          holder/bearer was informed of his/her rights, including the duties and
           responsibilities accorded by R.A. 11261 through the oath of
           undertaking he has signed and executed in the presence of our barangay
           official.

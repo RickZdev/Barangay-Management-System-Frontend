@@ -8,11 +8,13 @@ import FieldName from "./FieldName";
 const CertificateOfIndigency = ({
   officials,
   residentName,
+  requestedFor,
   purpose,
   address,
 }: {
   officials: { officialName: string; position: string }[];
   residentName: string;
+  requestedFor: string;
   purpose: string;
   address: {
     houseNumber: number;
@@ -38,7 +40,7 @@ const CertificateOfIndigency = ({
         <Text>
           <Text style={{ textIndent: 20 }}>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This is to certify that{" "}
-            <FieldName field={residentName} />
+            <FieldName field={requestedFor} />
             bonafide resident of #
             <FieldName field={address.houseNumber.toString()} />
             <FieldName field={address.streetAddress} /> Street, Navotas East,
@@ -48,7 +50,7 @@ const CertificateOfIndigency = ({
 
           <Text style={{ textIndent: 20 }}>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This is to certificates further
-            <FieldName field={residentName} />
+            <FieldName field={requestedFor} />
             belongs to one of the indigent families of this Barangay.
           </Text>
           {"\n\n"}
