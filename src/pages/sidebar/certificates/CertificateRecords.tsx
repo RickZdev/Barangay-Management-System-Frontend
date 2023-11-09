@@ -14,13 +14,14 @@ import {
   CertificationsPropType,
 } from "../../../utils/types";
 import useGetCertificates from "../../../queries/certificates/useGetCertificates";
-import ModalRequestCertificate from "../../../components/modals/ModalRequestCertificate";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import ViewDetails from "../../../components/ViewDetails";
 import useDeleteCertificate from "../../../queries/certificates/useDeleteCertificate";
 import { Delete } from "@mui/icons-material";
 import ModalWarning from "../../../components/modals/alert/ModalWarning";
 import _ from "lodash";
+import ModalResidentRequestCertificate from "../../../components/modals/ModalResidentRequestCertificate";
+import ModalAdminRequestCertificate from "../../../components/modals/ModalAdminRequestCertificate";
 
 const CertificateRecords: React.FC = React.memo(() => {
   const columns = useMemo<MRT_ColumnDef<CertificateRecordsPropType>[]>(
@@ -197,10 +198,17 @@ const CertificateRecords: React.FC = React.memo(() => {
         handleClose={() => setShowCertificateModal(false)}
       />
 
-      <ModalRequestCertificate
-        open={showRequestCertificateModal}
-        handleClose={() => setShowRequestCertificateModal(false)}
-      />
+      {auth?.userRole === "Resident" ? (
+        <ModalResidentRequestCertificate
+          open={showRequestCertificateModal}
+          handleClose={() => setShowRequestCertificateModal(false)}
+        />
+      ) : (
+        <ModalAdminRequestCertificate
+          open={showRequestCertificateModal}
+          handleClose={() => setShowRequestCertificateModal(false)}
+        />
+      )}
 
       <ModalWarning
         open={showDeleteModal}

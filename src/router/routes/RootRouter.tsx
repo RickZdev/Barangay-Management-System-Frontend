@@ -45,7 +45,6 @@ import {
 } from "../layout/RouterLayout";
 import CertificateRecords from "../../pages/sidebar/certificates/CertificateRecords";
 import CertificatePending from "../../pages/sidebar/certificates/CertificatePending";
-import CertificateRequest from "../../pages/sidebar/certificates/CertificateRequest";
 import AnnouncementEdit from "../../pages/sidebar/announcement/AnnouncementEdit";
 import SulatReklamo from "../../pages/sidebar/sulat-reklamo/SulatReklamo";
 import SulatReklamoAdd from "../../pages/sidebar/sulat-reklamo/SulatReklamoAdd";
@@ -165,7 +164,6 @@ export const rootRouter = createBrowserRouter(
         <Route element={<CertificateLayout />}>
           <Route path="certificate" element={<CertificateRecords />} />
           <Route path="certificate/pending" element={<CertificatePending />} />
-          <Route path="certificate/request" element={<CertificateRequest />} />
         </Route>
 
         <Route element={<InventoryLayout />}>

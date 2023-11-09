@@ -15,22 +15,23 @@ import { certificateFormValidation } from "../../utils/validation";
 import { CertificationsPropType, ResidentPropType } from "../../utils/types";
 import SelectFieldTemp from "../SelectFieldTemp";
 import useCreateCertificate from "../../queries/certificates/useCreateCertificate";
-import SearchableTextField from "../SearchableTextField";
 import dayjs from "dayjs";
 import { getResidentFullName } from "../../helper/getResidentFullName";
 import LoaderModal from "./loader/LoaderModal";
 import ModalSuccess from "./alert/ModalSuccess";
+import useAuthContext from "../../queries/auth/useAuthContext";
+import useGetResidentById from "../../queries/resident/useGetResidentById";
+import { getResidentFullAddress } from "../../helper/getResidentFullAddres";
 
 type ModalRequestCertificatePropType = {
   open: boolean;
   handleClose: () => void;
 };
 
-const ModalRequestCertificate: React.FC<ModalRequestCertificatePropType> = ({
-  open,
-  handleClose,
-}) => {
-  const { mutateAsync: createCertificate } = useCreateCertificate();
+const ModalResidentRequestCertificate: React.FC<
+  ModalRequestCertificatePropType
+> = ({ open, handleClose }) => {
+  const auth = useAuthContext();
 
   const {
     register,
@@ -43,8 +44,11 @@ const ModalRequestCertificate: React.FC<ModalRequestCertificatePropType> = ({
   } = useForm({
     resolver: yupResolver(certificateFormValidation),
   });
-  const [resident, setResident] = useState<ResidentPropType | undefined>();
-  const [isResidentTextEmpty, setIsResidentTextEmpty] = useState<boolean>(true);
+
+  const { data: resident, isLoading: isResidentLoading } = useGetResidentById(
+    auth?.userId
+  );
+  const { mutateAsync: createCertificate } = useCreateCertificate();
 
   const [selectedCertificateType, setSelectedCertificateType] = useState<
     CertificationsPropType | undefined
@@ -59,10 +63,8 @@ const ModalRequestCertificate: React.FC<ModalRequestCertificatePropType> = ({
   const [showWithJobseeker, setshowWithJobseeker] = useState<boolean>(false);
 
   const handleCloseModal = () => {
-    setValue("residentName", "");
     setValue("typeOfCertificate", "");
     setSelectedCertificateType(undefined);
-    setResident(undefined);
     handleClose();
     clearErrors();
   };
@@ -154,27 +156,15 @@ const ModalRequestCertificate: React.FC<ModalRequestCertificatePropType> = ({
   };
 
   useEffect(() => {
-    if (isResidentTextEmpty) {
-      setValue(
-        "residentName",
-        getResidentFullName({
-          lastName: resident?.lastName,
-          firstName: resident?.firstName,
-          middleName: resident?.middleName,
-          suffix: resident?.suffix,
-        })
-      );
-
-      clearErrors("residentName");
-    } else {
-      setValue("residentName", "");
-      setError("residentName", { message: "This is a required field." });
-    }
-  }, [isResidentTextEmpty]);
-
-  useEffect(() => {
-    setValue("residentName", "");
-    setSelectedCertificateType(undefined);
+    setValue(
+      "residentName",
+      getResidentFullName({
+        lastName: resident?.lastName,
+        firstName: resident?.firstName,
+        middleName: resident?.middleName,
+        suffix: resident?.suffix,
+      })
+    );
     setValue("typeOfCertificate", "");
   }, []);
 
@@ -230,14 +220,12 @@ const ModalRequestCertificate: React.FC<ModalRequestCertificatePropType> = ({
       setSelectedCertificateType(undefined);
     }
 
-    console.log(selectedCertificateType);
-
     clearErrors("typeOfCertificate");
   }, [selectedCertificateType]); // RE-RENDER HERE
 
   return (
     <>
-      <LoaderModal isLoading={isProcessing} />
+      <LoaderModal isLoading={isProcessing || isResidentLoading} />
       <Dialog
         PaperProps={{ sx: { backgroundColor: "#29283d", borderRadius: 5 } }}
         onClose={handleCloseModal}
@@ -265,13 +253,25 @@ const ModalRequestCertificate: React.FC<ModalRequestCertificatePropType> = ({
 
             <CardHeader title="Request Certification" />
 
-            <SearchableTextField
+            <TextField
               label="Resident's Name"
-              isEdit
-              handleChange={setResident}
-              handleIsEmptyText={setIsResidentTextEmpty}
-              error={errors?.residentName?.message}
-              autoFocus
+              initialValue={getResidentFullName({
+                lastName: resident?.lastName,
+                firstName: resident?.firstName,
+                middleName: resident?.middleName,
+                suffix: resident?.suffix,
+              })}
+              isCapitalize
+            />
+
+            <TextField
+              label={"Resident's Address"}
+              initialValue={getResidentFullAddress({
+                houseNumber: resident?.houseNumber,
+                streetAddress: resident?.streetAddress,
+                purokNumber: resident?.purokNumber,
+              })}
+              isCapitalize
             />
 
             <SelectFieldTemp
@@ -366,8 +366,8 @@ const ModalRequestCertificate: React.FC<ModalRequestCertificatePropType> = ({
 
       <ModalSuccess
         open={showSuccessModal}
-        title="Complaint Report Complete"
-        description="Your report has been saved."
+        title="Certificate Request Completed"
+        description="Please check your email after 1-3 days about the status of your request." // asked about what the instruction or what to do next
         buttonLabel="Back to Screen"
         handleButtonPress={handleSuccessModal}
       />
@@ -375,4 +375,4 @@ const ModalRequestCertificate: React.FC<ModalRequestCertificatePropType> = ({
   );
 };
 
-export default ModalRequestCertificate;
+export default ModalResidentRequestCertificate;
