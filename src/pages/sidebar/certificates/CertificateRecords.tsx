@@ -23,6 +23,8 @@ import ModalResidentRequestCertificate from "../../../components/modals/ModalRes
 import ModalAdminRequestCertificate from "../../../components/modals/ModalAdminRequestCertificate";
 import useGetApprovedCertificates from "../../../queries/certificates/useGetApprovedCertificates";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import useGetPendingCertificates from "../../../queries/certificates/useGetPendingCertificates";
+import useGetRejectedCertificates from "../../../queries/certificates/useGetRejectedCertificates";
 
 const CertificateRecords: React.FC = React.memo(() => {
   const columns = useMemo<MRT_ColumnDef<CertificateRecordsPropType>[]>(
@@ -71,6 +73,12 @@ const CertificateRecords: React.FC = React.memo(() => {
     refetch,
   } = useGetApprovedCertificates();
 
+  const { data: certificatePending, isLoading: isCertificatePendingLoading } =
+    useGetPendingCertificates();
+
+  const { data: certificateRejected, isLoading: isCertificateRejectedLoading } =
+    useGetRejectedCertificates();
+
   const { mutate: deleteCertificate } = useDeleteCertificate();
   const { data: officials, isLoading: isOfficialsLoading } = useGetOfficials();
 
@@ -88,7 +96,11 @@ const CertificateRecords: React.FC = React.memo(() => {
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
   const isLoading =
-    isCertificateRecordsLoading || isOfficialsLoading || isRefetching;
+    isCertificateRecordsLoading ||
+    isOfficialsLoading ||
+    isRefetching ||
+    isCertificatePendingLoading ||
+    isCertificateRejectedLoading;
 
   const officialsData = useMemo(() => {
     const mappedOfficials = officials?.map((official) => {
@@ -112,6 +124,20 @@ const CertificateRecords: React.FC = React.memo(() => {
       (certificate) => certificate?.residentId === auth?.userId
     );
   }, [certificateRecords?.data]);
+
+  const certificatesRejectedForResident = useMemo(() => {
+    return _.filter(
+      certificateRejected?.data,
+      (certificate) => certificate?.residentId === auth?.userId
+    );
+  }, [certificateRejected?.data]);
+
+  const certificatesPendingForResident = useMemo(() => {
+    return _.filter(
+      certificatePending?.data,
+      (certificate) => certificate?.residentId === auth?.userId
+    );
+  }, [certificatePending?.data]);
 
   const data =
     auth?.userRole !== "Resident"
@@ -186,13 +212,21 @@ const CertificateRecords: React.FC = React.memo(() => {
             path={"/certificate/rejected"}
             label="Rejected Certificates"
             Icon={ThumbDownIcon}
-            count={"6"}
+            count={
+              auth?.userRole === "Resident"
+                ? certificatesRejectedForResident.length.toString()
+                : certificateRejected?.data?.length.toString()
+            }
           />
           <TableButton
             path={"/certificate/pending"}
             label="Pending Certificates"
             Icon={VisibilityIcon}
-            count={"6"}
+            count={
+              auth?.userRole === "Resident"
+                ? certificatesPendingForResident.length.toString()
+                : certificatePending?.data?.length.toString()
+            }
           />
 
           {auth?.userRole !== "Moderator" && (

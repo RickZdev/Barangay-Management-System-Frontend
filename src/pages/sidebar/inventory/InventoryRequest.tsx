@@ -9,7 +9,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import BackButton from "../../../components/BackButton";
 import SearchableTextField from "../../../components/SearchableTextField";
-import { ResidentPropType } from "../../../utils/types";
+import { InventoriesPropType, ResidentPropType } from "../../../utils/types";
 import { getResidentFullName } from "../../../helper/getResidentFullName";
 import { getResidentFullAddress } from "../../../helper/getResidentFullAddres";
 import DateTimePickerField from "../../../components/DateTimePickerField";
@@ -23,11 +23,14 @@ import { inventoryFormValidation } from "../../../utils/validation";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import ModalSuccess from "../../../components/modals/alert/ModalSuccess";
 import ModalFailed from "../../../components/modals/alert/ModalFailed";
-
-type ItemPropType = {
-  itemName: string;
-  quantity: number;
-};
+import QuantityField from "../../../components/QuantityField";
+import useGetInventories from "../../../queries/inventories/useGetInventories";
+import DefaultUserAvatar from "../../../assets/images/default-user-avatar.png";
+import _ from "lodash";
+import useUpdateInventory from "../../../queries/inventories/useUpdateInventory";
+import ModalViewInventory from "../../../components/modals/ModalViewInventory";
+import TableButton from "../../../components/TableButton";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const InventoryRequest: React.FC = () => {
   const {
@@ -42,42 +45,37 @@ const InventoryRequest: React.FC = () => {
     resolver: yupResolver(inventoryFormValidation),
   });
 
-  const { mutateAsync } = useCreateBorrowedInventory();
+  const { data: inventories } = useGetInventories();
+  const { mutateAsync: createBorrowedInventory } = useCreateBorrowedInventory();
+  const { mutateAsync: updateInventory } = useUpdateInventory();
   const auth = useAuthContext();
 
   const [isResidentTextEmpty, setIsResidentTextEmpty] = useState<boolean>(true);
   const [resident, setResident] = useState<ResidentPropType | undefined>();
 
-  const [itemName, setItemName] = useState<string>();
-  const [quantity, setQuantity] = useState(1);
-  const [listOfItems, setListOfItems] = useState<ItemPropType[]>([]);
-
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
   const [showListErrorModal, setShowListErrorModal] = useState<boolean>(false);
+  const [showViewInventoryModal, setShowViewInventoryModal] =
+    useState<boolean>(false);
+
+  const [isError, setIsError] = useState<boolean[]>([]);
+
+  const [quantities, setQuantities] = useState<number[]>([]);
+
+  const handleQuantityChange = (index: number, newQuantity: number) => {
+    const updatedQuantities = [...quantities];
+    updatedQuantities[index] = newQuantity;
+    setQuantities(updatedQuantities);
+  };
+
+  const handleIsErrorChange = (index: number, errors: boolean) => {
+    const updatedErrors = [...isError];
+    updatedErrors[index] = errors;
+    setIsError(updatedErrors);
+  };
 
   const isLoading = isProcessing;
-
-  const handleAddItem = () => {
-    if (itemName) {
-      setListOfItems((prevList) => [
-        ...prevList,
-        { itemName: itemName, quantity: quantity },
-      ]);
-      setItemName("");
-      setQuantity(1);
-    } else {
-      alert("ITEM NAME IS REQUIRED!");
-    }
-  };
-
-  const handleDeleteItem = (index: number) => {
-    const tempArr = listOfItems.filter(
-      (_item, itemIndex) => itemIndex !== index
-    );
-
-    setListOfItems(tempArr);
-  };
 
   const handleSuccess = () => {
     setShowSuccessModal(false);
@@ -88,8 +86,24 @@ const InventoryRequest: React.FC = () => {
   const onSubmit = async (data: any) => {
     setIsProcessing(true);
 
-    if (listOfItems.length !== 0) {
-      await mutateAsync({
+    const borrowedItems = _.map(
+      inventories?.data,
+      (item: InventoriesPropType, index: number) => {
+        return {
+          _id: item?._id,
+          itemName: item?.item,
+          quantity: !isNaN(quantities[index]) ? quantities[index] : 0,
+        };
+      }
+    );
+
+    const mappedBorrowedItems = _.filter(
+      borrowedItems,
+      (item) => item?.quantity !== 0
+    );
+
+    if (mappedBorrowedItems.length !== 0) {
+      await createBorrowedInventory({
         borroweeId: resident?._id,
         borroweeName: getResidentFullName({
           lastName: resident?.lastName,
@@ -100,9 +114,32 @@ const InventoryRequest: React.FC = () => {
         borroweeContactNumber: resident?.contactNumber,
         borrowedDateAndTime: dayjs().format("MM/DD/YYYY - hh:mm A"),
         officialInCharge: auth?.userRole,
-        borrowedItems: listOfItems,
+        borrowedItems: mappedBorrowedItems,
         ...data,
       });
+
+      _.map(
+        inventories?.data,
+        async (inventory: InventoriesPropType, index: number) => {
+          let decreaseQuantity;
+
+          if (quantities[index]) {
+            decreaseQuantity = inventory?.quantity - quantities[index];
+          } else {
+            decreaseQuantity = inventory?.quantity;
+          }
+
+          await updateInventory({
+            inventoryId: inventory?._id ?? "",
+            updatedData: {
+              item: inventory?.item,
+              quantity: !isNaN(quantities[index])
+                ? decreaseQuantity
+                : inventory?.quantity,
+            },
+          });
+        }
+      );
 
       setIsProcessing(false);
       setShowSuccessModal(true);
@@ -141,6 +178,15 @@ const InventoryRequest: React.FC = () => {
       <LoaderModal isLoading={isLoading} />
 
       <BackButton />
+
+      <div className="pt-5">
+        <TableButton
+          label="View Available Stocks in Inventory "
+          Icon={VisibilityIcon}
+          onClick={() => setShowViewInventoryModal(true)}
+        />
+      </div>
+
       <form
         className="grid md:grid-cols-2 gap-6 mt-5"
         onSubmit={handleSubmit(onSubmit)}
@@ -160,7 +206,11 @@ const InventoryRequest: React.FC = () => {
             <Card className="space-y-4 mb-6">
               <CardPhoto
                 showTooltip={false}
-                image={resident?.profilePhoto ?? ""}
+                image={
+                  resident?.profilePhoto === ""
+                    ? DefaultUserAvatar
+                    : resident?.profilePhoto ?? ""
+                }
               />
               <div className="flex flex-col items-center space-y-2">
                 <p className="flex-1 text-white text-lg font-bold">
@@ -207,58 +257,55 @@ const InventoryRequest: React.FC = () => {
 
         {/* 2nd column */}
         <div className="flex flex-col space-y-6">
-          <Card className="space-y-4 ">
-            <TextField
-              label="Item Name"
-              isEdit
-              value={itemName}
-              onChange={(event) => setItemName(event?.target?.value)}
-            />
-
-            <QuantityField quantity={quantity} setQuantity={setQuantity} />
-            <div className="flex justify-end">
-              <CustomButton label="Add Item" onClick={handleAddItem} />
-            </div>
-          </Card>
           <div className="overflow-x-auto">
             <Card className="min-w-[500px] md:w-full">
               <CardHeader title="List of Items" />
               <div className="flex flex-row justify-between text-white px-6">
                 <h1 className="text-[#50D5B7]">ITEM</h1>
                 <h1 className="text-[#50D5B7]">QUANTITY</h1>
-                <h1 className="text-[#50D5B7]">ACTION</h1>
               </div>
               <div className="min-w-[450px] md:min-w-0">
-                {listOfItems?.map((item, index) => {
-                  return (
-                    <ul
-                      key={index}
-                      className="flex text-white items-center px-5 mb-2 border-white border-[1px]"
-                    >
-                      <li className="py-3 w-[45%]">
-                        <p>{item.itemName}</p>
-                      </li>
-                      <li className="flex-1">
-                        <p>
-                          {item.quantity > 1
-                            ? item.quantity + " pcs."
-                            : item.quantity + " pc."}
+                {inventories?.data?.map(
+                  (inventory: InventoriesPropType, index: number) => (
+                    <div key={index.toString()}>
+                      <div className="flex flex-row items-center space-x-10 border-[1px] border-white my-4 p-2">
+                        <p className="flex-1 text-white text-base ">
+                          {inventory?.item}
                         </p>
-                      </li>
-                      <li>
-                        <Tooltip
-                          arrow
-                          title="Delete"
-                          onClick={() => handleDeleteItem(index)}
-                        >
-                          <IconButton>
-                            <Delete color="error" />
-                          </IconButton>
-                        </Tooltip>
-                      </li>
-                    </ul>
-                  );
-                })}
+
+                        <div>
+                          {inventory?.quantity === 0 ? (
+                            <p className="text-red-400 text-base ">
+                              OUT OF STOCK
+                            </p>
+                          ) : (
+                            <QuantityField
+                              limit={inventory?.quantity}
+                              isEdit
+                              setIsError={(error) =>
+                                handleIsErrorChange(index, error)
+                              }
+                              isOptional
+                              quantity={quantities[index]}
+                              setQuantity={(newQuantity) =>
+                                handleQuantityChange(index, newQuantity)
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+
+                      {isError[index] && (
+                        <div className="flex flex-1 w-full justify-end">
+                          <p className="text-red-400 text-xs">
+                            This item has {inventory?.quantity}{" "}
+                            {inventory?.quantity > 1 ? "stocks" : "stock"} left.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )
+                )}
               </div>
             </Card>
             {/* submit button */}
@@ -268,6 +315,12 @@ const InventoryRequest: React.FC = () => {
           </div>
         </div>
       </form>
+
+      <ModalViewInventory
+        open={showViewInventoryModal}
+        showEdit={false}
+        handleClose={() => setShowViewInventoryModal(false)}
+      />
 
       <ModalSuccess
         open={showSuccessModal}
@@ -284,71 +337,6 @@ const InventoryRequest: React.FC = () => {
         buttonLabel="Try Again"
         handleButtonPress={() => setShowListErrorModal(false)}
       />
-    </div>
-  );
-};
-
-type QuantityFieldPropType = {
-  quantity: number;
-  setQuantity: Dispatch<SetStateAction<number>>;
-};
-
-const QuantityField: React.FC<QuantityFieldPropType> = ({
-  quantity = 0,
-  setQuantity,
-}) => {
-  const handleAddQuantity = () => {
-    if (quantity < 100) {
-      setQuantity(quantity + 1);
-    }
-  };
-
-  const handleMinusQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-
-  return (
-    <div className="flex flex-row items-center">
-      <p className=" text-[hsla(0,0%,100%,.6)] text-xs w-[33%]">Quantity</p>
-      <div className="flex flex-row items-center space-x-2">
-        <MinusQuantity handleClick={handleMinusQuantity} />
-        <input
-          type="number"
-          min="1"
-          maxLength={100}
-          max="100"
-          step="1"
-          value={quantity}
-          style={{ appearance: "none" }}
-          onChange={(e) => setQuantity(parseInt(e.target.value))}
-          className="appearance-none border-white hover:border-[1px] text-center hover:border-[#50D5B7] focus:border-[#50D5B7] w-10 h-8 text-sm text-white bg-[#232537]"
-        />
-        <AddQuantity handleClick={handleAddQuantity} />
-      </div>
-    </div>
-  );
-};
-
-const AddQuantity = ({ handleClick }: { handleClick: () => void }) => {
-  return (
-    <div
-      className="w-8 h-8 bg-[#067D68] rounded-md flex items-center justify-center cursor-pointer"
-      onClick={handleClick}
-    >
-      <p className="text-white">+</p>
-    </div>
-  );
-};
-
-const MinusQuantity = ({ handleClick }: { handleClick: () => void }) => {
-  return (
-    <div
-      className="w-8 h-8 bg-[#067D68] rounded-md flex items-center justify-center cursor-pointer"
-      onClick={handleClick}
-    >
-      <p className="text-white">-</p>
     </div>
   );
 };

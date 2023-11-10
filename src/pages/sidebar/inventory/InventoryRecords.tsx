@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import Table from "../../../components/Table";
 import { MRT_ColumnDef } from "material-react-table";
 import { Typography } from "@mui/material";
@@ -13,6 +13,9 @@ import useAuthContext from "../../../queries/auth/useAuthContext";
 import useDeleteBorrowedRecord from "../../../queries/borrowedRecords/useDeleteBorrowedRecord";
 import _ from "lodash";
 import useGetBorrowedInventory from "../../../queries/borrowedInventory/useGetBorrowedInventory";
+import ModalAddInventory from "../../../components/modals/ModalAddInventory";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import ModalViewInventory from "../../../components/modals/ModalViewInventory";
 
 const InventoryRecords: React.FC = React.memo(() => {
   const auth = useAuthContext();
@@ -65,6 +68,11 @@ const InventoryRecords: React.FC = React.memo(() => {
     useGetBorrowedInventory();
 
   const { mutate: deleteInventory } = useDeleteBorrowedRecord();
+
+  const [showViewInventoryModal, setShowViewInventoryModal] =
+    useState<boolean>(false);
+  const [showAddInventoryModal, setShowAddInventoryModal] =
+    useState<boolean>(false);
 
   const InventoryRecordsForResident = useMemo(() => {
     return _.filter(
@@ -144,15 +152,42 @@ const InventoryRecords: React.FC = React.memo(() => {
         deleteButton={deleteInventory}
       >
         <div className="flex flex-col pt-4 px-2 space-y-2 md:flex md:flex-row md:justify-end md:space-x-4 md:space-y-0">
+          {auth?.userRole !== "Resident" && (
+            <div className="flex flex-1 space-x-4">
+              <TableButton
+                label="View Inventory"
+                Icon={VisibilityIcon}
+                onClick={() => setShowViewInventoryModal(true)}
+              />
+
+              <TableButton
+                label="Add Inventory"
+                onClick={() => setShowAddInventoryModal(true)}
+              />
+            </div>
+          )}
+
           <TableButton
             label="Borrowed Inventory"
             path={"borrow"}
             Icon={InventoryIcon}
             count={countBorrowedInventories?.length.toString()}
           />
-          <TableButton label="Request Inventory" path={"request"} />
+          {auth?.userRole !== "Resident" && (
+            <TableButton label="Request Inventory" path={"request"} />
+          )}
         </div>
       </Table>
+
+      <ModalViewInventory
+        open={showViewInventoryModal}
+        handleClose={() => setShowViewInventoryModal(false)}
+      />
+
+      <ModalAddInventory
+        open={showAddInventoryModal}
+        handleClose={() => setShowAddInventoryModal(false)}
+      />
     </>
   );
 });
