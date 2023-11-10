@@ -6,6 +6,7 @@ import useDebounce from "../hooks/useDebounce";
 import useSearchResidents from "../queries/resident/useSearchResidents";
 import { UseFormRegisterReturn } from "react-hook-form";
 import { Rings, ThreeDots } from "react-loader-spinner";
+import { TextInput } from "flowbite-react";
 
 type TextFieldPropType = {
   label: string;
@@ -41,18 +42,20 @@ const SearchableTextField: React.FC<
     <>
       <div className="flex flex-col relative ">
         <div className="flex flex-row items-center relative">
-          <p className="flex-1 text-[hsla(0,0%,100%,.6)] text-xs">
-            {label}
-            {!isOptional && <span className="text-red-800"> * </span>}
-          </p>
+          <p className="flex-1 text-black text-sm font-semibold">{label}</p>
 
-          <input
+          <TextInput
             type="text"
             disabled={!isEdit}
-            className=" hover:border-[1px] hover:border-[#50D5B7] focus:border-[#50D5B7] w-2/3 h-10 text-sm text-white bg-[#232537] pl-4 pr-10"
+            className=" w-[80%] h-10 text-sm bg-[rgb(247,248,249)] "
             style={{
+              paddingRight: 40,
               cursor: isEdit ? "text" : "not-allowed",
-              borderColor: error ? "red" : isEdit ? "white" : "#232537",
+              border: error
+                ? "2px solid red"
+                : isEdit
+                ? "2px solid rgb(97, 106, 113)"
+                : "2px solid rgb(97, 106, 113)",
             }}
             value={searchText}
             onChange={(event) => {
@@ -69,11 +72,11 @@ const SearchableTextField: React.FC<
           />
 
           {isFetching ? (
-            <div className="absolute right-2 text-white">
+            <div className="absolute right-2 text-white z-50">
               <ThreeDots
                 height="30"
                 width="20"
-                color="white"
+                color="black"
                 radius="6"
                 wrapperStyle={{}}
                 wrapperClass=""
@@ -82,12 +85,12 @@ const SearchableTextField: React.FC<
               />
             </div>
           ) : (
-            <PersonSearchIcon className="absolute right-2 text-white" />
+            <PersonSearchIcon className="absolute right-2 text-black" />
           )}
         </div>
 
         {debouncedSearch !== "" && isInputFocused === true && (
-          <ul className="search-textbox bg-white w-2/3 self-end absolute z-50 top-10 max-h-[200px] overflow-y-auto  rounded-b-lg">
+          <ul className="search-textbox bg-white w-[80%] self-end absolute z-50 top-10 max-h-[250px] overflow-y-auto  rounded-b-lg">
             {residentData?.map((resident: any) => {
               const fullName = getResidentFullName({
                 lastName: resident?.lastName,
@@ -99,7 +102,7 @@ const SearchableTextField: React.FC<
               return (
                 <li
                   key={resident?._id}
-                  className="cursor-pointer p-2 hover:bg-[#f0f2fa]"
+                  className="cursor-pointer p-2 hover:bg-[#f0f2fa] border-b-[1px] border-l-[1px] border-r-[1px] border-black"
                   onMouseDown={(e) => {
                     e.preventDefault();
                     handleChange(resident);
@@ -121,7 +124,7 @@ const SearchableTextField: React.FC<
 
       {error && (
         <div className="flex flex-1 w-full justify-end">
-          <p className="text-red-400 text-xs">{error}</p>
+          <p className="text-secondary text-xs font-semibold">{error}</p>
         </div>
       )}
     </>

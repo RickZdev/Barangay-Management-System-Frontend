@@ -20,7 +20,7 @@ const CardPhoto: React.FC<CardPhotoPropType> = ({
         <Tooltip arrow title={tooltip ?? "Upload Picture"} color="error">
           <div className="flex flex-col items-center">
             <div
-              className="rounded-full"
+              className="rounded-full shadow-lg"
               style={{ width: size ?? 160, height: size ?? 160 }}
             >
               <img
@@ -34,7 +34,7 @@ const CardPhoto: React.FC<CardPhotoPropType> = ({
       ) : (
         <div className="flex flex-col items-center">
           <div
-            className="rounded-full"
+            className="rounded-full shadow-lg"
             style={{ width: size ?? 160, height: size ?? 160 }}
           >
             <img

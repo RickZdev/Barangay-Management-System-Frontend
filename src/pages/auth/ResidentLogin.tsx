@@ -1,22 +1,25 @@
-import Card from "../../components/Card";
-import TextField from "../../components/TextField";
-import CardHeader from "../../components/CardHeader";
-import SubmitButton from "../../components/SubmitButton";
-import { useForm } from "react-hook-form";
-import useLogin from "../../queries/auth/useLogin";
-import PasswordField from "../../components/PasswordField";
-import { useEffect, useState } from "react";
-import ModalFailed from "../../components/modals/alert/ModalFailed";
-import _ from "lodash";
+import React, { useEffect, useState } from "react";
+import "./styles.css";
+import CardPhoto from "../../components/CardPhoto";
+import BarangayLogo from "../../assets/logo/barangay-logo.png";
+import { useNavigate } from "react-router";
 import useAuthContext from "../../queries/auth/useAuthContext";
-import LoaderModal from "../../components/modals/loader/LoaderModal";
-import { NavLink, useNavigate } from "react-router-dom";
-import { loginFormValidation } from "../../utils/validation";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { loginFormValidation } from "../../utils/validation";
+import useLogin from "../../queries/auth/useLogin";
 import useLoginTimer from "../../hooks/useLoginTimer";
 import { loginSuccessNotify } from "../../helper/toastNotifications";
+import BackButton from "../../components/BackButton";
+import SubmitButton from "../../components/SubmitButton";
+import { COLORS } from "../../constants/COLORS";
+import CustomButton from "../../components/CustomButton";
+import PasswordField from "../../components/PasswordField";
+import TextField from "../../components/TextField";
+import LoaderModal from "../../components/modals/loader/LoaderModal";
+import ModalFailed from "../../components/modals/alert/ModalFailed";
 
-const ResidentLogin: React.FC = () => {
+const ResidentLogin = () => {
   const navigate = useNavigate();
   const auth = useAuthContext();
 
@@ -25,6 +28,7 @@ const ResidentLogin: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(loginFormValidation) });
+
   const { mutateAsync, isLoading: isLoginLoading } = useLogin();
   const { storedTimer, onLoginSuccess, onLoginError } = useLoginTimer();
 
@@ -36,13 +40,14 @@ const ResidentLogin: React.FC = () => {
 
   const isLoading = isProcessing || isLoginLoading;
 
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
+
   const onSubmit = async (values: any) => {
     setIsProcessing(true);
 
     const res = await mutateAsync({ ...values });
-
-    console.log(values);
-    console.log(res, "gg");
 
     if (res.data) {
       localStorage.setItem("userId", JSON.stringify(res.data._id)!);
@@ -79,22 +84,26 @@ const ResidentLogin: React.FC = () => {
   }, []);
 
   return (
-    <>
+    <div className="LoginForm loginForm-background">
       <LoaderModal isLoading={isLoading} />
-      <div className="bg-[#1e1e2f] flex flex-1 justify-center items-center h-screen">
-        <Card className="w-[30%]">
-          <form
-            className="space-y-4 py-2 px-4"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <div className="flex flex-col justify-center items-center">
-              <CardHeader title="Resident Portal" titleSize={30} />
+
+      <div className={"container"} id="container">
+        <div className="absolute flex flex-1 px-6 py-6 z-50">
+          <BackButton handleNavigate={() => handleNavigation("/")} />
+        </div>
+        <div className="form-container sign-in-container bg-white justify-center flex items-center px-32 ">
+          <form className="space-y-4 py-16" onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex flex-row justify-center items-center space-x-2">
+              <CardPhoto image={BarangayLogo} size={120} showTooltip={false} />
+
+              <h1 className="uppercase text-3xl font-bold text-black">
+                Barangay Navotas East Management System
+              </h1>
             </div>
-            <h1 className="text-white text-sm text-center">
-              Sign in to start your session
-            </h1>
+
             <TextField
               label="Username"
+              placeholder="Enter your username"
               isEdit
               register={register("username")}
               error={errors?.username?.message}
@@ -102,40 +111,64 @@ const ResidentLogin: React.FC = () => {
             <div className="mb-10">
               <PasswordField
                 label="Password"
+                placeholder="Enter your password"
                 isEdit
                 register={register("password")}
                 error={errors?.password?.message}
               />
             </div>
 
-            <div className="my-2">
-              <NavLink to={"/portal/resident-signup"}>
-                <p className="text-white font-poppins text-center">
-                  Register as Resident
-                </p>
-              </NavLink>
-            </div>
-
-            <div className="my-2">
-              <NavLink to={"/portal/forgot-password"}>
-                <p className="text-white font-poppins text-center">
-                  Forgot Password?
-                </p>
-              </NavLink>
-            </div>
             <div className="mt-5">
-              <SubmitButton label="Sign In" isButtonDisabled={!!storedTimer} />
+              <SubmitButton
+                label="Sign In"
+                isButtonDisabled={!!storedTimer}
+                backgroundColor={COLORS.secondary}
+              />
 
               {storedTimer && (
-                <p className="text-red-500 text-xs mt-5 font-poppins font-bold text-center">
+                <p className="text-secondary text-xs mt-5 font-bold text-center">
                   You have been locked out. You can try again after{" "}
                   {storedTimer}
                 </p>
               )}
             </div>
+
+            <div className="my-2">
+              <div
+                onClick={() => handleNavigation("/portal/forgot-password")}
+                className="cursor-pointer"
+              >
+                <p className="text-black font-poppins text-center text-sm underline ">
+                  Forgot your password?
+                </p>
+              </div>
+            </div>
+
+            <div className="my-2 flex flex-row items-center space-x-3 pt-10 justify-center">
+              <p className="text-black font-poppins text-center">
+                Don't have an account?
+              </p>
+
+              <CustomButton
+                label="REGISTER"
+                backgroundColor={COLORS.secondary}
+                onClick={() => handleNavigation("/portal/resident-signup")}
+              />
+            </div>
           </form>
-        </Card>
+        </div>
+        <div className="overlay-container">
+          <div className="overlay">
+            <div className="overlay-panel overlay-right">
+              <CardPhoto image={BarangayLogo} size={300} showTooltip={false} />
+              <h1 className="text-white uppercase font-bold text-[42px]">
+                RESIDENT PORTAL
+              </h1>
+            </div>
+          </div>
+        </div>
       </div>
+
       <ModalFailed
         open={showErrorModal}
         title={!storedTimer ? "Login Failed" : "You have been locked out"}
@@ -157,7 +190,7 @@ const ResidentLogin: React.FC = () => {
         }
         handleButtonPress={() => setShowNotVerifiedModal(false)}
       />
-    </>
+    </div>
   );
 };
 

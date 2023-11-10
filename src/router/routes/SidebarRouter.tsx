@@ -26,6 +26,7 @@ import { SvgIconTypeMap } from "@mui/material";
 import useAuthContext from "../../queries/auth/useAuthContext";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import { COLORS } from "../../constants/COLORS";
 
 const SidebarRouter: React.FC = () => {
   const { collapseSidebar } = useProSidebar();
@@ -49,9 +50,9 @@ const SidebarRouter: React.FC = () => {
   const navigate = useNavigate();
 
   // dark mode
-  const gradientFirstColor = "#067D68";
-  const gradientSecondColor = "#50D5B7";
-  const backgroundColor = "#1e1e2f";
+  const gradientFirstColor = COLORS.secondary;
+  const gradientSecondColor = COLORS.secondaryGold;
+  const backgroundColor = COLORS.background;
 
   // light mode
   // const gradientFirstColor = "#e3ff73";

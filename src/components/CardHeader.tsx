@@ -9,7 +9,7 @@ const CardHeader: React.FC<CardHeaderPropType> = ({ title, titleSize }) => {
   return (
     <>
       <h6
-        className="font-poppins text-[#ffffffcc] text-[17px]"
+        className=" text-black text-[17px] uppercase font-bold"
         style={{ fontSize: titleSize }}
       >
         {title}

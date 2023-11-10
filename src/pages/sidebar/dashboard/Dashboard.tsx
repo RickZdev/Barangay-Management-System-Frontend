@@ -291,10 +291,10 @@ const Dashboard: React.FC = () => {
                   {summary?.Icon}
                 </div>
                 <div className="flex flex-col items-end w-2/3 space-y-1">
-                  <p className="text-white text-md md:text-sm text-right">
+                  <p className="text-black text-md md:text-sm text-right">
                     {summary.label}
                   </p>
-                  <p className="text-white text-2xl">{summary.total}</p>
+                  <p className="text-black text-2xl">{summary.total}</p>
                 </div>
               </div>
 

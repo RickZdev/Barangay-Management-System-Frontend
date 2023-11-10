@@ -23,6 +23,7 @@ import _ from "lodash";
 import useUpdateInventory from "../../../queries/inventories/useUpdateInventory";
 import { getBorrowedInventoryById } from "../../../services/apiHelper";
 import useGetInventories from "../../../queries/inventories/useGetInventories";
+import InventoryPanel from "../../../components/InventoryPanel";
 
 const InventoryBorrow: React.FC = React.memo(() => {
   const columns = useMemo<MRT_ColumnDef<BorrowedInventoryPropType>[]>(
@@ -169,36 +170,7 @@ const InventoryBorrow: React.FC = React.memo(() => {
         muiTableDetailPanelProps={{
           sx: { color: "white" },
         }}
-        renderDetailPanel={({ row }) => (
-          <div className="flex flex-col">
-            <p className="font-bold uppercase text-lg py-2 text-center">
-              Borrowed Items
-            </p>
-            <div className="grid grid-cols-2">
-              <div className="border-[1px] border-[#50D5B7] p-3 bg-[#067D68]">
-                <Typography align="center" fontWeight={"bold"}>
-                  ITEMS
-                </Typography>
-              </div>
-              <div className="border-[1px] border-[#50D5B7] p-3 bg-[#067D68]">
-                <Typography align="center" fontWeight={"bold"}>
-                  QUANTITY
-                </Typography>
-              </div>
-
-              {row.original.borrowedItems.map((item, index) => (
-                <>
-                  <div className="border-[1px] border-[#50D5B7] px-5 py-3">
-                    <Typography align="center">{item?.itemName}</Typography>
-                  </div>
-                  <div className="border-[1px] border-[#50D5B7] px-5 py-3">
-                    <Typography align="center">{item.quantity}</Typography>
-                  </div>
-                </>
-              ))}
-            </div>
-          </div>
-        )}
+        renderDetailPanel={({ row }) => <InventoryPanel row={row} />}
         showEditButton={false}
         showViewButton={false}
         refreshButton={refetch}

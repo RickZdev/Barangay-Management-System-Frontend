@@ -74,7 +74,7 @@ const ModalChangePassword: React.FC<ModalChangePasswordPropType> = ({
     <>
       <LoaderModal isLoading={isProcessing} />
       <Dialog
-        PaperProps={{ sx: { backgroundColor: "#29283d", borderRadius: 5 } }}
+        PaperProps={{ sx: { backgroundColor: "white", borderRadius: 5 } }}
         onClose={handleClose}
         open={open}
         maxWidth={"xs"}
@@ -83,7 +83,7 @@ const ModalChangePassword: React.FC<ModalChangePasswordPropType> = ({
       >
         <Card>
           <form
-            className="space-y-5 flex flex-col bg-[#29283d] p-2"
+            className="space-y-5 flex flex-col bg-white p-2"
             onSubmit={handleSubmit(onSubmit)}
           >
             <Tooltip

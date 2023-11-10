@@ -9,9 +9,9 @@ const ViewMessagePanel = ({
 
   return (
     <div className="flex flex-col px-5 pb-4">
-      <h1 className="text-lg">{title ?? "Narrative Report:"}</h1>
+      <h1 className="text-lg text-black">{title ?? "Narrative Report:"}</h1>
       <p
-        className="text-justify"
+        className="text-justify text-black"
         dangerouslySetInnerHTML={{ __html: messageWithLineBreaks }}
       />
     </div>

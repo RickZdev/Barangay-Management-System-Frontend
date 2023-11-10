@@ -29,7 +29,7 @@ const ModalViewCertificate: React.FC<ModalViewCertificatePropType> = ({
 
   return (
     <Dialog
-      PaperProps={{ sx: { backgroundColor: "#29283d", borderRadius: 5 } }}
+      PaperProps={{ sx: { backgroundColor: "white", borderRadius: 5 } }}
       onClose={handleClose}
       open={open}
       maxWidth={"xl"}
@@ -37,7 +37,7 @@ const ModalViewCertificate: React.FC<ModalViewCertificatePropType> = ({
       sx={{ borderRadius: 20 }}
     >
       <Card>
-        <form className="space-y-4 flex flex-col bg-[#29283d] p-4">
+        <form className="space-y-4 flex flex-col bg-white p-4">
           <Tooltip
             arrow
             title="Close"

@@ -1,5 +1,6 @@
 import { Button, SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
+import { COLORS } from "../constants/COLORS";
 
 type CustomButtonPropType = {
   label: string;
@@ -27,7 +28,10 @@ const SubmitButton: React.FC<CustomButtonPropType> = ({
         size="large"
         fullWidth={true}
         sx={{
-          backgroundColor: backgroundColor ? backgroundColor : "#067D68",
+          color: "white",
+          backgroundColor: backgroundColor
+            ? backgroundColor
+            : COLORS.secondaryGold,
           borderRadius: 2,
         }}
       >

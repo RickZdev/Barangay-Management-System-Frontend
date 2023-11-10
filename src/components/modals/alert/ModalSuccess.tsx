@@ -46,14 +46,14 @@ const ModalSuccess: React.FC<ModalSuccessPropType> = ({
 
         <div className="justify-center items-center flex flex-col pb-14">
           <h6
-            className="font-poppins text-[#ffffffcc] uppercase text-center"
-            style={{ fontSize: 25 }}
+            className="text-black uppercase text-center font-bold"
+            style={{ fontSize: 32 }}
           >
             {title}
           </h6>
 
           {description && (
-            <p className="font-poppins text-[#ffffffcc] text-[14px] text-center">
+            <p className=" text-black text-[14px] text-center font-bold">
               {description}
             </p>
           )}

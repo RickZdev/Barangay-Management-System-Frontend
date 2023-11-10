@@ -19,6 +19,7 @@ import useAuthContext from "../../../queries/auth/useAuthContext";
 import ModalFailed from "../../../components/modals/alert/ModalFailed";
 import { useQueryClient } from "@tanstack/react-query";
 import ModalWarning from "../../../components/modals/alert/ModalWarning";
+import { COLORS } from "../../../constants/COLORS";
 
 const BarangayOfficialEdit: React.FC = () => {
   const { mutate: updateOfficial } = useUpdateOfficial();
@@ -137,7 +138,9 @@ const BarangayOfficialEdit: React.FC = () => {
                     onClick={() => setShowTransfershipWarningModal(true)}
                   >
                     <IconButton>
-                      <RemoveModerator color="primary" />
+                      <RemoveModerator
+                        style={{ color: COLORS.secondaryGold }}
+                      />
                     </IconButton>
                   </Tooltip>
                 </div>
@@ -499,10 +502,10 @@ const OfficialCard: React.FC<OfficialPropType> = ({
         </div>
       </div>
       <div className="flex-1 text-left ">
-        <h1 className="text-[#50D5B7] text-sm uppercase">
+        <h1 className="text-black text-sm uppercase">
           {position?.includes("kagawad") ? "Kagawad" : position}
         </h1>
-        <h1 className="text-white text-xl">
+        <h1 className="text-black text-xl">
           {getResidentFullName({
             lastName: officialDetails?.lastName,
             firstName: officialDetails?.firstName,
@@ -510,14 +513,14 @@ const OfficialCard: React.FC<OfficialPropType> = ({
             suffix: officialDetails?.suffix,
           })}
         </h1>
-        <p className="text-white text-sm">
+        <p className="text-black text-sm">
           {officialDetails?.houseNumber +
             " " +
             officialDetails?.streetAddress +
             " Purok " +
             officialDetails?.purokNumber}
         </p>{" "}
-        <p className="text-white text-xs">{officialDetails?.contactNumber}</p>
+        <p className="text-black text-xs">{officialDetails?.contactNumber}</p>
       </div>
     </div>
   );
@@ -558,8 +561,8 @@ const CaptainCard: React.FC<OfficialPropType> = ({
         </div>
       </div>
       <div className="flex-1 text-center">
-        <h1 className="text-[#50D5B7] text-2xl uppercase">{position}</h1>
-        <h1 className="text-white text-xl">
+        <h1 className="text-black font-bold text-2xl uppercase">{position}</h1>
+        <h1 className="text-black text-xl">
           {getResidentFullName({
             lastName: officialDetails?.lastName,
             firstName: officialDetails?.firstName,
@@ -567,14 +570,14 @@ const CaptainCard: React.FC<OfficialPropType> = ({
             suffix: officialDetails?.suffix,
           })}{" "}
         </h1>
-        <p className="text-white text-sm">
+        <p className="text-black text-sm">
           {officialDetails?.houseNumber +
             " " +
             officialDetails?.streetAddress +
             " Purok " +
             officialDetails?.purokNumber}
         </p>
-        <p className="text-white text-sm">{officialDetails?.contactNumber}</p>
+        <p className="text-black text-sm">{officialDetails?.contactNumber}</p>
       </div>
     </div>
   );

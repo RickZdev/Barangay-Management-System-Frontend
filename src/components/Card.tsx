@@ -6,7 +6,7 @@ type CardType = {
 
 const Card: React.FC<CardType> = ({ children, ...props }) => {
   // dark mode
-  const backgroundColor = "#29283d";
+  const backgroundColor = "white";
 
   // light mode
   // const backgroundColor = 'white'

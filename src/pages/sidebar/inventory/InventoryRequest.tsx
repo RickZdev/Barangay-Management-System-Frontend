@@ -213,7 +213,7 @@ const InventoryRequest: React.FC = () => {
                 }
               />
               <div className="flex flex-col items-center space-y-2">
-                <p className="flex-1 text-white text-lg font-bold">
+                <p className="flex-1 text-black text-lg font-bold">
                   {getResidentFullName({
                     lastName: resident?.lastName,
                     firstName: resident?.firstName,
@@ -221,14 +221,14 @@ const InventoryRequest: React.FC = () => {
                     suffix: resident?.suffix,
                   })}
                 </p>
-                <p className="text-[hsla(0,0%,100%,.6)] text-sm font-bold">
+                <p className="text-black text-sm font-bold">
                   {getResidentFullAddress({
                     houseNumber: resident?.houseNumber,
                     streetAddress: resident?.streetAddress,
                     purokNumber: resident?.purokNumber,
                   })}
                 </p>
-                <p className="text-[hsla(0,0%,100%,.6)] text-sm font-bold">
+                <p className="text-black text-sm font-bold">
                   {resident?.contactNumber}
                 </p>
               </div>
@@ -261,15 +261,15 @@ const InventoryRequest: React.FC = () => {
             <Card className="min-w-[500px] md:w-full">
               <CardHeader title="List of Items" />
               <div className="flex flex-row justify-between text-white px-6">
-                <h1 className="text-[#50D5B7]">ITEM</h1>
-                <h1 className="text-[#50D5B7]">QUANTITY</h1>
+                <h1 className="text-black">ITEM</h1>
+                <h1 className="text-black">QUANTITY</h1>
               </div>
               <div className="min-w-[450px] md:min-w-0">
                 {inventories?.data?.map(
                   (inventory: InventoriesPropType, index: number) => (
                     <div key={index.toString()}>
-                      <div className="flex flex-row items-center space-x-10 border-[1px] border-white my-4 p-2">
-                        <p className="flex-1 text-white text-base ">
+                      <div className="flex flex-row items-center space-x-10 border-[1px] border-black my-4 p-2">
+                        <p className="flex-1 text-black text-base ">
                           {inventory?.item}
                         </p>
 

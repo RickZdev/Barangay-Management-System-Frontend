@@ -121,16 +121,16 @@ const ModalAddTransaction: React.FC<ModalAddTransactionPropType> = ({
       <LoaderModal isLoading={isProcessing} />
 
       <Dialog
-        PaperProps={{ sx: { backgroundColor: "#29283d", borderRadius: 5 } }}
+        PaperProps={{ sx: { backgroundColor: "white", borderRadius: 5 } }}
         onClose={handleClose}
         open={open}
-        maxWidth={"xs"}
+        maxWidth={"md"}
         fullWidth
         sx={{ borderRadius: 20 }}
       >
         <Card>
           <form
-            className="space-y-4 flex flex-col bg-[#29283d] p-4"
+            className="space-y-4 flex flex-col bg-white p-4"
             onSubmit={handleSubmit(onSubmit)}
           >
             <Tooltip

@@ -24,6 +24,7 @@ import { string } from "yup";
 import ModalReceiveBenefit from "./modals/ModalReceiveBenefit";
 import useUpdateIndigentBenefit from "../queries/indigentBenefit/useUpdateIndigentBenefit";
 import { refreshNotify } from "../helper/toastNotifications";
+import { COLORS } from "../constants/COLORS";
 
 type TableTypeProps<T extends Record<string, any>> = {
   data: T[];
@@ -125,7 +126,7 @@ const Table = <T extends Record<string, any>>({
         </div>
       )}
 
-      {children && <div className="bg-[#29283d]">{children}</div>}
+      {children && <div className="bg-white pb-5">{children}</div>}
       <MaterialReactTable
         data={data ?? []}
         columns={columns}
@@ -139,7 +140,7 @@ const Table = <T extends Record<string, any>>({
               <Link to={`view/${row.original._id}`}>
                 <Tooltip arrow title="View Details">
                   <IconButton>
-                    <VisibilityIcon color="info" />
+                    <VisibilityIcon style={{ color: COLORS.secondaryGold }} />
                   </IconButton>
                 </Tooltip>
               </Link>
@@ -181,10 +182,7 @@ const Table = <T extends Record<string, any>>({
                   }}
                 >
                   <IconButton>
-                    <CompareArrowsIcon
-                      className="text-yellow-500"
-                      sx={{ color: "rgb(234, 179, 8)" }}
-                    />
+                    <CompareArrowsIcon sx={{ color: "black" }} />
                   </IconButton>
                 </Tooltip>
 
@@ -197,10 +195,7 @@ const Table = <T extends Record<string, any>>({
                   }}
                 >
                   <IconButton>
-                    <KeyboardReturnIcon
-                      className="text-yellow-500"
-                      sx={{ color: "rgb(234, 179, 8)" }}
-                    />
+                    <KeyboardReturnIcon sx={{ color: "black" }} />
                   </IconButton>
                 </Tooltip>
               </>
@@ -227,13 +222,13 @@ const Table = <T extends Record<string, any>>({
         }}
         muiTablePaperProps={{
           sx: {
-            backgroundColor: "#29283d",
+            backgroundColor: "white",
           },
         }}
         muiTableBodyProps={{
           sx: {
             "& tr": {
-              backgroundColor: "#29283d",
+              backgroundColor: "white",
               textAlign: "center",
             },
             "& .mrt-empty-state-message": {
@@ -243,28 +238,28 @@ const Table = <T extends Record<string, any>>({
         }}
         muiTableBodyCellProps={{
           sx: {
-            borderBottom: "#29283d",
-            color: "white",
+            borderBottom: "white",
+            color: "black",
+            borderWidth: 1,
           },
         }}
         muiBottomToolbarProps={{
           sx: {
-            backgroundColor: "#29283d",
-            color: "white", // change this to your desired text color
+            backgroundColor: "white",
+            color: "black", // change this to your desired text color
           },
         }}
         muiTopToolbarProps={{
           sx: {
-            backgroundColor: "#29283d",
+            backgroundColor: "white",
           },
         }}
         muiTableHeadRowProps={{
           sx: {
             "& th": {
               textTransform: "uppercase",
-              backgroundColor: "#29283d", // change this to your desired color
-              color: "#50D5B7", //change this to your desired color
-              borderBottom: ".0625rem solid rgb(63, 62, 81)",
+              backgroundColor: "white", // change this to your desired color
+              color: "black", //change this to your desired color
             },
           },
         }}
@@ -278,33 +273,33 @@ const Table = <T extends Record<string, any>>({
         }
         muiSelectAllCheckboxProps={{
           sx: {
-            color: "#f04e23",
+            color: COLORS.secondaryGold,
           },
         }}
         muiSelectCheckboxProps={{
           sx: {
-            color: "white",
+            color: COLORS.secondaryGold,
           },
         }}
         muiTableHeadCellColumnActionsButtonProps={{
           sx: {
-            color: "white",
+            color: "black",
           },
         }}
         muiTablePaginationProps={{
           sx: {
-            color: "white",
+            color: "black",
           },
         }}
         muiTableBodyRowProps={{ hover: false }}
         muiTableHeadCellFilterTextFieldProps={{
           InputProps: {
-            style: { color: "white" },
+            style: { color: "black" },
           },
         }}
         muiSearchTextFieldProps={{
           InputProps: {
-            style: { color: "white" },
+            style: { color: "black" },
           },
         }}
         renderTopToolbarCustomActions={({ table }) => (
@@ -319,7 +314,7 @@ const Table = <T extends Record<string, any>>({
                     return null;
                   }
                 }}
-                sx={{ color: "rgb(214, 214, 218)" }}
+                sx={{ color: COLORS.secondaryGold }}
               >
                 <RefreshIcon />
               </IconButton>
@@ -329,7 +324,7 @@ const Table = <T extends Record<string, any>>({
               <Tooltip arrow title="Export Data">
                 <IconButton
                   onClick={() => setShowExportDataModal(true)}
-                  sx={{ color: "rgb(214, 214, 218)" }}
+                  sx={{ color: COLORS.secondaryGold }}
                 >
                   <FileDownloadOutlinedIcon />
                 </IconButton>

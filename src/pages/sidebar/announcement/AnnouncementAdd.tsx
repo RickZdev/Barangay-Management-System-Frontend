@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import ModalFailed from "../../../components/modals/alert/ModalFailed";
 import useFirebaseStorage from "../../../hooks/useFirebaseStorage";
 import ModalSuccess from "../../../components/modals/alert/ModalSuccess";
+import { COLORS } from "../../../constants/COLORS";
 
 const AnnouncementAdd: React.FC = () => {
   const {
@@ -145,7 +146,7 @@ const AnnouncementAdd: React.FC = () => {
 
             <div className="flex flex-1 flex-col justify-center items-center">
               {image ? (
-                <div className="bg-[#1e1e2f] rounded-md">
+                <div className="bg-primary rounded-md">
                   <img src={image} style={{ width: "100%" }} />
                 </div>
               ) : (
@@ -153,7 +154,7 @@ const AnnouncementAdd: React.FC = () => {
                   style={{
                     borderColor: errors.announcementImage?.message
                       ? "red"
-                      : "rgb(110 231 183)",
+                      : COLORS.primary,
                   }}
                   className="flex flex-1 p-24 items-center justify-center w-full rounded-3xl border-dashed border-2 cursor-pointer"
                   {...getRootProps()}
@@ -182,7 +183,7 @@ const AnnouncementAdd: React.FC = () => {
 
             {errors.announcementImage?.message && (
               <div className="flex w-full justify-end mt-5">
-                <p className="text-red-400 text-xs">
+                <p className="text-secondary text-xs font-semibold">
                   {errors.announcementImage?.message}
                 </p>
               </div>

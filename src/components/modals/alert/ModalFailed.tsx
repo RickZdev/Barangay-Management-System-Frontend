@@ -24,7 +24,7 @@ const ModalFailed: React.FC<ModalFailedPropType> = ({
     <Dialog
       PaperProps={{
         sx: {
-          backgroundColor: "#29283d",
+          backgroundColor: "white",
           borderRadius: 5,
         },
       }}
@@ -43,14 +43,14 @@ const ModalFailed: React.FC<ModalFailedPropType> = ({
 
         <div className="justify-center items-center flex flex-col pb-14">
           <h6
-            className="font-poppins text-[#ffffffcc] uppercase text-center"
-            style={{ fontSize: 25 }}
+            className="text-black uppercase text-center"
+            style={{ fontSize: 32 }}
           >
             {title}
           </h6>
 
           {description && (
-            <p className="font-poppins text-[#ffffffcc] text-[14px] text-center">
+            <p className="font-poppins text-black text-[14px] text-center">
               {description}
             </p>
           )}

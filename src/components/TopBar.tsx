@@ -15,10 +15,11 @@ import useGetResidentById from "../queries/resident/useGetResidentById";
 import { getResidentFullName } from "../helper/getResidentFullName";
 import useLogout from "../queries/auth/useLogout";
 import AccountMenu from "./AccountMenu";
+import { COLORS } from "../constants/COLORS";
 
 const TopBar: React.FC = () => {
   // dark mode
-  const backgroundColor = "#1e1e2f";
+  const backgroundColor = COLORS.background;
 
   // light mode
   // const backgroundColor = '#e27c39'
@@ -36,7 +37,7 @@ const TopBar: React.FC = () => {
   return (
     <div className="flex justify-between flex-row items-center">
       {/* title page */}
-      <h1 className="text-white text-3xl pl-8 uppercase font-extrabold">
+      <h1 className="text-black text-3xl pl-8 uppercase font-extrabold">
         {currentPath}
       </h1>
 
