@@ -161,7 +161,7 @@ const AccountMenu = () => {
               </div>
             )}
 
-            <div className="flex flex-row justify-between px-4 py-3 cursor-pointer hover:bg-[rgb(242,242,242)]">
+            {/* <div className="flex flex-row justify-between px-4 py-3 cursor-pointer hover:bg-[rgb(242,242,242)]">
               <div className="flex-row flex space-x-3 items-center">
                 <SettingsIcon sx={{ color: "black" }} />
                 <Typography fontSize={14} fontWeight={"bold"}>
@@ -170,7 +170,7 @@ const AccountMenu = () => {
               </div>
 
               <ChevronRightIcon sx={{ color: "black" }} />
-            </div>
+            </div> */}
 
             <div
               onClick={handleLogout}
