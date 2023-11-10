@@ -173,15 +173,7 @@ export const rootRouter = createBrowserRouter(
 
         <Route element={<InventoryLayout />}>
           <Route path="inventory" element={<InventoryRecords />} />
-          <Route
-            path="inventory/request"
-            element={
-              <ProtectedRoute
-                unauthorizedRoles={["Resident"]}
-                RouteName={InventoryRequest}
-              />
-            }
-          />
+          <Route path="inventory/request" element={<InventoryRequest />} />
           <Route path="inventory/borrow" element={<InventoryBorrow />} />
         </Route>
 
