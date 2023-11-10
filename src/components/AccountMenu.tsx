@@ -20,6 +20,7 @@ import FaceIcon from "@mui/icons-material/Face";
 import LockIcon from "@mui/icons-material/Lock";
 import { logoutSuccessNotify } from "../helper/toastNotifications";
 import ModalChangePassword from "./modals/ModalChangePassword";
+import { getResidentFullNameAsc } from "../helper/getResidentFullNameAsc";
 
 const AccountMenu = () => {
   const auth = useAuthContext();
@@ -91,7 +92,12 @@ const AccountMenu = () => {
                     color={"white"}
                     width={180}
                   >
-                    {resident?.fullName}
+                    {getResidentFullNameAsc({
+                      lastName: resident?.lastName,
+                      firstName: resident?.firstName,
+                      middleName: resident?.middleName,
+                      suffix: resident?.suffix,
+                    }) ?? ""}
                   </Typography>
                   {auth?.userRole !== "Resident" && (
                     <Typography variant="h6" fontSize={12} color={"white"}>

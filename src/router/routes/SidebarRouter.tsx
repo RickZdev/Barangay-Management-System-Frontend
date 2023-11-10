@@ -254,12 +254,14 @@ const SidebarRouter: React.FC = () => {
               >
                 Borrowed Inventory
               </CustomMenuItem>
-              <CustomMenuItem
-                Icon={Add}
-                onClick={() => navigate("/inventory/request")}
-              >
-                Request Inventory
-              </CustomMenuItem>
+              {auth?.userRole !== "Resident" && (
+                <CustomMenuItem
+                  Icon={Add}
+                  onClick={() => navigate("/inventory/request")}
+                >
+                  Request Inventory
+                </CustomMenuItem>
+              )}
             </SubMenu>
             <MenuItem
               icon={<ReceiptLongIcon />}

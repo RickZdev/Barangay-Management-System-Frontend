@@ -4,7 +4,7 @@ import { useState } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 
 type TextFieldPropType = {
-  label: string;
+  label?: string;
   isEdit?: boolean;
   initialValue?: string;
   isPasswordField?: boolean;

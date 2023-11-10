@@ -106,6 +106,12 @@ export type LoginAuditPropType = {
   loginTime: string;
 };
 
+export type InventoriesPropType = {
+  _id?: string;
+  item: string;
+  quantity: number;
+};
+
 export type BorrowedInventoryPropType = {
   _id: string;
   borroweeId: string;

@@ -10,6 +10,7 @@ import type {
   CertificateRecordsPropType,
   ComplaintsPropType,
   IndigentBenefitsPropType,
+  InventoriesPropType,
   LoginAuditPropType,
   OfficialWithPositionPropType,
   ResidentPropType,
@@ -713,6 +714,60 @@ export const getLoginAuditById = async (
   }
 };
 
+// inventory function
+export const getAllInventories = async () => {
+  try {
+    const response = await axios.get(`/api/inventories`);
+    return { message: "success", data: response.data, error: "" };
+  } catch (error: any) {
+    return { message: "error", data: "", error: error.response.data.error };
+  }
+};
+
+export const createInventory = async ({
+  item,
+  quantity,
+}: InventoriesPropType) => {
+  try {
+    const response = await axios.post(`/api/inventories`, {
+      item,
+      quantity,
+    });
+    return { message: "success", data: response.data, error: "" };
+  } catch (error: any) {
+    console.log(error.response.data.error);
+    return { message: "error", data: "", error: error.response.data.error };
+  }
+};
+
+export const updateInventory = async ({
+  inventoryId,
+  updatedData,
+}: {
+  inventoryId: string;
+  updatedData: InventoriesPropType;
+}) => {
+  try {
+    const response = await axios.patch(
+      `/api/inventories/${inventoryId}`,
+      updatedData
+    );
+    return { message: "success", data: response.data, error: "" };
+  } catch (error: any) {
+    return { message: "error", data: "", error: error.response?.data };
+  }
+};
+
+export const deleteInventory = async (inventoryId: string) => {
+  try {
+    const response = await axios.delete(`/api/inventories/${inventoryId}`);
+    return { message: "success", data: response.data, error: "" };
+  } catch (error: any) {
+    console.log(error.response.data.error);
+    return { message: "error", data: "", error: error.response.data.error };
+  }
+};
+
 // borrowed inventory function
 export const getAllBorrowedInventory = async (): Promise<
   BorrowedInventoryPropType[]
@@ -725,9 +780,7 @@ export const getAllBorrowedInventory = async (): Promise<
   }
 };
 
-export const getBorrowedInventoryById = async (
-  id: string | undefined
-): Promise<BorrowedInventoryPropType> => {
+export const getBorrowedInventoryById = async (id: string | undefined) => {
   try {
     const response = await axios.get<BorrowedInventoryPropType>(
       `/api/borrowedinventory/${id}`
@@ -802,7 +855,7 @@ export const createBorrowedRecord = async ({
 }: {
   borrowedId: string;
   returnedDateAndTime: string;
-}): Promise<BorrowedRecordsPropType | null | undefined> => {
+}) => {
   try {
     const {
       borroweeId,
@@ -813,7 +866,7 @@ export const createBorrowedRecord = async ({
       purposeOfBorrowing,
       eventLocation,
       officialInCharge,
-    } = await getBorrowedInventoryById(borrowedId);
+    } = await getBorrowedInventoryById(borrowedId ?? "");
 
     const response = await axios.post(`/api/borrowedrecords`, {
       borroweeId,

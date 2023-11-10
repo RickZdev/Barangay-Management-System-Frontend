@@ -6,7 +6,10 @@ import {
 } from "material-react-table";
 import { Typography } from "@mui/material";
 import CustomButton from "../../../components/CustomButton";
-import { BorrowedInventoryPropType } from "../../../utils/types";
+import {
+  BorrowedInventoryPropType,
+  InventoriesPropType,
+} from "../../../utils/types";
 import useGetBorrowedInventory from "../../../queries/borrowedInventory/useGetBorrowedInventory";
 import Loading from "../../errors/Loading";
 import useDeleteBorrowedInventory from "../../../queries/borrowedInventory/useDeleteBorrowedInventory";
@@ -17,6 +20,9 @@ import ViewDetails from "../../../components/ViewDetails";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import useAuthContext from "../../../queries/auth/useAuthContext";
 import _ from "lodash";
+import useUpdateInventory from "../../../queries/inventories/useUpdateInventory";
+import { getBorrowedInventoryById } from "../../../services/apiHelper";
+import useGetInventories from "../../../queries/inventories/useGetInventories";
 
 const InventoryBorrow: React.FC = React.memo(() => {
   const columns = useMemo<MRT_ColumnDef<BorrowedInventoryPropType>[]>(
@@ -65,8 +71,10 @@ const InventoryBorrow: React.FC = React.memo(() => {
     refetch,
   } = useGetBorrowedInventory();
 
-  const { mutate: deleteItem } = useDeleteBorrowedInventory();
-  const { mutate: returnItem } = useCreateBorrowedRecord();
+  const { data: inventories } = useGetInventories();
+  const { mutateAsync: updateInventory } = useUpdateInventory();
+  const { mutateAsync: deleteItem } = useDeleteBorrowedInventory();
+  const { mutateAsync: returnItem } = useCreateBorrowedRecord();
 
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
@@ -87,19 +95,52 @@ const InventoryBorrow: React.FC = React.memo(() => {
 
   const isLoading = isBorrowedLoading || isRefetching || isProcessing;
 
-  const handleReturnItem = () => {
+  const handleReturnItem = async () => {
     setIsProcessing(true);
-    rows.map((rowId) => {
-      deleteItem(rowId);
-      returnItem({
-        borrowedId: rowId,
-        returnedDateAndTime: dayjs().format("MM/DD/YYYY - hh:mm A"),
-      });
-    });
 
-    setRowSelection({});
+    try {
+      await Promise.all(
+        rows.map(async (rowId) => {
+          const inventory = await getBorrowedInventoryById(rowId);
 
-    setIsProcessing(false);
+          if (inventory) {
+            await Promise.all(
+              inventory?.borrowedItems?.map(
+                async (item: InventoriesPropType) => {
+                  const inventoryItem = _.find(
+                    inventories?.data || [],
+                    (inventory) => inventory._id === item?._id
+                  );
+
+                  if (inventoryItem) {
+                    await updateInventory({
+                      inventoryId: inventoryItem?._id,
+                      updatedData: {
+                        item: item?.item,
+                        quantity: inventoryItem?.quantity + item?.quantity,
+                      },
+                    });
+                  }
+                }
+              )
+            );
+          }
+
+          await returnItem({
+            borrowedId: rowId,
+            returnedDateAndTime: dayjs().format("MM/DD/YYYY - hh:mm A"),
+          });
+
+          await deleteItem(rowId);
+        })
+      );
+
+      setRowSelection({});
+    } catch (error) {
+      console.error("An error occurred:", error);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   useEffect(() => {
