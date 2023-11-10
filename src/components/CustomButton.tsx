@@ -1,5 +1,6 @@
 import { Button, SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
+import { COLORS } from "../constants/COLORS";
 
 type CustomButtonPropType = {
   label: string;
@@ -26,7 +27,9 @@ const CustomButton: React.FC<CustomButtonPropType> = ({
         onClick={onClick}
         fullWidth={true}
         sx={{
-          backgroundColor: backgroundColor ? backgroundColor : "#067D68",
+          backgroundColor: backgroundColor
+            ? backgroundColor
+            : COLORS.secondaryGold,
           borderRadius: 2,
         }}
       >

@@ -68,9 +68,9 @@ const Announcement: React.FC = React.memo(() => {
 
           return (
             <div className="flex flex-col px-5 pb-4">
-              <h1 className="text-lg">Message: </h1>
+              <h1 className="text-lg text-black">Message: </h1>
               <p
-                className="text-justify"
+                className="text-justify text-black"
                 dangerouslySetInnerHTML={{ __html: messageWithLineBreaks }}
               />
 

@@ -44,21 +44,6 @@ a:hover {
   text-decoration: none;
 }
 
-button {
-  border: none;
-  border-radius: 0.25rem;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  cursor: pointer;
-  background-color: var(--primary-color);
-  color: var(--light-color);
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #0069d9;
-}
-
 input,
 textarea {
   border: 1px solid var(--secondary-color);
@@ -149,17 +134,17 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* top toolbar icons */
 .MuiTablePagination-actions .MuiSvgIcon-root {
-  color: #067d68;
+  color: rgb(234, 179, 8);
 }
 
 /* bottom toolbar icons */
 .css-di3982 .css-i4bv87-MuiSvgIcon-root {
-  color: rgb(110, 117, 124);
+  color: rgb(234, 179, 8);
 }
 
 /* detail panel select all icon */
 .MuiTableRow-root .css-1vp8cnp-MuiButtonBase-root-MuiIconButton-root {
-  color: white;
+  color: rgb(234, 179, 8);
 }
 
 /* detail panel expanded icons  */
@@ -175,9 +160,9 @@ input[type="number"]::-webkit-outer-spin-button {
   color: white;
 }
 
-/* select mui, set color white when disabled */
+/* select mui, set color black when disabled */
 .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
-  -webkit-text-fill-color: white;
+  -webkit-text-fill-color: black;
 }
 
 .css-1ueirg0-MuiFormControlLabel-root.Mui-disabled {
@@ -187,14 +172,11 @@ input[type="number"]::-webkit-outer-spin-button {
 /* style for radio button label */
 .css-1jpb5jr-MuiFormControlLabel-root .MuiFormControlLabel-label {
   font-size: 14px;
-  font-family: "poppins";
 }
 
 /* style for radio button label when disabled */
 .css-1bvqc98-MuiFormControlLabel-root .MuiFormControlLabel-label.Mui-disabled {
-  font-size: 14px;
-  font-family: "poppins";
-  -webkit-text-fill-color: white;
+  -webkit-text-fill-color: black;
 }
 
 .MuiFormControl-root
@@ -216,5 +198,33 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* no display records text style*/
 .css-18iv8yc-MuiTypography-root {
-  -webkit-text-fill-color: white;
+  -webkit-text-fill-color: black;
+}
+
+.loginForm-background {
+  background-image: url("assets/images/navotas-background.jpeg");
+  background-size: cover;
+  background-position: center;
+  height: 100vh; /* 100% of the viewport height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Glass effect */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.2
+  ); /* Adjust the alpha (last value) for transparency */
+  backdrop-filter: blur(10px); /* Adjust the blur radius as needed */
+}
+
+.MuiInputBase-root .MuiOutlinedInput-root {
+  border: "2px solid rgb(97, 106, 113)";
+}
+
+.css-i4bv87-MuiSvgIcon-root {
+  color: "black";
+  background-color: "black";
 }

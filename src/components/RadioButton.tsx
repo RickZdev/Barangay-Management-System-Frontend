@@ -1,6 +1,7 @@
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { useEffect, useState } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
+import { COLORS } from "../constants/COLORS";
 
 type RadioButtonPropType = {
   label: string;
@@ -33,12 +34,10 @@ const RadioButton: React.FC<RadioButtonPropType> = ({
   return (
     <>
       <div className="flex flex-row items-center">
-        <p className="flex-1 text-[hsla(0,0%,100%,.6)] text-xs">
-          {label}
-          {!isOptional && <span className="text-red-800"> * </span>}
-        </p>
+        <p className="flex-1 text-black text-sm font-semibold">{label}</p>
+
         <RadioGroup
-          className="flex w-2/3"
+          className="flex w-[80%]"
           sx={{ flexDirection: "row" }}
           value={selectedValue}
           onChange={(event) => setSelectedValue(event.target.value)}
@@ -48,7 +47,7 @@ const RadioButton: React.FC<RadioButtonPropType> = ({
               key={index}
               label={selection.value}
               sx={{
-                color: isEdit ? "white" : "red",
+                color: isEdit ? "black" : "red",
                 fontSize: 14,
               }}
               control={
@@ -56,9 +55,9 @@ const RadioButton: React.FC<RadioButtonPropType> = ({
                   disabled={!isEdit}
                   value={selection.value}
                   sx={{
-                    color: error ? "red" : "white",
+                    color: error ? "red" : "black",
                     "&.Mui-checked": {
-                      color: "#50D5B7",
+                      color: COLORS.primary,
                     },
                   }}
                   {...register}
@@ -72,7 +71,7 @@ const RadioButton: React.FC<RadioButtonPropType> = ({
 
       {error && (
         <div className="flex flex-1 w-full justify-end">
-          <p className="text-red-400 text-xs">{error}</p>
+          <p className="text-secondary text-xs font-semibold">{error}</p>
         </div>
       )}
     </>

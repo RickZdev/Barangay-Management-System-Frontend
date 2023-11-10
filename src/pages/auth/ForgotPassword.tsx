@@ -10,6 +10,10 @@ import ModalFailed from "../../components/modals/alert/ModalFailed";
 import ModalSuccess from "../../components/modals/alert/ModalSuccess";
 import useForgotPassword from "../../queries/auth/useForgotPassword";
 import LoaderModal from "../../components/modals/loader/LoaderModal";
+import { Card } from "flowbite-react";
+import CardPhoto from "../../components/CardPhoto";
+import BarangayLogo from "../../assets/logo/barangay-logo.png";
+import BackButton from "../../components/BackButton";
 
 const ForgotPassword = () => {
   const { mutateAsync, isLoading } = useForgotPassword();
@@ -54,22 +58,33 @@ const ForgotPassword = () => {
   return (
     <>
       <LoaderModal isLoading={isLoading} />
-      <div className="flex flex-col justify-center items-center h-screen bg-[#1e1e2f]">
-        <h1 className="text-white font-bold text-lg">Forgot Password</h1>
+      <div className="loginForm-background">
+        <Card className="w-[30%]">
+          <div className="flex flex-1 px-6 py-6 z-50">
+            <BackButton />
+          </div>
+          <div className="flex flex-row justify-center items-center space-x-2">
+            <CardPhoto image={BarangayLogo} size={120} showTooltip={false} />
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col space-y-3"
-        >
-          <TextField
-            register={register("emailAddress")}
-            label={"Email Address"}
-            isEdit
-            error={errors?.emailAddress?.message}
-          />
+            <h1 className="uppercase text-3xl font-bold text-black">
+              Barangay Navotas East Management System
+            </h1>
+          </div>
 
-          <SubmitButton label="Submit" />
-        </form>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col space-y-3"
+          >
+            <TextField
+              register={register("emailAddress")}
+              label={"Email Address"}
+              isEdit
+              error={errors?.emailAddress?.message}
+            />
+
+            <SubmitButton label="Forgot Password" />
+          </form>
+        </Card>
       </div>
 
       <ModalSuccess

@@ -1,4 +1,6 @@
+import { TextInput } from "flowbite-react";
 import { UseFormRegisterReturn } from "react-hook-form";
+import { COLORS } from "../constants/COLORS";
 
 type NumberFieldPropType = {
   label: string;
@@ -22,11 +24,10 @@ const NumberField: React.FC<
 }) => {
   return (
     <>
-      <div className="flex flex-row items-center relative">
-        <p className="flex-1 text-[hsla(0,0%,100%,.6)] text-xs">
-          {label} {!isOptional && <span className="text-red-800"> * </span>}
-        </p>
-        <input
+      <div className="flex flex-row items-center ">
+        <p className="flex-1 text-black text-sm font-semibold">{label}</p>
+
+        <TextInput
           type="number"
           onKeyDown={(event) => {
             if (
@@ -45,9 +46,20 @@ const NumberField: React.FC<
               e.target as HTMLInputElement
             ).value.slice(0, 11))
           }
-          className="hover:border-[1px] hover:border-[#50D5B7] focus:border-[#50D5B7] w-2/3 h-10 text-sm text-white bg-[#232537] pl-4 pr-10"
+          className="w-[80%] text-sm text-white font-medium"
           style={{
-            borderColor: error ? "red" : isEdit ? "white" : "#232537",
+            backgroundColor: error
+              ? COLORS.lightRed
+              : isEdit
+              ? "rgb(247,248,249)"
+              : "rgb(247,248,249)",
+            borderColor: error
+              ? COLORS.secondary
+              : isEdit
+              ? "rgb(97, 106, 113)"
+              : "",
+            height: 45,
+            borderWidth: isEdit ? 2 : 0,
           }}
           {...register}
           {...props}
@@ -56,7 +68,7 @@ const NumberField: React.FC<
 
       {error && (
         <div className="flex flex-1 w-full justify-end">
-          <p className="text-red-400 text-xs">{error}</p>
+          <p className="text-secondary text-xs font-semibold">{error}</p>
         </div>
       )}
     </>

@@ -8,6 +8,7 @@ import {
 import { getResidentFullName } from "../helper/getResidentFullName";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import useGetOfficials from "../queries/official/useGetOfficials";
+import { TextInput } from "flowbite-react";
 
 type TextFieldPropType = {
   label: string;
@@ -69,18 +70,20 @@ const OfficialSearchableTextField: React.FC<
     <>
       <div className="flex flex-col relative z-50">
         <div className="flex flex-row items-center relative">
-          <p className="flex-1 text-[hsla(0,0%,100%,.6)] text-xs">
-            {label}
-            {!isOptional && <span className="text-red-800"> * </span>}
-          </p>
+          <p className="flex-1 text-black text-sm font-semibold">{label}</p>
 
-          <input
+          <TextInput
             type="text"
             disabled={!isEdit}
-            className="hover:border-[1px] hover:border-[#50D5B7] focus:border-[#50D5B7] w-2/3 h-10 text-sm text-white bg-[#232537] pl-4 pr-10"
+            className="w-[80%] h-10 text-sm text-black bg-[rgb(247,248,249)]"
             style={{
+              paddingRight: 40,
               cursor: isEdit ? "text" : "not-allowed",
-              borderColor: error ? "red" : isEdit ? "white" : "#232537",
+              border: error
+                ? "2px solid red"
+                : isEdit
+                ? "2px solid rgb(97, 106, 113)"
+                : "2px solid rgb(97, 106, 113)",
             }}
             value={searchText}
             onChange={(event) => searchFilter(event.target.value)}
@@ -89,11 +92,11 @@ const OfficialSearchableTextField: React.FC<
             {...register}
             {...props}
           />
-          <PersonSearchIcon className="absolute right-2 text-white" />
+          <PersonSearchIcon className="absolute right-2 text-black" />
         </div>
 
         {searchText !== "" && isInputFocused === true && (
-          <ul className="search-textbox bg-white w-2/3 self-end absolute top-10 max-h-[200px] overflow-y-auto rounded-b-lg">
+          <ul className="search-textbox bg-white w-[80%] self-end absolute top-10 max-h-[200px] overflow-y-auto rounded-b-lg ">
             {newResidentDb?.map((resident, index) => {
               const fullName = getResidentFullName({
                 lastName: resident?.lastName,
@@ -105,7 +108,7 @@ const OfficialSearchableTextField: React.FC<
               return (
                 <li
                   key={index}
-                  className="cursor-pointer p-2 hover:bg-[#f0f2fa]"
+                  className="cursor-pointer p-2 hover:bg-[#f0f2fa] border-b-[1px] border-l-[1px] border-r-[1px] border-black"
                   onMouseDown={(e) => {
                     e.preventDefault();
                     handleChange(resident);

@@ -20,6 +20,10 @@ import SubmitButton from "../../components/SubmitButton";
 import PasswordField from "../../components/PasswordField";
 import ModalSuccess from "../../components/modals/alert/ModalSuccess";
 import ModalFailed from "../../components/modals/alert/ModalFailed";
+import BackButton from "../../components/BackButton";
+import CardPhoto from "../../components/CardPhoto";
+import BarangayLogo from "../../assets/logo/barangay-logo.png";
+import { Card } from "flowbite-react";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -87,29 +91,37 @@ const ResetPassword = () => {
   return (
     <>
       <LoaderModal isLoading={isLoading} />
-      <div className="flex flex-col justify-center items-center h-screen bg-[#1e1e2f]">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex space-y-4 flex-col"
-        >
-          <h1 className="text-white font-bold text-lg">Reset Password</h1>
+      <div className="loginForm-background">
+        <Card className="w-[30%]">
+          <div className="flex flex-row justify-center items-center space-x-2">
+            <CardPhoto image={BarangayLogo} size={120} showTooltip={false} />
 
-          <PasswordField
-            register={register("newPassword")}
-            label="New Password"
-            isEdit
-            error={errors?.newPassword?.message}
-          />
+            <h1 className="uppercase text-3xl font-bold text-black">
+              Barangay Navotas East Management System
+            </h1>
+          </div>
 
-          <PasswordField
-            register={register("confirmPassword")}
-            label="Confirm Password"
-            isEdit
-            error={errors?.confirmPassword?.message}
-          />
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col space-y-3"
+          >
+            <PasswordField
+              register={register("newPassword")}
+              label="New Password"
+              isEdit
+              error={errors?.newPassword?.message}
+            />
 
-          <SubmitButton label="Change Password" />
-        </form>
+            <PasswordField
+              register={register("confirmPassword")}
+              label="Confirm Password"
+              isEdit
+              error={errors?.confirmPassword?.message}
+            />
+
+            <SubmitButton label="Reset Password" />
+          </form>
+        </Card>
       </div>
 
       <ModalSuccess

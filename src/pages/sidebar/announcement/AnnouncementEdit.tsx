@@ -26,6 +26,7 @@ import ModalFailed from "../../../components/modals/alert/ModalFailed";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import useFirebaseStorage from "../../../hooks/useFirebaseStorage";
 import ModalSuccess from "../../../components/modals/alert/ModalSuccess";
+import { COLORS } from "../../../constants/COLORS";
 
 const AnnouncementEdit: React.FC = () => {
   const { _id: announcementId } = useParams();
@@ -174,7 +175,7 @@ const AnnouncementEdit: React.FC = () => {
 
             <div className="flex flex-1 flex-col justify-center items-center">
               {image ? (
-                <div className="bg-[#1e1e2f] rounded-md">
+                <div className="bg-primary rounded-md">
                   <img src={image} style={{ width: "100%" }} />
                 </div>
               ) : (
@@ -182,7 +183,7 @@ const AnnouncementEdit: React.FC = () => {
                   style={{
                     borderColor: errors.announcementImage?.message
                       ? "red"
-                      : "rgb(110 231 183)",
+                      : COLORS.primary,
                   }}
                   className="flex flex-1 p-24 items-center justify-center w-full rounded-3xl border-dashed border-2 cursor-pointer"
                   {...getRootProps()}

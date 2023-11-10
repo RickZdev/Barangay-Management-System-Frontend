@@ -80,7 +80,7 @@ const ModalViewInventory: React.FC<ModalViewInventoryPropType> = ({
       <LoaderModal isLoading={isLoading} />
 
       <Dialog
-        PaperProps={{ sx: { backgroundColor: "#29283d", borderRadius: 5 } }}
+        PaperProps={{ sx: { backgroundColor: "white", borderRadius: 5 } }}
         onClose={handleClose}
         open={open}
         maxWidth={"xs"}
@@ -88,7 +88,7 @@ const ModalViewInventory: React.FC<ModalViewInventoryPropType> = ({
         sx={{ borderRadius: 20 }}
       >
         <Card>
-          <form className="space-y-4 flex flex-col bg-[#29283d] p-4">
+          <form className="space-y-4 flex flex-col bg-white p-4">
             <Tooltip
               arrow
               title="Close"
@@ -106,20 +106,20 @@ const ModalViewInventory: React.FC<ModalViewInventoryPropType> = ({
             <CardHeader title="Inventory Lists" />
 
             <div className="flex flex-row justify-between items-center space-x-10 mb-4">
-              <p className="flex-1 text-white text-base">ITEM NAME</p>
-              <p className="text-white text-base ">QUANTITY</p>
-              {isEdit && <p className="text-white text-base">ACTION</p>}
+              <p className="flex-1 text-black text-base">ITEM NAME</p>
+              <p className="text-black text-base ">QUANTITY</p>
+              {isEdit && <p className="text-black text-base">ACTION</p>}
             </div>
 
             {inventories?.data?.map(
               (inventory: InventoriesPropType, index: number) => (
                 <div className="flex flex-row items-center space-x-10">
-                  <p className="flex-1 text-white text-base ">
+                  <p className="flex-1 text-black text-base ">
                     {inventory?.item}
                   </p>
 
                   {quantities[index] === 0 && !isEdit ? (
-                    <p className="text-red-400 text-base ">OUT OF STOCK</p>
+                    <p className="text-secondary text-base ">OUT OF STOCK</p>
                   ) : (
                     <QuantityField
                       isEdit={isEdit}

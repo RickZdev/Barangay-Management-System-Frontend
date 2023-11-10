@@ -82,7 +82,7 @@ export const rootRouter = createBrowserRouter(
         <Route
           path="resident-signup"
           element={
-            <div className="bg-[#1e1e2f] p-10">
+            <div className="bg-background p-10">
               <ResidentAdd />
             </div>
           }

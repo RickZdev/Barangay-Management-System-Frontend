@@ -34,7 +34,7 @@ const AccountMenu = () => {
     useState<boolean>(false);
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
 
-  const backgroundColor = "#1e1e2f";
+  const backgroundColor = "white";
 
   const handleLogout = () => {
     logoutUser();
@@ -74,7 +74,7 @@ const AccountMenu = () => {
             backgroundColor: backgroundColor,
             height: 80,
           }}
-          expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
+          expandIcon={<ExpandMoreIcon sx={{ color: "black" }} />}
         >
           <div className="flex-row flex cursor-pointer justify-center items-center">
             <Avatar
@@ -89,7 +89,7 @@ const AccountMenu = () => {
                     variant="h2"
                     fontSize={14}
                     fontWeight="bold"
-                    color={"white"}
+                    color={"black"}
                     width={180}
                   >
                     {getResidentFullNameAsc({
@@ -100,7 +100,7 @@ const AccountMenu = () => {
                     }) ?? ""}
                   </Typography>
                   {auth?.userRole !== "Resident" && (
-                    <Typography variant="h6" fontSize={12} color={"white"}>
+                    <Typography variant="h6" fontSize={12} color={"black"}>
                       {auth?.userRole}
                     </Typography>
                   )}

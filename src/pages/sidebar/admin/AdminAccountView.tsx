@@ -82,10 +82,10 @@ const AdminAccountView: React.FC = () => {
               />
 
               <div className="flex flex-col items-center">
-                <p className="flex-1 text-white text-lg font-bold">
+                <p className="flex-1 text-black text-lg font-bold">
                   {admin?.adminUser}
                 </p>
-                <p className="text-[hsla(0,0%,100%,.6)] text-sm font-bold">
+                <p className="text-black text-sm font-bold">
                   {admin?.adminRole}
                 </p>
               </div>

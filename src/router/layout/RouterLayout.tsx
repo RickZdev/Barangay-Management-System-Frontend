@@ -6,6 +6,7 @@ import ModalAddTransaction from "../../components/modals/ModalAddTransaction";
 import ModalAddAdminAccount from "../../components/modals/ModalAddAdminAccount";
 import SidebarRouter from "../routes/SidebarRouter";
 import useAuthContext from "../../queries/auth/useAuthContext";
+import { COLORS } from "../../constants/COLORS";
 
 export const RootLayout: React.FC = () => {
   return <Outlet />;
@@ -24,7 +25,7 @@ export const SidebarLayout: React.FC = () => {
   // const [openAdminAccount, setOpenAdminAccount] = useState<boolean>(false);
 
   // dark mode
-  const backgroundColor = "#1e1e2f";
+  const backgroundColor = COLORS.background;
 
   // light mode
   // const backgroundColor = `rgb(243, 244, 248)`;

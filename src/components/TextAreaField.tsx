@@ -1,5 +1,7 @@
 import React from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
+import { COLORS } from "../constants/COLORS";
+import { Textarea } from "flowbite-react";
 
 type TextAreaFieldPropType = {
   label?: string;
@@ -24,19 +26,21 @@ const TextAreaField: React.FC<
   return (
     <div className="flex flex-col justify-between items-start space-y-4">
       {label && (
-        <p className="flex-1 text-[hsla(0,0%,100%,.6)] text-xs">
-          {label}
-          {!isOptional && <span className="text-red-800"> * </span>}
-        </p>
+        <p className="flex-1 text-black text-sm font-semibold">{label}</p>
       )}
 
-      <textarea
+      <Textarea
         disabled={!isEdit}
         defaultValue={initialValue}
         style={{
-          borderColor: error ? "red" : isEdit ? "white" : "#232537",
+          borderWidth: 2,
+          borderColor: error
+            ? COLORS.secondary
+            : isEdit
+            ? "rgb(97, 106, 113)"
+            : "rgb(247,248,249)",
         }}
-        className={`w-full px-5 pb-10 pt-5 text-justify rounded-md bg-[#232537] resize-none text-white border-[1px] focus:border-white`}
+        className={`w-full px-5 pb-10 pt-5 text-justify rounded-md bg-[rgb(247,248,249)] resize-none text-black border-[1px]`}
         {...register}
         {...props}
       />

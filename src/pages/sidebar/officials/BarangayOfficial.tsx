@@ -231,7 +231,7 @@ const OfficialCard: React.FC<OfficialPropType> = ({
           filter: "drop-shadow",
         }}
       >
-        <p className="text-sm font-bold text-[#067D68]">
+        <p className="text-sm font-bold text-black">
           {getResidentFullName({
             lastName: officialDetails?.lastName,
             firstName: officialDetails?.firstName,

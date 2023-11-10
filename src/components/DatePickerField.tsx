@@ -1,5 +1,6 @@
 import { DatePicker, StaticDatePickerProps } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
+import { COLORS } from "../constants/COLORS";
 
 type DatePickerFieldPropType = {
   label: string;
@@ -15,39 +16,43 @@ const DatePickerField: React.FC<
   return (
     <>
       <div className="flex flex-row items-center relative ">
-        <p className="flex-1 text-[hsla(0,0%,100%,.6)] text-xs">
-          {label}
-          {!isOptional && <span className="text-red-800"> * </span>}
-        </p>
+        <p className="flex-1 text-black text-sm font-semibold">{label}</p>
 
         <DatePicker
           readOnly={!isEdit}
           sx={{
-            minWidth: "66.6667%",
-            backgroundColor: "#232537",
+            minWidth: "80%",
+            backgroundColor: error ? COLORS.lightRed : "rgb(247,248,249)",
             border: error
-              ? "1px solid red"
+              ? "2px solid red"
               : isEdit
-              ? "1px solid white"
-              : "1px solid #232537",
-            borderRadius: 1,
-            color: "white",
+              ? "2px solid rgb(97, 106, 113)"
+              : "2px solid rgb(247, 248, 249)",
+            color: "black",
+            borderRadius: 2,
+            ".MuiOutlinedInput-notchedOutline": {
+              borderWidth: 0,
+            },
             ":hover": {
-              border: !isEdit ? "1px solid transparent" : "1px solid white",
+              border: !isEdit
+                ? "1px solid transparent"
+                : "2px solid rgb(97, 106, 113)",
             },
             ":focus": {
-              border: "1px solid #50D5B7",
+              border: "2px solid rgb(97, 106, 113)",
             },
             "& .MuiInputBase-input": {
-              color: "white",
+              color: "black",
+              fontWeight: "700",
               fontFamily: "poppins",
               fontSize: 14,
+              borderRadius: 10,
             },
             "& .MuiInputBase-icon": {
-              color: "white",
+              color: "black",
             },
             "& .MuiIconButton-root": {
-              color: "white",
+              color: "black",
             },
           }}
           minDate={isMinDate ? dayjs("1900-01-01T00:00:00.000") : undefined}
@@ -57,7 +62,7 @@ const DatePickerField: React.FC<
 
       {error && (
         <div className="flex flex-1 w-full justify-end">
-          <p className="text-red-400 text-xs">{error}</p>
+          <p className="text-secondary text-xs font-semibold">{error}</p>
         </div>
       )}
     </>

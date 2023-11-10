@@ -16,6 +16,7 @@ import useGetBorrowedInventory from "../../../queries/borrowedInventory/useGetBo
 import ModalAddInventory from "../../../components/modals/ModalAddInventory";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ModalViewInventory from "../../../components/modals/ModalViewInventory";
+import InventoryPanel from "../../../components/InventoryPanel";
 
 const InventoryRecords: React.FC = React.memo(() => {
   const auth = useAuthContext();
@@ -113,36 +114,7 @@ const InventoryRecords: React.FC = React.memo(() => {
         muiTableDetailPanelProps={{
           sx: { color: "white" },
         }}
-        renderDetailPanel={({ row }) => (
-          <div className="flex flex-col">
-            <p className="font-bold uppercase text-lg py-2 text-center">
-              Borrowed Items
-            </p>
-            <div className="grid grid-cols-2">
-              <div className="border-[1px] border-[#50D5B7] p-3 bg-[#067D68]">
-                <Typography align="center" fontWeight={"bold"}>
-                  ITEMS
-                </Typography>
-              </div>
-              <div className="border-[1px] border-[#50D5B7] p-3 bg-[#067D68]">
-                <Typography align="center" fontWeight={"bold"}>
-                  QUANTITY
-                </Typography>
-              </div>
-
-              {row.original.borrowedItems.map((item, index) => (
-                <>
-                  <div className="border-[1px] border-[#50D5B7] px-5 py-3">
-                    <Typography align="center">{item.itemName}</Typography>
-                  </div>
-                  <div className="border-[1px] border-[#50D5B7] px-5 py-3">
-                    <Typography align="center">{item.quantity}</Typography>
-                  </div>
-                </>
-              ))}
-            </div>
-          </div>
-        )}
+        renderDetailPanel={({ row }) => <InventoryPanel row={row} />}
         isError={false}
         showDeleteButton={auth?.userRole === "Captain" ? true : false}
         showBackButton={false}
