@@ -126,7 +126,7 @@ const Table = <T extends Record<string, any>>({
         </div>
       )}
 
-      {children && <div className="bg-white pb-5">{children}</div>}
+      {children && <div className="bg-white">{children}</div>}
       <MaterialReactTable
         data={data ?? []}
         columns={columns}
