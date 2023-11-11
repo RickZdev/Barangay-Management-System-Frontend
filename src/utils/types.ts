@@ -154,7 +154,6 @@ export type BlotterPropType = {
   incidentLocation: string;
   respondentId: string;
   respondentName: string;
-  incidentReported: string;
   incidentTimeAndDate: string;
   incidentRecorded: string;
   narrativeReport: string;

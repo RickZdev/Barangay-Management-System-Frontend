@@ -9,6 +9,7 @@ type DateTimePickerFieldPropType = {
   isOptional?: boolean;
   isMinDate?: boolean;
   isMaxDate?: boolean;
+  isBlotterMinDate?: boolean;
   error?: string;
 };
 
@@ -20,6 +21,7 @@ const DateTimePickerField: React.FC<
   isOptional,
   isMinDate = true,
   isMaxDate,
+  isBlotterMinDate,
   error,
   ...props
 }) => {
@@ -65,7 +67,7 @@ const DateTimePickerField: React.FC<
               color: "black",
             },
           }}
-          minDate={isMinDate ? dayjs("1950-01-01T00:00:00.000") : undefined}
+          minDate={isBlotterMinDate ? dayjs().subtract(5, 'day') : isMinDate ? dayjs("1950-01-01T00:00:00.000") : undefined}
           maxDate={dayjs()}
           {...props}
         />

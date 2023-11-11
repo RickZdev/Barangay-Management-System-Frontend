@@ -67,8 +67,11 @@ const AccountMenu = () => {
       >
         <div className="pt-10">
           <CardPhoto
-            image={resident?.profilePhoto ?? ""}
-            showTooltip={false}
+ image={
+  resident?.profilePhoto === ""
+    ? DefaultUserAvatar
+    : resident?.profilePhoto ?? ""
+}            showTooltip={false}
             size={100}
           />
           <div className="text-center py-5">

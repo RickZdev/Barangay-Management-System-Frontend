@@ -89,11 +89,6 @@ const BlotterEdit: React.FC = () => {
               value={dayjs(blotter?.incidentTimeAndDate.replace(" - ", " "))}
             />
 
-            <DateTimePickerField
-              label={"Incident Reported"}
-              value={dayjs(blotter?.incidentReported.replace(" - ", " "))}
-            />
-
             <SelectField
               label="Status"
               isEdit

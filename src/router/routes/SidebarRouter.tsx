@@ -136,18 +136,24 @@ const SidebarRouter: React.FC = () => {
                 component={<NavLink to="/resident" />}
                 label="Resident"
               >
-                <CustomMenuItem
-                  Icon={Add}
-                  onClick={() => navigate("/resident/add/")}
-                >
+                {
+                  auth?.userRole !== 'Moderator' && (
+<>
+                    <CustomMenuItem
+                    Icon={Add}
+                    onClick={() => navigate("/resident/add/")}
+                    >
                   Add Resident
                 </CustomMenuItem>
                 <CustomMenuItem
-                  Icon={PendingActionsIcon}
-                  onClick={() => navigate("/resident/pending/")}
+                Icon={PendingActionsIcon}
+                onClick={() => navigate("/resident/pending/")}
                 >
                   Pending Residents
                 </CustomMenuItem>
+                </>
+                )
+              }
               </SubMenu>
             )}
 

@@ -48,12 +48,12 @@ const BlotterAdd: React.FC = () => {
 
   const [incidentTimeAndDate, setIncidentTimeAndDate] =
     useState<Dayjs | null>();
-  const [incidentReported, setIncidentReported] = useState<Dayjs | null>();
 
   const [timeAndDateError, setTimeAndDateError] =
     useState<DateTimeValidationError | null>();
-  const [reportedError, setReportedError] =
-    useState<DateTimeValidationError | null>();
+
+    const today = dayjs();
+    const minDate = today.add(5, 'day').toDate();
 
   const handleOnChangeTimeAndDate = (date: Dayjs | null) => {
     setIncidentTimeAndDate(date);
@@ -63,17 +63,6 @@ const BlotterAdd: React.FC = () => {
 
     if (getValues().incidentTimeAndDate) {
       clearErrors("incidentTimeAndDate");
-    }
-  };
-
-  const handleOnChangeReported = (date: Dayjs | null) => {
-    setIncidentReported(date);
-    let timeAndDate = date?.format("MM/DD/YYYY - hh:mm A");
-
-    setValue("incidentReported", timeAndDate ?? "");
-
-    if (getValues().incidentReported) {
-      clearErrors("incidentReported");
     }
   };
 
@@ -101,7 +90,6 @@ const BlotterAdd: React.FC = () => {
         purokNumber: resident?.purokNumber,
       }),
       incidentTimeAndDate: data?.incidentTimeAndDate,
-      incidentReported: data?.incidentReported,
       incidentRecorded: dayjs().format("MM/DD/YYYY - hh:mm A"),
       respondentId: official?._id,
       respondentName: getResidentFullName({
@@ -182,16 +170,7 @@ const BlotterAdd: React.FC = () => {
         incidentTimeAndDate?.format("MM/DD/YYYY - hh:mm A") ?? ""
       );
     }
-
-    if (reportedError) {
-      setValue("incidentReported", "");
-    } else {
-      setValue(
-        "incidentReported",
-        incidentReported?.format("MM/DD/YYYY - hh:mm A") ?? ""
-      );
-    }
-  }, [timeAndDateError, reportedError]);
+  }, [timeAndDateError]);
 
   return (
     <>
@@ -243,6 +222,7 @@ const BlotterAdd: React.FC = () => {
               <DateTimePickerField
                 label={"Incident Time and Date"}
                 isEdit
+                isBlotterMinDate
                 onChange={handleOnChangeTimeAndDate}
                 value={incidentTimeAndDate}
                 error={errors?.incidentTimeAndDate?.message}
@@ -250,15 +230,6 @@ const BlotterAdd: React.FC = () => {
                 disableFuture
               />
 
-              <DateTimePickerField
-                label={"Incident Reported"}
-                isEdit
-                onChange={handleOnChangeReported}
-                value={incidentReported}
-                error={errors?.incidentReported?.message}
-                onError={(error) => setReportedError(error)}
-                disableFuture
-              />
             </div>
             <div className="flex justify-end mt-6">
               <SubmitButton label="Submit" />

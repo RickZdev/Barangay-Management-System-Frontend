@@ -256,17 +256,17 @@ const ModalResidentRequestCertificate: React.FC<
     <>
       <LoaderModal isLoading={isProcessing || isResidentLoading} />
       <Dialog
-        PaperProps={{ sx: { backgroundColor: "#29283d", borderRadius: 5 } }}
+        PaperProps={{ sx: { backgroundColor: 'white', borderRadius: 5 } }}
         onClose={handleCloseModal}
         open={open}
-        maxWidth={"xs"}
+        maxWidth={"md"}
         fullWidth
         sx={{ borderRadius: 20 }}
       >
         <Card>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="space-y-4 flex flex-col bg-[#29283d] p-4"
+            className="space-y-4 flex flex-col bg-white p-4"
           >
             <Tooltip
               arrow

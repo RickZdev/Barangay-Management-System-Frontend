@@ -212,7 +212,7 @@ const CertificatePending: React.FC = () => {
           showBackButton
           showEditButton={false}
           showDeleteButton={false}
-          showExportButton
+          showExportButton={false}
           refreshButton={refetch}
         >
           <>
