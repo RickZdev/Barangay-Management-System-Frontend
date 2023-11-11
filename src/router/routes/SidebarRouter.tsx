@@ -27,9 +27,15 @@ import useAuthContext from "../../queries/auth/useAuthContext";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import { COLORS } from "../../constants/COLORS";
+import CardPhoto from "../../components/CardPhoto";
+import BarangayLogo from "../../assets/logo/barangay-logo.png";
+import DefaultUserAvatar from "../../assets/images/default-user-avatar.png";
+import AccountMenu from "../../components/AccountMenu";
+import useGetResidentById from "../../queries/resident/useGetResidentById";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const SidebarRouter: React.FC = () => {
-  const { collapseSidebar } = useProSidebar();
+  const { collapseSidebar, collapsed } = useProSidebar();
 
   const iconStyle = {
     backgroundColor: "transparent",
@@ -61,27 +67,35 @@ const SidebarRouter: React.FC = () => {
 
   const auth = useAuthContext();
 
+  const { data: resident, isLoading } = useGetResidentById(auth?.userId);
+
   return (
-    <>
-      <div className="pl-8 pt-[125px]" style={{ background: backgroundColor }}>
-        <Sidebar
-          className="overflow-hidden rounded-md h-calc"
-          style={{
-            width: 75,
-            borderWidth: 0,
-            // background: "linear-gradient(0deg,#f04e23,#f7941d)",
-            background: `linear-gradient(0deg, ${gradientFirstColor}, ${gradientSecondColor})`,
-            boxShadow:
-              "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-            filter: "drop-shadow",
-          }}
-          backgroundColor="transparent"
-          defaultCollapsed={true}
-          collapsedWidth="75px"
-          onMouseEnter={() => collapseSidebar()}
-          onMouseLeave={() => collapseSidebar()}
-        >
-          <Menu className="font-bold text-xs text-white text-opacity-80">
+    <div className="" style={{ background: backgroundColor }}>
+      <Sidebar
+        className="h-screen"
+        style={{
+          width: 75,
+          borderWidth: 0,
+          // background: "linear-gradient(0deg,#f04e23,#f7941d)",
+          background: `linear-gradient(0deg, ${gradientFirstColor}, ${gradientSecondColor})`,
+          boxShadow:
+            "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+          filter: "drop-shadow",
+        }}
+        backgroundColor="transparent"
+        collapsedWidth="75px"
+        defaultCollapsed={true}
+      >
+        <div className="flex flex-1 flex-col h-screen justify-between text-white">
+          <div className="pt-5 pb-10">
+            <CardPhoto
+              image={BarangayLogo}
+              size={!collapsed ? 120 : 60}
+              showTooltip={false}
+            />
+          </div>
+
+          <Menu className="font-bold text-xs text-white text-opacity-80 ">
             <MenuItem
               component={<NavLink to="/dashboard" />}
               icon={<DashboardIcon />}
@@ -90,6 +104,7 @@ const SidebarRouter: React.FC = () => {
             >
               Dashboard
             </MenuItem>
+
             {auth?.userRole !== "Resident" && (
               <SubMenu
                 component={<NavLink to="/announcement" />}
@@ -295,9 +310,24 @@ const SidebarRouter: React.FC = () => {
               </SubMenu>
             )}
           </Menu>
-        </Sidebar>
-      </div>
-    </>
+          {collapsed ? (
+            <div className="py-5">
+              <CardPhoto
+                image={
+                  resident?.profilePhoto === ""
+                    ? DefaultUserAvatar
+                    : resident?.profilePhoto ?? ""
+                }
+                size={!collapsed ? 90 : 40}
+                showTooltip={false}
+              />
+            </div>
+          ) : (
+            <AccountMenu />
+          )}
+        </div>
+      </Sidebar>
+    </div>
   );
 };
 

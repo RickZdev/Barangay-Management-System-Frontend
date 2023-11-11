@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import TopBar from "../../components/TopBar";
 import ModalAddTransaction from "../../components/modals/ModalAddTransaction";
@@ -7,6 +7,7 @@ import ModalAddAdminAccount from "../../components/modals/ModalAddAdminAccount";
 import SidebarRouter from "../routes/SidebarRouter";
 import useAuthContext from "../../queries/auth/useAuthContext";
 import { COLORS } from "../../constants/COLORS";
+import dayjs from "dayjs";
 
 export const RootLayout: React.FC = () => {
   return <Outlet />;
@@ -21,18 +22,12 @@ export const AuthLayout: React.FC = () => {
 };
 
 export const SidebarLayout: React.FC = () => {
-  // const [openAddTransaction, setOpenAddTransaction] = useState<boolean>(false);
-  // const [openAdminAccount, setOpenAdminAccount] = useState<boolean>(false);
-
-  // dark mode
-  const backgroundColor = COLORS.background;
-
-  // light mode
-  // const backgroundColor = `rgb(243, 244, 248)`;
-
   const navigate = useNavigate();
-
+  const location = useLocation();
   const auth = useAuthContext();
+
+  const backgroundColor = COLORS.background;
+  const currentPath = location.pathname.split("/")[1];
 
   useEffect(() => {
     const userId = localStorage?.getItem("userId")
@@ -57,12 +52,18 @@ export const SidebarLayout: React.FC = () => {
   return (
     <div className="flex flex-row h-screen">
       <SidebarRouter />
+
       <main
-        className="flex-1 overflow-auto"
+        className="flex-1 overflow-auto "
         style={{ background: backgroundColor }}
       >
         <TopBar />
-        <div className="px-8 pt-5">
+
+        <div className="px-8 pt-5 flex-1 pb-10">
+          <h1 className="text-black text-3xl uppercase font-extrabold">
+            {currentPath}
+          </h1>
+
           <Outlet />
         </div>
       </main>

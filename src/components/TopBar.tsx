@@ -1,65 +1,30 @@
-import React, { useEffect, useState } from "react";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Avatar,
-  Typography,
-} from "@mui/material";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import React from "react";
 import useAuthContext from "../queries/auth/useAuthContext";
-import useGetResidentById from "../queries/resident/useGetResidentById";
-import { getResidentFullName } from "../helper/getResidentFullName";
-import useLogout from "../queries/auth/useLogout";
-import AccountMenu from "./AccountMenu";
 import { COLORS } from "../constants/COLORS";
+import MenuIcon from "@mui/icons-material/Menu";
+import { useProSidebar } from "react-pro-sidebar";
 
 const TopBar: React.FC = () => {
-  // dark mode
-  const backgroundColor = COLORS.background;
-
-  // light mode
-  // const backgroundColor = '#e27c39'
-
-  const location = useLocation();
-
-  const [firstPath, setFirstPath] = useState<string | undefined>();
-  const currentPath = location.pathname.split("/")[1];
-
-  // useEffect(() => {
-  //   const currentPath = location.pathname.split("/")[1];
-  //   setFirstPath(currentPath);
-  // }, [location]);
+  const auth = useAuthContext();
+  const { collapseSidebar, collapsed } = useProSidebar();
 
   return (
-    <div className="flex justify-between flex-row items-center">
-      {/* title page */}
-      <h1 className="text-black text-3xl pl-8 uppercase font-extrabold">
-        {currentPath}
-      </h1>
+    <div className="flex flex-row bg-white items-center justify-between px-5 sticky top-0 z-10 shadow-md">
+      <div onClick={() => collapseSidebar()} className="cursor-pointer">
+        <MenuIcon sx={{ color: COLORS.secondaryGold }} />
+      </div>
 
-      {/* top bar details */}
-      <div
-        className="flex justify-end items-center py-8 px-10 z-50 relative"
-        style={{
-          backgroundColor: backgroundColor,
-          // boxShadow:
-          //   "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.05)",
-          // filter: "drop-shadow",
-        }}
-      >
-        <div className="px-6 space-x-4 flex">
-          <div className="relative flex justify-end">
-            <NotificationsOutlinedIcon className="text-white" />
-            <div className="w-3 h-3 rounded-full bg-green-500 absolute top-0.5 border-[2px] border-[#fff]" />
-          </div>
-        </div>
-
-        <div className="absolute top-2">
-          <AccountMenu />
+      <div className=" bg-white">
+        <div>
+          {auth?.userRole === "Resident" ? (
+            <h1 className="text-black text-3xl pl-8 uppercase font-extrabold text-center">
+              Resident Portal
+            </h1>
+          ) : (
+            <h1 className="text-black text-3xl pl-8 uppercase font-extrabold text-center">
+              Admin Portal
+            </h1>
+          )}
         </div>
       </div>
     </div>

@@ -272,7 +272,6 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <LoaderModal isLoading={isLoading} />
-
       <div className="flex flex-col space-y-10 pb-7">
         <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 gap-x-8 gap-y-4">
           {data.map((summary) => (

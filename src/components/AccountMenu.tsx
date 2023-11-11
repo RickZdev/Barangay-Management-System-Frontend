@@ -21,6 +21,8 @@ import LockIcon from "@mui/icons-material/Lock";
 import { logoutSuccessNotify } from "../helper/toastNotifications";
 import ModalChangePassword from "./modals/ModalChangePassword";
 import { getResidentFullNameAsc } from "../helper/getResidentFullNameAsc";
+import CustomButton from "./CustomButton";
+import LoaderModal from "./modals/loader/LoaderModal";
 
 const AccountMenu = () => {
   const auth = useAuthContext();
@@ -32,9 +34,6 @@ const AccountMenu = () => {
 
   const [showChangePassModal, setShowChangePassModal] =
     useState<boolean>(false);
-  const [isAccordionOpen, setIsAccordionOpen] = useState(false);
-
-  const backgroundColor = "white";
 
   const handleLogout = () => {
     logoutUser();
@@ -50,7 +49,6 @@ const AccountMenu = () => {
 
   const handleViewProfile = () => {
     navigate(`/resident/profile/${auth?.userId}`);
-    setIsAccordionOpen(false);
   };
 
   const handleChangePassword = () => {
@@ -59,135 +57,120 @@ const AccountMenu = () => {
 
   return (
     <>
-      <Accordion
-        sx={{
-          backgroundColor: "white",
-          boxShadow: !isAccordionOpen
-            ? "none"
-            : "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.05)",
+      <LoaderModal isLoading={isLoading} />
+
+      <div
+        style={{
+          paddingTop: 10,
+          paddingBottom: 10,
         }}
-        expanded={isAccordionOpen}
-        onChange={() => setIsAccordionOpen(!isAccordionOpen)}
       >
-        <AccordionSummary
-          sx={{
-            backgroundColor: backgroundColor,
-            height: 80,
-          }}
-          expandIcon={<ExpandMoreIcon sx={{ color: "black" }} />}
-        >
-          <div className="flex-row flex cursor-pointer justify-center items-center">
-            <Avatar
-              alt={resident?.firstName ?? "Resident"}
-              src={resident?.profilePhoto ?? DefaultUserAvatar}
-            />
-            <div className="px-4 pr-2">
-              {resident && (
-                <>
-                  <Typography
-                    noWrap
-                    variant="h2"
-                    fontSize={14}
-                    fontWeight="bold"
-                    color={"black"}
-                    width={180}
-                  >
-                    {getResidentFullNameAsc({
-                      lastName: resident?.lastName,
-                      firstName: resident?.firstName,
-                      middleName: resident?.middleName,
-                      suffix: resident?.suffix,
-                    }) ?? ""}
-                  </Typography>
-                  {auth?.userRole !== "Resident" && (
-                    <Typography variant="h6" fontSize={12} color={"black"}>
-                      {auth?.userRole}
-                    </Typography>
-                  )}
-                </>
-              )}
-            </div>
+        <div className="pt-10">
+          <CardPhoto
+            image={resident?.profilePhoto ?? ""}
+            showTooltip={false}
+            size={100}
+          />
+          <div className="text-center py-5">
+            <Typography fontWeight={"bold"}>{resident?.fullName}</Typography>
+            <Typography fontSize={14}>{auth?.userRole}</Typography>
           </div>
-        </AccordionSummary>
-        <div
-          style={{
-            paddingTop: 10,
-            paddingBottom: 10,
-            boxShadow:
-              "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.05)",
-          }}
-        >
-          <div>
-            <CardPhoto
-              image={resident?.profilePhoto ?? ""}
-              showTooltip={false}
-              size={120}
-            />
 
-            <div className="text-center py-5">
-              <Typography fontWeight={"bold"}>{resident?.fullName}</Typography>
-              <Typography fontSize={14}>{auth?.userRole}</Typography>
-            </div>
-
-            {auth?.userRole === "Resident" && (
+          {auth?.userRole === "Resident" && (
+            <>
               <div
                 onClick={handleViewProfile}
-                className="flex flex-row justify-between px-4 py-3 cursor-pointer hover:bg-[rgb(242,242,242)]"
+                className="flex flex-row justify-between px-4 py-3 cursor-pointer "
               >
-                <div className="flex-row flex space-x-3 items-center">
-                  <FaceIcon sx={{ color: "black" }} />
-                  <Typography fontSize={14} fontWeight={"bold"}>
+                <div
+                  className="flex-row flex space-x-3 items-center font-bold text-xs "
+                  style={{
+                    backgroundColor: "transparent",
+                    padding: 0,
+                    margin: 0,
+                    marginLeft: 20,
+                    marginRight: 10,
+                  }}
+                >
+                  <FaceIcon
+                    sx={{ color: "rgb(212, 212, 212)" }}
+                    className=" hover:text-white "
+                  />
+                  <Typography
+                    fontSize={12}
+                    fontWeight={"bold"}
+                    className="text-neutral-300 hover:text-white "
+                  >
                     View Profile
                   </Typography>
                 </div>
 
-                <ChevronRightIcon sx={{ color: "black" }} />
+                <ChevronRightIcon
+                  sx={{ color: "white", fontSize: 14, fontWeight: "700" }}
+                />
               </div>
-            )}
 
-            {auth?.userRole === "Resident" && (
               <div
                 onClick={handleChangePassword}
-                className="flex flex-row justify-between px-4 py-3 cursor-pointer hover:bg-[rgb(242,242,242)]"
+                className="flex flex-row justify-between px-4 py-3 cursor-pointer hover:text-white"
               >
-                <div className="flex-row flex space-x-3 items-center">
-                  <LockIcon sx={{ color: "black" }} />
-                  <Typography fontSize={14} fontWeight={"bold"}>
+                <div
+                  className="flex-row flex space-x-3 items-center font-bold text-xs "
+                  style={{
+                    backgroundColor: "transparent",
+                    padding: 0,
+                    margin: 0,
+                    marginLeft: 20,
+                    marginRight: 10,
+                  }}
+                >
+                  <LockIcon sx={{ color: "rgb(212, 212, 212)" }} />
+                  <Typography
+                    fontSize={12}
+                    fontWeight={"bold"}
+                    className="text-neutral-300 hover:text-white "
+                  >
                     Change Password
                   </Typography>
                 </div>
 
-                <ChevronRightIcon sx={{ color: "black" }} />
+                <ChevronRightIcon
+                  sx={{ color: "white", fontSize: 14, fontWeight: "700" }}
+                />
               </div>
-            )}
+            </>
+          )}
 
-            {/* <div className="flex flex-row justify-between px-4 py-3 cursor-pointer hover:bg-[rgb(242,242,242)]">
-              <div className="flex-row flex space-x-3 items-center">
-                <SettingsIcon sx={{ color: "black" }} />
-                <Typography fontSize={14} fontWeight={"bold"}>
-                  Settings
-                </Typography>
-              </div>
-
-              <ChevronRightIcon sx={{ color: "black" }} />
-            </div> */}
-
+          <div
+            onClick={handleLogout}
+            className="flex flex-row justify-between px-4 py-3 cursor-pointer hover:text-white"
+          >
             <div
-              onClick={handleLogout}
-              className="flex flex-row justify-between px-4 py-3 cursor-pointer hover:bg-[rgb(242,242,242)]"
+              className="flex-row flex space-x-3 items-center "
+              style={{
+                backgroundColor: "transparent",
+                padding: 0,
+                margin: 0,
+                marginLeft: 20,
+                marginRight: 10,
+              }}
             >
-              <div className="flex-row flex space-x-3 items-center">
-                <LogoutIcon sx={{ color: "black" }} />
-                <Typography fontSize={14} fontWeight={"bold"}>
-                  Signout
-                </Typography>
-              </div>
-
-              <ChevronRightIcon sx={{ color: "black" }} />
+              <LogoutIcon sx={{ color: "rgb(212, 212, 212)" }} />
+              <Typography
+                fontSize={12}
+                fontWeight={"bold"}
+                className="text-neutral-300 hover:text-white "
+              >
+                Signout
+              </Typography>
             </div>
+
+            <ChevronRightIcon
+              sx={{ color: "white", fontSize: 14, fontWeight: "700" }}
+            />
           </div>
         </div>
-      </Accordion>
+      </div>
 
       <ModalChangePassword
         open={showChangePassModal}
