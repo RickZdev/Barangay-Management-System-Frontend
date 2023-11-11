@@ -79,6 +79,7 @@ const SulatReklamo: React.FC = React.memo(() => {
         enableRowActions={auth?.userRole !== "Resident"}
         showViewButton={false}
         showBackButton={false}
+        showDeleteButton={auth?.userRole !== 'Moderator'}
         refreshButton={refetch}
         deleteButton={mutate}
       >

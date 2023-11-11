@@ -133,16 +133,16 @@ const ResidentLogin = () => {
               )}
             </div>
 
-            <div className="my-2">
+            <div className="flex items-center justify-center my-2">
               <div
                 onClick={() => handleNavigation("/portal/forgot-password")}
                 className="cursor-pointer"
-              >
+                >
                 <p className="text-black font-poppins text-center text-sm underline ">
                   Forgot your password?
                 </p>
               </div>
-            </div>
+                </div>
 
             <div className="my-2 flex flex-row items-center space-x-3 pt-10 justify-center">
               <p className="text-black font-poppins text-center">

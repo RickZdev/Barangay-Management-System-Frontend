@@ -63,11 +63,6 @@ const Blotter: React.FC = React.memo(() => {
         size: 150,
       },
       {
-        accessorKey: "incidentReported",
-        header: "Date Reported",
-        size: 150,
-      },
-      {
         accessorKey: "incidentRecorded",
         header: "Date Recorded",
         size: 150,
@@ -119,11 +114,6 @@ const Blotter: React.FC = React.memo(() => {
       {
         accessorKey: "incidentTimeAndDate",
         header: "Date Incident",
-        size: 150,
-      },
-      {
-        accessorKey: "incidentReported",
-        header: "Date Reported",
         size: 150,
       },
       {
@@ -193,17 +183,18 @@ const Blotter: React.FC = React.memo(() => {
             <ViewMessagePanel messageRow={row.original.narrativeReport} />
           )}
           enableRowActions={auth?.userRole !== "Resident"}
-          showExportButton
+          showExportButton={auth?.userRole !== 'Resident'}
           enableRowNumbers={true}
           showBackButton={false}
           showViewButton={false}
+          showDeleteButton={auth?.userRole !== 'Moderator'}
           refreshButton={refetch}
           deleteButton={mutate}
         >
           <>
             {auth?.userRole !== "Resident" && (
               <div className="flex justify-between pt-4 px-2">
-                <h1 className="text-white text-3xl pl-8 uppercase font-extrabold">
+                <h1 className="text-black text-3xl pl-8 uppercase font-extrabold">
                   Resident
                 </h1>
 
@@ -230,12 +221,13 @@ const Blotter: React.FC = React.memo(() => {
             showExportButton
             enableRowNumbers={true}
             showBackButton={false}
+            showDeleteButton={auth?.userRole !== 'Moderator'}
             showViewButton={false}
             refreshButton={refetch}
             deleteButton={mutate}
           >
             <div className="flex justify-between pt-4 px-2">
-              <h1 className="text-white text-3xl pl-8 uppercase font-extrabold">
+              <h1 className="text-black text-3xl pl-8 uppercase font-extrabold">
                 Non-Resident
               </h1>
 

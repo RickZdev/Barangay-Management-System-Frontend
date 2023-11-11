@@ -20,7 +20,6 @@ import { blotterFormValidation } from "../../../utils/validation";
 import { DateTimeValidationError } from "@mui/x-date-pickers";
 import LoaderModal from "../../../components/modals/loader/LoaderModal";
 import ModalSuccess from "../../../components/modals/alert/ModalSuccess";
-import { getResidentFullAddress } from "../../../helper/getResidentFullAddres";
 
 const BlotterAddNonResident: React.FC = () => {
   const { mutateAsync } = useCreateBlotter();
@@ -45,14 +44,11 @@ const BlotterAddNonResident: React.FC = () => {
 
   const [incidentTimeAndDate, setIncidentTimeAndDate] =
     useState<Dayjs | null>();
-  const [incidentReported, setIncidentReported] = useState<Dayjs | null>();
 
   const [timeAndDateError, setTimeAndDateError] =
     useState<DateTimeValidationError | null>();
-  const [reportedError, setReportedError] =
-    useState<DateTimeValidationError | null>();
 
-  const handleOnChangeTimeAndDate = (date: Dayjs | null) => {
+    const handleOnChangeTimeAndDate = (date: Dayjs | null) => {
     setIncidentTimeAndDate(date);
     let timeAndDate = date?.format("MM/DD/YYYY - hh:mm A");
 
@@ -60,17 +56,6 @@ const BlotterAddNonResident: React.FC = () => {
 
     if (getValues().incidentTimeAndDate) {
       clearErrors("incidentTimeAndDate");
-    }
-  };
-
-  const handleOnChangeReported = (date: Dayjs | null) => {
-    setIncidentReported(date);
-    let timeAndDate = date?.format("MM/DD/YYYY - hh:mm A");
-
-    setValue("incidentReported", timeAndDate ?? "");
-
-    if (getValues().incidentReported) {
-      clearErrors("incidentReported");
     }
   };
 
@@ -86,7 +71,6 @@ const BlotterAddNonResident: React.FC = () => {
     await mutateAsync({
       complainantType: "Non-Resident",
       incidentTimeAndDate: data?.incidentTimeAndDate,
-      incidentReported: data?.incidentReported,
       incidentRecorded: dayjs().format("MM/DD/YYYY - hh:mm A"),
       respondentId: official?._id,
       respondentName: getResidentFullName({
@@ -138,16 +122,7 @@ const BlotterAddNonResident: React.FC = () => {
         incidentTimeAndDate?.format("MM/DD/YYYY - hh:mm A") ?? ""
       );
     }
-
-    if (reportedError) {
-      setValue("incidentReported", "");
-    } else {
-      setValue(
-        "incidentReported",
-        incidentReported?.format("MM/DD/YYYY - hh:mm A") ?? ""
-      );
-    }
-  }, [timeAndDateError, reportedError]);
+  }, [timeAndDateError]);
 
   return (
     <>
@@ -192,6 +167,7 @@ const BlotterAddNonResident: React.FC = () => {
               <DateTimePickerField
                 label={"Incident Time and Date"}
                 isEdit
+                isBlotterMinDate
                 onChange={handleOnChangeTimeAndDate}
                 value={incidentTimeAndDate}
                 error={errors?.incidentTimeAndDate?.message}
@@ -199,15 +175,6 @@ const BlotterAddNonResident: React.FC = () => {
                 disableFuture
               />
 
-              <DateTimePickerField
-                label={"Incident Reported"}
-                isEdit
-                onChange={handleOnChangeReported}
-                value={incidentReported}
-                error={errors?.incidentReported?.message}
-                onError={(error) => setReportedError(error)}
-                disableFuture
-              />
             </div>
             <div className="flex justify-end mt-6">
               <SubmitButton label="Submit" />

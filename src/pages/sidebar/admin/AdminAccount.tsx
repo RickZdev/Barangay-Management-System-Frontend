@@ -42,6 +42,7 @@ const AdminAccount: React.FC = React.memo(() => {
         size: 150,
       },
       {
+        accessorKey: 'loggedIns',
         header: "Last Logged In",
         size: 150,
         Cell(props) {
