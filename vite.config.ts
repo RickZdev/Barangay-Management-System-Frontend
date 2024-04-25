@@ -1,34 +1,27 @@
-import { defineConfig } from "vite";
+import { defineConfig, splitVendorChunkPlugin } from "vite";
 import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
-
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), splitVendorChunkPlugin()],
   build: {
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console.log statements in production
-        pure_funcs: ["console.log"], // Treat console.log as pure function
-      },
-    },
-    chunkSizeWarningLimit: 500, // Adjust chunk size warning limit
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (
-            id.includes("node_modules/react/") ||
-            id.includes("node_modules/react-dom/")
-          ) {
-            return "react-vendor";
+        manualChunks(id: string) {
+          // creating a chunk to @open-ish deps. Reducing the vendor chunk size
+          if (id.includes("@open-ish") || id.includes("tslib")) {
+            return "@open-ish";
           }
-          // Add additional manual chunking logic here as needed
+          // creating a chunk to react routes deps. Reducing the vendor chunk size
+          if (
+            id.includes("react-router-dom") ||
+            id.includes("@remix-run") ||
+            id.includes("react-router")
+          ) {
+            return "@react-router";
+          }
         },
       },
     },
-    // Optionally configure additional optimizations
-    // optimizeDeps: {
-    //   include: ['package-name'], // Explicitly specify dependencies to optimize
-    // },
   },
 });
